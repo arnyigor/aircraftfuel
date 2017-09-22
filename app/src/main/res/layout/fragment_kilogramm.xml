@@ -1,0 +1,240 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <EditText
+                android:id="@+id/editTotalMass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:ems="10"
+                android:hint="@string/has_on_board"
+                android:inputType="number" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <EditText
+                android:id="@+id/editDensityFuel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:ems="10"
+                android:hint="@string/unit_density_kg_litre"
+                android:inputType="numberDecimal" />
+
+        </android.support.design.widget.TextInputLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <EditText
+                android:id="@+id/editRequiredMass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="@string/required_kilo"
+                android:inputType="number" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <Spinner
+            android:id="@+id/volumeUnit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:entries="@array/volumeUnits" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/remain_to_fill" />
+    </LinearLayout>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#111"
+        android:shrinkColumns="*"
+        android:stretchColumns="*">
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#A0A0A0"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/tvReqHeader"
+                android:layout_width="match_parent"
+                android:layout_margin="1dp"
+                android:layout_weight="1"
+                android:background="#C2C2C2"
+                android:gravity="center"
+                android:text="@string/unit_litre"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/TextView02"
+                android:layout_width="match_parent"
+                android:layout_margin="1dp"
+                android:layout_weight="1"
+                android:background="#C2C2C2"
+                android:gravity="center"
+                android:text="@string/sh_unit_kilo"
+                android:textColor="#000000" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#A0A0A0"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/tvTotalLitre"
+                android:layout_margin="1dp"
+                android:layout_weight="1"
+                android:background="#fff"
+                android:gravity="center"
+                android:hint="@string/vol_empty"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/tvTotalKilo"
+                android:layout_width="match_parent"
+                android:layout_margin="1dp"
+                android:layout_weight="1"
+                android:background="#fff"
+                android:gravity="center"
+                android:hint="@string/vol_empty"
+                android:textColor="#000000" />
+        </TableRow>
+    </TableLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/recom_refuel" />
+    </LinearLayout>
+
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#111"
+        android:shrinkColumns="*"
+        android:stretchColumns="*">
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#A0A0A0"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/tvLT"
+                android:layout_width="match_parent"
+                android:layout_margin="1dp"
+                android:layout_weight="1"
+                android:background="#fff"
+                android:gravity="center"
+                android:text="@string/left_fuel_tank"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/tvRT"
+                android:layout_width="match_parent"
+                android:layout_margin="1dp"
+                android:layout_weight="1"
+                android:background="#fff"
+                android:gravity="center"
+                android:text="@string/right_fuel_tank"
+                android:textColor="#000000" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#A0A0A0"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/tvCT"
+                android:layout_margin="1dp"
+                android:layout_weight="1"
+                android:background="#fff"
+                android:gravity="center"
+                android:padding="5dip"
+                android:text="@string/center_fuel_tank"
+                android:textColor="#000000" />
+        </TableRow>
+    </TableLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/buttonKiloCnt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/calculate" />
+
+        <Button
+            android:id="@+id/btnKiloSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/file_save_data"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btnKiloDel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/file_del"
+            android:visibility="gone" />
+    </LinearLayout>
+
+</LinearLayout>

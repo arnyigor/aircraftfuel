@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Aircraft Refueling</string>
+    <!--Menu-->
+	<string name="menu_kilogramms">Расчет заправки</string>
+	<string name="menu_litres">Расчет литров</string>
+
+	<string name="action_settings">Настройки</string>
+	<string name="action_savetofile">Сохранить в файл</string>
+    <string name="action_deletefile">Удалить файл</string>
+    <string name="str_litrefragment">Известны литры</string>
+    <string name="str_kilofragment">Известны килограммы</string>
+    <string name="has_on_board">На борту,кг</string>
+    <string name="total_mass_kilo">Всего,кг</string>
+    <string name="total_volume_litre">Всего,л</string>
+    <string name="required_kilo">Требуется,кг</string>
+    <string name="remain_to_fill">Осталось залить</string>
+    <string name="left_fuel_tank">Левый бак</string>
+    <string name="right_fuel_tank">Правый бак</string>
+    <string name="center_fuel_tank">Центральный бак</string>
+    <string name="calculate">Расчет</string>
+    <string name="vol_empty">0</string>
+    <string name="recom_refuel">Рекомендуемая заправка:</string>
+    <!--Errors-->
+    <string name="error_wrong_data">Неверные данные</string>
+    <string name="error_val_on_board">Введите корректное значение на борту в кг</string>
+    <string name="error_val_litre">Введите корректное значение всего литров</string>
+    <string name="error_val_proc_pvk">Введите корректное значение процента ПВК</string>
+    <string name="error_val_req">Введите корректное значение требуемого в кг</string>
+    <string name="error_val_density">Введите корректное значение плотности в кг/л</string>
+    <string name="error_calulate_requied">Необходим расчет</string>
+    <!--Unit info-->
+    <string name="unit_density">Плотность</string>
+    <string name="unit_density_kg_litre">Плотность,кг/л</string>
+    <!--Units-->
+    <array name="volumeUnits">
+        <item>@string/unit_litre</item>
+        <item>@string/unit_am_gallons</item>
+    </array>
+    <string name="unit_litre">литры</string>
+    <string name="unit_am_gallons">ам.галлоны</string>
+    <!--Short units-->
+    <string name="sh_unit_kilo_on_litre">кг/л</string>
+    <string name="sh_unit_kilo">кг</string>
+    <string name="sh_unit_litre">л</string>
+    <string name="sh_unit_percent">%</string>
+    <!--txt-->
+    <string name="file_fuel_remain">Остаток: </string>
+    <string name="file_fueled">Заправлено: </string>
+    <string name="file_total_litre">Количество литров: </string>
+    <string name="error_sd_card_not_avalable">SD-карта не доступна:</string>
+    <string name="file_write_success">Файл записан на SD:</string>
+    <string name="file_deleted">Файл удален</string>
+    <string name="error_file_not_deleted">Файл не удален</string>
+    <string name="error_file_not_write">Файл не записан</string>
+    <string name="error_val_density_pvk">Введите корректное значение плотности ПВК</string>
+    <string name="file_percent_pvk">Процент ПВК: </string>
+    <string name="file_density_pvk">Плотность ПВК: </string>
+    <string name="file_total_mass">Общий вес: </string>
+    <string name="file_save_data">Записать данные в файл</string>
+    <string name="file_del">Удалить файл</string>
+    <string name="str_no">Нет</string>
+    <string name="str_yes">Да</string>
+    <string name="full_percent">100</string>
+	<string name="press_back_again_to_exit">Нажмите еще раз для выхода</string>
+
+</resources>
