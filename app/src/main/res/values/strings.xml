@@ -2,9 +2,8 @@
 <resources>
     <string name="app_name">Aircraft Refueling</string>
     <!--Menu-->
-	<string name="menu_kilogramms">Расчет заправки</string>
-	<string name="menu_litres">Расчет литров</string>
-
+	<string name="menu_fueling">Расчет заправки</string>
+	<string name="menu_deicing">Расчет ПОО</string>
 	<string name="action_settings">Настройки</string>
 	<string name="action_savetofile">Сохранить в файл</string>
     <string name="action_deletefile">Удалить файл</string>
@@ -53,6 +52,7 @@
     <string name="file_deleted">Файл удален</string>
     <string name="error_file_not_deleted">Файл не удален</string>
     <string name="error_file_not_write">Файл не записан</string>
+    <string name="success_file_write">Файл успешно записан</string>
     <string name="error_val_density_pvk">Введите корректное значение плотности ПВК</string>
     <string name="file_percent_pvk">Процент ПВК: </string>
     <string name="file_density_pvk">Плотность ПВК: </string>
@@ -63,5 +63,9 @@
     <string name="str_yes">Да</string>
     <string name="full_percent">100</string>
 	<string name="press_back_again_to_exit">Нажмите еще раз для выхода</string>
+	<string name="residue">Остаток:</string>
+	<string name="fueled">Заправлено:</string>
+	<string name="density">Плотность:</string>
+	<string name="litre_qty">Количество литров:</string>
 
 </resources>

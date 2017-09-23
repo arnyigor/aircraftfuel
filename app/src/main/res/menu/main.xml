@@ -8,14 +8,12 @@
         app:showAsAction="ifRoom"
         android:orderInCategory="10"
         android:icon="@drawable/ic_action_save"
-        android:title="@string/action_savetofile">
-    </item>
+        android:title="@string/action_savetofile"/>
     <item
         android:id="@+id/action_delete_file"
         app:showAsAction="ifRoom"
         android:orderInCategory="20"
         android:icon="@drawable/ic_action_remove"
-        android:title="@string/action_deletefile">
-    </item>
+        android:title="@string/action_deletefile"/>
 
 </menu>
