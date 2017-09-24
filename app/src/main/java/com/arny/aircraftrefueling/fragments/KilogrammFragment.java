@@ -92,27 +92,13 @@ public class KilogrammFragment extends Fragment implements View.OnClickListener 
 	}
 
 	private String getFileText() {
-		return DateTimeUtils.getDateTime("dd MMM yyyy HH:mm:ss") + "\n" +
-				getString(R.string.file_fuel_remain) +
-				Local.getFString("%.0f", mMassOstat) +
-				getString(R.string.sh_unit_kilo) + ";" +
+		return DateTimeUtils.getDateTime("dd MMM yyyy HH:mm:ss") + "\n" + getString(R.string.file_fuel_remain) +
+				Local.getFString("%.0f", mMassOstat) + getString(R.string.sh_unit_kilo) + "; " +
 				getString(R.string.file_fueled) +
-				Local.getFString("%.0f", mReqMassTotal) +
-				getString(R.string.sh_unit_litre) + ";" +
+				Local.getFString("%.0f", mReqMassTotal) + getString(R.string.sh_unit_litre) + "; " +
 				getString(R.string.unit_density) + ": " +
-				Local.getFString("%.3f", mRo) +
-				getString(R.string.sh_unit_kilo_on_litre) +
-				getString(R.string.litre_qty) + tvTotalLitre.getText().toString() + "\n";
-	}
-
-	public boolean isFileExist() {
-		if (!Environment.getExternalStorageState().equals("mounted")) {
-			Toast.makeText(context, ("SD-карта не доступна: " + Environment.getExternalStorageState()), Toast.LENGTH_LONG).show();
-			return false;
-		} else {
-			File file = new File(String.valueOf(Environment.getExternalStorageDirectory().getAbsolutePath()) + "/" + "AirRefuelFiles", "AirRefuelKilo.txt");
-			return !(!file.exists() || !file.isFile());
-		}
+				Local.getFString("%.3f", mRo) + getString(R.string.sh_unit_kilo_on_litre) +"; "+
+				getString(R.string.litre_qty)+ ": " + tvTotalLitre.getText().toString() + "\n";
 	}
 
 	/**
