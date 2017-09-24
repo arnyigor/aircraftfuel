@@ -3,7 +3,6 @@ package com.arny.aircraftrefueling.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.*;
 import android.widget.AdapterView;
@@ -15,7 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arny.aircraftrefueling.R;
-import com.arny.aircraftrefueling.Utils;
+import com.arny.aircraftrefueling.Local;
 import com.arny.arnylib.files.FileUtils;
 import com.arny.arnylib.utils.DateTimeUtils;
 import com.arny.arnylib.utils.DroidUtils;
@@ -64,7 +63,7 @@ public class KilogrammFragment extends Fragment implements View.OnClickListener 
 		btnCalc = (Button) rootView.findViewById(R.id.buttonKiloCnt);
 		btnKiloFileSave = (Button) rootView.findViewById(R.id.btnKiloSave);
 		btnKiloFileDel = (Button) rootView.findViewById(R.id.btnKiloDel);
-		if (Utils.isFileExist(context, DIR_SD, FILENAME_SD)) {
+		if (Local.isFileExist(context, DIR_SD, FILENAME_SD)) {
 			btnKiloFileDel.setVisibility(View.VISIBLE);
 		}
 		btnKiloFileSave.setOnClickListener(this);
@@ -95,13 +94,13 @@ public class KilogrammFragment extends Fragment implements View.OnClickListener 
 	private String getFileText() {
 		return DateTimeUtils.getDateTime("dd MMM yyyy HH:mm:ss") + "\n" +
 				getString(R.string.file_fuel_remain) +
-				Utils.getFString("%.0f", mMassOstat) +
+				Local.getFString("%.0f", mMassOstat) +
 				getString(R.string.sh_unit_kilo) + ";" +
 				getString(R.string.file_fueled) +
-				Utils.getFString("%.0f", mReqMassTotal) +
+				Local.getFString("%.0f", mReqMassTotal) +
 				getString(R.string.sh_unit_litre) + ";" +
 				getString(R.string.unit_density) + ": " +
-				Utils.getFString("%.3f", mRo) +
+				Local.getFString("%.3f", mRo) +
 				getString(R.string.sh_unit_kilo_on_litre) +
 				getString(R.string.litre_qty) + tvTotalLitre.getText().toString() + "\n";
 	}
@@ -143,15 +142,15 @@ public class KilogrammFragment extends Fragment implements View.OnClickListener 
 
 	private void calculateFuelCapacity() {
 		if (Utility.empty(edtTotalFuel.getText().toString())) {
-			Utils.toast(context,getString(R.string.error_val_on_board), false);
+			Local.toast(context,getString(R.string.error_val_on_board), false);
 			return;
 		}
 		if (Utility.empty(edtRequiredfuel.getText().toString()) || edtRequiredfuel.getText().toString().trim().equals("0")) {
-			Utils.toast(context,getString(R.string.error_val_req), false);
+			Local.toast(context,getString(R.string.error_val_req), false);
 			return;
 		}
 		if (Utility.empty(edtDensityFuel.getText().toString()) || edtDensityFuel.getText().toString().trim().equals("0")) {
-			Utils.toast(context,getString(R.string.error_val_density), false);
+			Local.toast(context,getString(R.string.error_val_density), false);
 			return;
 		}
 		try {
@@ -161,7 +160,7 @@ public class KilogrammFragment extends Fragment implements View.OnClickListener 
 			String totStr = LitreCnt(mMassOstat, mRo, mMassRequired);
 			double totLit = (!totStr.equals("0") || !totStr.equals("")) ? Double.parseDouble(totStr) : 0;
 			if (totLit < 0) {
-				Utils.toast(context,getString(R.string.error_wrong_data), false);
+				Local.toast(context,getString(R.string.error_wrong_data), false);
 				return;
 			}
 			totLit = getTotLit(totLit);
@@ -198,11 +197,12 @@ public class KilogrammFragment extends Fragment implements View.OnClickListener 
 		switch (v.getId()) {
 			case R.id.btnKiloDel:
 				DroidUtils.alertConfirmDialog(context, getString(R.string.file_del), () -> {
-					if (Utils.isFileExist(context, DIR_SD, FILENAME_SD)) {
-						Boolean delFile = Utils.deleteFileSD(context, DIR_SD, FILENAME_SD);
+					if (Local.isFileExist(context, DIR_SD, FILENAME_SD)) {
+						Boolean delFile = Local.deleteFileSD(context, DIR_SD, FILENAME_SD);
 						if (delFile) {
-							Utils.toast(context,getString(R.string.file_deleted), true);
-							btnKiloFileDel.setVisibility(View.GONE);
+							Local.toast(context, context.getResources().getString(R.string.file_deleted), true);
+						}else{
+							Local.toast(context, context.getResources().getString(R.string.error_file_not_deleted), false);
 						}
 					}
 				});
@@ -213,20 +213,20 @@ public class KilogrammFragment extends Fragment implements View.OnClickListener 
 			case R.id.btnKiloSave:
 				DroidUtils.alertConfirmDialog(context, getString(R.string.file_save_data), () -> {
 					if (tvTotalLitre.getText().toString().trim().equals("")) {
-						Utils.toast(context,getString(R.string.error_calulate_requied), false);
+						Local.toast(context,getString(R.string.error_calulate_requied), false);
 					} else {
 						String pathWithName = FileUtils.getWorkDir(context) + "/" +DIR_SD + "/" + FILENAME_SD;
-						Boolean writeRes = FileUtils.writeToFile(context, pathWithName, getFileText());
+						Boolean writeRes = Local.writeFileSD(context, getFileText());
 						if (writeRes) {
-							Utils.toast(context,getString(R.string.success_file_write)+":" + pathWithName, true);
-							if (Utils.isFileExist(context, DIR_SD, FILENAME_SD)) {
+							Local.toast(context,getString(R.string.success_file_write)+":" + pathWithName, true);
+							if (Local.isFileExist(context, DIR_SD, FILENAME_SD)) {
 									btnKiloFileDel.setVisibility(View.VISIBLE);
 							}
 						} else {
-							Utils.toast(context,getString(R.string.error_file_not_write), false);
+							Local.toast(context,getString(R.string.error_file_not_write), false);
 						}
 					}
-					if (Utils.isFileExist(context, DIR_SD, FILENAME_SD)) {
+					if (Local.isFileExist(context, DIR_SD, FILENAME_SD)) {
 						btnKiloFileDel.setVisibility(View.VISIBLE);
 					}else{
 						btnKiloFileDel.setVisibility(View.GONE);

@@ -1,5 +1,6 @@
 package com.arny.aircraftrefueling;
 
+import android.Manifest;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,12 +12,14 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 import com.arny.aircraftrefueling.fragments.KilogrammFragment;
 import com.arny.aircraftrefueling.fragments.LitreFragment;
+import com.arny.arnylib.utils.BasePermissions;
+import com.arny.arnylib.utils.RuntimePermissionsActivity;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends RuntimePermissionsActivity {
 	private static final int MENU_FUEL = 0;
 	private static final int MENU_DEICE = 1;
 	private static final String DRAWER_SELECTION = "drawer_selection";
@@ -37,7 +40,22 @@ public class MainActivity extends AppCompatActivity {
 			getSupportActionBar().setDisplayUseLogoEnabled(true);
 		}
 		initDrawer();
-		selectItem(MENU_FUEL);
+		drawer.setSelection(MENU_FUEL);
+		toolbar.setTitle(getString(R.string.menu_fueling));
+
+		if (!BasePermissions.isStoragePermissonGranted(this) ) {
+			super.requestAppPermissions(new
+							String[]{
+							Manifest.permission.WRITE_EXTERNAL_STORAGE,
+							Manifest.permission.READ_EXTERNAL_STORAGE}, R.string.storage_permission_denied
+					, BasePermissions.REQUEST_PERMISSIONS);
+		}
+
+	}
+
+	@Override
+	public void onPermissionsGranted(int requestCode) {
+
 	}
 
 	private void initDrawer() {
