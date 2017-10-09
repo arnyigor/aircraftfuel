@@ -10,9 +10,11 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
+import com.arny.aircraftrefueling.adapters.ResponsibilityDialog;
 import com.arny.aircraftrefueling.fragments.KilogrammFragment;
 import com.arny.aircraftrefueling.fragments.LitreFragment;
 import com.arny.arnylib.utils.BasePermissions;
+import com.arny.arnylib.utils.Config;
 import com.arny.arnylib.utils.RuntimePermissionsActivity;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.Drawer;
@@ -49,16 +51,25 @@ public class MainActivity extends RuntimePermissionsActivity {
 							Manifest.permission.WRITE_EXTERNAL_STORAGE,
 							Manifest.permission.READ_EXTERNAL_STORAGE}, R.string.storage_permission_denied
 					, BasePermissions.REQUEST_PERMISSIONS);
-		}
+		}else{
+            respDialog();
+        }
 
 	}
 
 	@Override
 	public void onPermissionsGranted(int requestCode) {
+        respDialog();
+    }
 
-	}
+    private void respDialog() {
+        boolean responsibility = Config.getBoolean("responsibility", false, this);
+        if (!responsibility) {
+            new ResponsibilityDialog(this).show();
+        }
+    }
 
-	private void initDrawer() {
+    private void initDrawer() {
 		drawer = new DrawerBuilder()
 				.withActivity(this)
 				.withRootView(R.id.drawer_container)

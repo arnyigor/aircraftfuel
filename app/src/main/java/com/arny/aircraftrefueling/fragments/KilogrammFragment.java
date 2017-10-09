@@ -1,8 +1,8 @@
 package com.arny.aircraftrefueling.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.view.*;
 import android.widget.AdapterView;
@@ -11,17 +11,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.arny.aircraftrefueling.R;
 import com.arny.aircraftrefueling.Local;
 import com.arny.arnylib.files.FileUtils;
 import com.arny.arnylib.utils.DateTimeUtils;
 import com.arny.arnylib.utils.DroidUtils;
-import com.arny.arnylib.utils.ToastMaker;
 import com.arny.arnylib.utils.Utility;
 
-import java.io.File;
 import java.util.Locale;
 
 public class KilogrammFragment extends Fragment implements View.OnClickListener {
@@ -92,13 +89,14 @@ public class KilogrammFragment extends Fragment implements View.OnClickListener 
 	}
 
 	private String getFileText() {
-		return DateTimeUtils.getDateTime("dd MMM yyyy HH:mm:ss") + "\n" + getString(R.string.file_fuel_remain) +
-				Local.getFString("%.0f", mMassOstat) + getString(R.string.sh_unit_kilo) + "; " +
+		return DateTimeUtils.getDateTime("dd MMM yyyy HH:mm:ss") + "\n" +
+                getString(R.string.file_fuel_remain) +
+				Local.getFString("%.0f", mMassOstat) +"("+ getString(R.string.sh_unit_mass) + "); " +
 				getString(R.string.file_fueled) +
-				Local.getFString("%.0f", mReqMassTotal) + getString(R.string.sh_unit_litre) + "; " +
+				Local.getFString("%.0f", mReqMassTotal) +"("+ getString(R.string.sh_unit_mass) + "); " +
 				getString(R.string.unit_density) + ": " +
-				Local.getFString("%.3f", mRo) + getString(R.string.sh_unit_kilo_on_litre) +"; "+
-				getString(R.string.litre_qty)+ ": " + tvTotalLitre.getText().toString() + "\n";
+				Local.getFString("%.3f", mRo)+"("+ getString(R.string.sh_unit_density) +"); "+
+				getString(R.string.litre_qty)+ ": " + tvTotalLitre.getText().toString() +"("+ getString(R.string.sh_unit_volume)  + ")\n";
 	}
 
 	/**
@@ -173,7 +171,8 @@ public class KilogrammFragment extends Fragment implements View.OnClickListener 
 		return totLit;
 	}
 
-	private String LitreCnt(double ostat, double mro, double mreq) {
+	@SuppressLint("DefaultLocale")
+    private String LitreCnt(double ostat, double mro, double mreq) {
 		mReqMassTotal = mreq - ostat;
 		return String.format("%.0f", (mReqMassTotal / mro));
 	}

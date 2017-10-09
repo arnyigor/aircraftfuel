@@ -36,15 +36,15 @@
     </array>
     <string name="unit_litre">литры</string>
     <string name="unit_am_gallons">ам.галлоны</string>
-    <string name="sh_unit_kilo_on_litre">кг/л</string>
-    <string name="sh_unit_kilo">кг</string>
-    <string name="sh_unit_litre">л</string>
+    <string name="sh_unit_density">кг/л</string>
+    <string name="sh_unit_mass">кг</string>
+    <string name="sh_unit_volume">л</string>
     <string name="sh_unit_percent">%</string>
     <string name="file_fuel_remain">Остаток: </string>
-    <string name="file_fueled">Заправлено: </string>
-    <string name="file_total_litre">Количество литров</string>
+    <string name="file_fueled">Заправка: </string>
+    <string name="litre_qty">Объем: </string>
     <string name="error_sd_card_not_avalable">SD-карта не доступна</string>
-	<string name="file_deleted">Файл удален</string>
+    <string name="file_deleted">Файл удален</string>
     <string name="error_file_not_deleted">Файл не удален</string>
     <string name="error_file_not_write">Файл не записан</string>
     <string name="success_file_write">Файл успешно записан</string>
@@ -55,8 +55,12 @@
     <string name="file_save_data">Записать данные в файл</string>
     <string name="file_del">Удалить файл</string>
     <string name="full_percent">100</string>
-	<string name="press_back_again_to_exit">Нажмите еще раз для выхода</string>
-	<string name="litre_qty">Количество литров</string>
+    <string name="press_back_again_to_exit">Нажмите еще раз для выхода</string>
 	<string name="storage_permission_denied">Запись на SD запрещена</string>
-
+    <string name="response_text">Вы подтверждаете,что разработчик приложения не несёт ответственность за появление
+        неточной или ложной информации, а также за использование вами данных расчета и обработки информации.
+    </string>
+    <string name="confirm">Подтверждаю</string>
+    <string name="responsibility_title">Отказ от ответственности</string>
+    <string name="need_confirm_resp">Неоходимо принять отказ от ответственности</string>
 </resources>

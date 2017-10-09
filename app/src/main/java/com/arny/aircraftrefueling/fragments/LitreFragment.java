@@ -106,15 +106,14 @@ public class LitreFragment extends Fragment implements View.OnClickListener {
 
 	private void getLitreFileText() {
 		FileText = String.valueOf(new SimpleDateFormat("dd MMM yyyy HH:mm:ss", Locale.getDefault()).format(new Date())) + "\n"
-				+ getString(R.string.file_total_litre) +
-				Local.getFString(":%.0f", mVolTotal) + getString(R.string.sh_unit_litre) + ";"
+				+ getString(R.string.litre_qty) +
+				Local.getFString(":%.0f", mVolTotal) +"("+ getString(R.string.sh_unit_volume) + ");"
 				+ getString(R.string.file_percent_pvk) +
-				Local.getFString(":%.0f", mPercPVK) +
-				getString(R.string.sh_unit_percent) + ";"
+				Local.getFString(":%.0f", mPercPVK) +"("+ getString(R.string.sh_unit_percent) + ");"
 				+ getString(R.string.file_density_pvk) +
-				Local.getFString(":%.3f", mRo) + getString(R.string.sh_unit_kilo_on_litre) + ";"
+				Local.getFString(":%.3f", mRo) +"("+ getString(R.string.sh_unit_density) + ");"
 				+ getString(R.string.file_total_mass) +":"+
-				edtMassFuel.getText().toString() + getString(R.string.sh_unit_kilo) + "\n";
+				edtMassFuel.getText().toString() +"("+ getString(R.string.sh_unit_mass) + ")\n";
 	}
 
 	private void calculateLitre() {
