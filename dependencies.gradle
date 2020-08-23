@@ -1,0 +1,150 @@
+ext.versions = [
+        'androidPlugin'    : '3.6.3',
+        'minSdk'           : 16,
+        'targetSdk'        : 29,
+        'compileSdk'       : 29,
+        'buildTools'       : '29.0.3',
+        'supportLibrary'   : '28.0.0',
+        'kotlin'           : '1.4.0',
+        'coroutines'       : '1.3.7',
+        'ktx'              : '1.2.0',
+        'gms'              : '4.3.3',
+        'appcompatx'       : '1.1.0',
+        'material'         : '1.0.0',
+        'roomx'            : '2.2.5',
+        'room'             : '1.1.1',
+        'lifecycle'        : '2.2.0',
+        'realm'            : '5.8.0',
+        'dagger'           : '2.25.3',
+        'gson'             : '2.8.6',
+        'retrofit'         : '2.6.2',
+        'retrofitRxAdapter': '1.0.0',
+        'okhttp'           : '4.2.2',
+        'okhttpDownloader' : '1.1.0',
+        'picasso'          : '2.5.2',
+        'rxJava'           : '2.2.15',
+        'moxy'             : '2.1.1',
+        'rxAndroid'        : '2.1.1',
+        'rxKotlin'         : '2.4.0',
+        'stetho'           : '1.5.1',
+        'junit'            : '4.12',
+        'atsl'             : '1.0.1',
+        'assertjAndroid'   : '1.2.0',
+        'mockitoKotlin'    : '2.1.0',
+        'robolectric'      : '3.6.1',
+        'mockito'          : '3.0.0',
+        'sourceCompat'     : JavaVersion.VERSION_1_8,
+        'targetCompat'     : JavaVersion.VERSION_1_8,
+        'materialdrawer'   : '8.1.3'
+]
+
+ext.gradle = [
+        'gradlePlugin'       : "com.android.tools.build:gradle:${versions.androidPlugin}",
+        'kotlinGradlePlugin' : "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
+        'realmPlugin'        : "io.realm:realm-gradle-plugin:${versions.realm}",
+        'googleServices'     : "com.google.gms:google-services:${versions.gms}",
+        'firebaseCrashPlugin': "com.google.firebase:firebase-crashlytics-gradle:2.1.1",
+]
+
+ext.libs = [
+        'firebaseCrash'       : "com.google.firebase:firebase-crashlytics:17.0.0",
+        'localBrodcast'       : "androidx.localbroadcastmanager:localbroadcastmanager:1.0.0",
+        'multidex'            : "androidx.multidex:multidex:2.0.1",
+        'ktxCore'             : "androidx.core:core-ktx:1.3.1",
+        'fragmentKTX'         : "androidx.fragment:fragment-ktx:1.2.4",
+        'activityKTX'         : "androidx.activity:activity-ktx:1.1.0",
+        'lifecycleExt'        : "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}",
+        'lifecycleVMKtx'      : "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.lifecycle}",
+        'lifecycleLD'         : "androidx.lifecycle:lifecycle-livedata-ktx:${versions.lifecycle}",
+        'lifecycleCommon'     : 'androidx.lifecycle:lifecycle-common-java8:2.0.0',
+        //room
+        'roomRuntime'         : "androidx.room:room-runtime:${versions.roomx}",
+        'roomCompiler'        : "androidx.room:room-compiler:${versions.roomx}",
+        'roomRx'              : "androidx.room:room-rxjava2:${versions.roomx}",
+
+        //support
+        'appCompat'           : 'androidx.appcompat:appcompat:1.1.0',
+        'recyclerView'        : 'androidx.recyclerview:recyclerview:1.1.0',
+        'cardView'            : 'androidx.cardview:cardview:1.0.0',
+        'preference'          : 'androidx.preference:preference:1.1.0',
+        'drawerlayout'        : 'androidx.drawerlayout:drawerlayout:1.1.0',
+        'support'             : 'androidx.legacy:legacy-support-v4:1.0.0',
+        'design'              : 'com.google.android.material:material:1.1.0',
+        'vector'              : 'androidx.vectordrawable:vectordrawable:1.0.0',
+        'constraint'          : 'androidx.constraintlayout:constraintlayout:2.0.0-rc1',
+
+        //kotlin
+        'kotlinStdlib'        : "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}",
+        'kotlinReflect'       : "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}",
+        'coroutinesCore'      : "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}",
+        'coroutinesAndroid'   : "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}",
+
+        //rx
+        'rxJava'              : "io.reactivex.rxjava2:rxjava:${versions.rxJava}",
+        'rxAndroid'           : "io.reactivex.rxjava2:rxandroid:${versions.rxAndroid}",
+        'rxKotlin'            : "io.reactivex.rxjava2:rxkotlin:${versions.rxKotlin}",
+
+        //moxy
+        'moxy'                : "com.github.moxy-community:moxy:${versions.moxy}",
+        'moxyCompiler'        : "com.github.moxy-community:moxy-compiler:${versions.moxy}",
+        'moxyAndroidX'        : "com.github.moxy-community:moxy-androidx:${versions.moxy}",
+
+        //di
+        'dagger'              : "com.google.dagger:dagger:${versions.dagger}",
+        'daggerCompiler'      : "com.google.dagger:dagger-compiler:${versions.dagger}",
+
+        'cicerone'            : "ru.terrakok.cicerone:cicerone:5.1.0",
+
+        //network
+        'gson'                : "com.google.code.gson:gson:${versions.gson}",
+        'retrofit'            : "com.squareup.retrofit2:retrofit:${versions.retrofit}",
+        'rxAdapter'           : "com.squareup.retrofit2:adapter-rxjava2:${versions.retrofit}",
+        'coroutinsAdapter'    : 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2',
+        'gsonConverter'       : "com.squareup.retrofit2:converter-gson:${versions.retrofit}",
+        'okhttp'              : "com.squareup.okhttp3:okhttp:${versions.okhttp}",
+        'logging'             : 'com.squareup.okhttp3:logging-interceptor:3.14.1',
+        'picasso'             : "com.squareup.picasso:picasso:${versions.picasso}",
+        'okhttpDownloader'    : "com.jakewharton.picasso:picasso2-okhttp3-downloader:${versions.okhttpDownloader}",
+        'retrofitRxAdapter'   : "com.jakewharton.retrofit:retrofit2-rxjava2-adapter:${versions.retrofitRxAdapter}",
+        'stetho'              : "com.facebook.stetho:stetho:${versions.stetho}",
+        'networkInterceptor'  : "com.facebook.stetho:stetho-okhttp3:${versions.stetho}",
+
+        // icons
+        'materialTypeface'    : "com.mikepenz:google-material-typeface:3.0.1.2.original@aar",
+        'iconicsCore'         : "com.mikepenz:iconics-core:3.0.4@aar",
+        'iconicsTypeface'     : "com.mikepenz:material-design-iconic-typeface:2.2.0.4@aar",
+        'textDrawable'        : "com.amulyakhare:com.amulyakhare.textdrawable:1.0.1",
+        'drawer'              : "com.mikepenz:materialdrawer:${versions.materialdrawer}",
+        'drawerNav'           : "com.mikepenz:materialdrawer-nav:${versions.materialdrawer}",
+        'drawerIcon'          : "com.mikepenz:materialdrawer-iconics:${versions.materialdrawer}",
+
+        'jodaTime'            : 'joda-time:joda-time:2.10.3',
+        'toasty'              : 'com.github.GrenderG:Toasty:1.4.2',
+        'materialDialogsCore' : 'com.afollestad.material-dialogs:core:3.3.0',//https://github.com/afollestad/material-dialogs
+        'materialDialogsInput': 'com.afollestad.material-dialogs:input:3.3.0',
+        'materialDialogsColor': 'com.afollestad.material-dialogs:color:3.3.0',
+        'betterpickers'       : 'com.code-troopers.betterpickers:library:3.1.0',
+        'rxpermissions'       : 'com.github.tbruyelle:rxpermissions:0.10.2',
+        'inputmask'           : 'com.redmadrobot:input-mask-android:5.0.0',
+        'leakcanary'          : 'com.squareup.leakcanary:leakcanary-android:1.6.3',
+
+        //tests
+        'junit'               : "junit:junit:${versions.junit}",
+        'extJunit'            : 'androidx.test.ext:junit:1.1.1',
+        'rules'               : 'androidx.test:rules:1.1.1',
+        'runner'              : 'androidx.test:runner:1.2.0',
+        'assertjCore'         : "org.assertj:assertj-core:3.12.2",
+        'assertjAndroid'      : 'com.squareup.assertj:assertj-android:1.2.0',
+        'assertjSupport'      : 'com.squareup.assertj:assertj-android-support-v4:1.2.0',
+        'mockitoCore'         : "org.mockito:mockito-core:${versions.mockito}",
+        'mockitoAndroid'      : "org.mockito:mockito-android:${versions.mockito}",
+        'mockitoKotlin'       : "com.nhaarman:mockito-kotlin:${versions.mockitoKotlin}",
+        'robolectric'         : "org.robolectric:robolectric:${versions.robolectric}",
+        'mockWebServer'       : "com.squareup.okhttp3:mockwebserver:${versions.okhttp}",
+        'roomxTesting'        : 'androidx.room:room-testing:2.0.0',
+        'roomTesting'         : "android.arch.persistence.room:testing:${versions.room}",
+        'livedataTesting'     : 'androidx.arch.core:core-testing:2.0.0',
+
+        'poi'                 : "org.apache.poi:poi:3.9",
+        'dropboxCoreSdk'      : "com.dropbox.core:dropbox-core-sdk:3.1.3",
+]

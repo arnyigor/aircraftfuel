@@ -1,16 +1,17 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
-
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
         applicationId "com.arny.aircraftrefueling"
         versionCode 1
         versionName "1.0"
-        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -19,13 +20,32 @@ android {
         }
     }
     compileOptions {
-        targetCompatibility 1.8
-        sourceCompatibility 1.8
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(path: ':arnylib')
-    compile 'com.android.support:multidex:1.0.2'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation libs.kotlinStdlib
+    implementation libs.appCompat
+    implementation libs.constraint
+    implementation libs.drawerlayout
+    implementation libs.design
+    implementation libs.support
+    implementation libs.toasty
+    implementation libs.materialTypeface
+    implementation libs.materialDialogsCore
+    implementation libs.materialDialogsInput
+    implementation libs.ktxCore
+    implementation libs.lifecycleVMKtx
+    implementation libs.lifecycleExt
+    implementation libs.fragmentKTX
+    implementation libs.activityKTX
+    implementation libs.jodaTime
+    implementation libs.coroutinesCore
+    implementation libs.coroutinesAndroid
 }

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Aircraft Refueling</string>
-    <!--Menu-->
-	<string name="menu_fueling">Расчет заправки</string>
-	<string name="menu_deicing">Расчет ПОО</string>
-	<string name="action_savetofile">Сохранить в файл</string>
+    <string name="menu_fueling">Расчет заправки</string>
+    <string name="openNavDrawer" translatable="false">Open navigation drawer</string>
+    <string name="closeNavDrawer" translatable="false">Close navigation drawer</string>
+    <string name="menu_deicing">Расчет ПОО</string>
+    <string name="action_savetofile">Сохранить в файл</string>
     <string name="action_deletefile">Удалить файл</string>
     <string name="str_litrefragment">Известны литры</string>
     <string name="str_kilofragment">Известны килограммы</string>
@@ -22,7 +23,7 @@
     <!--Errors-->
     <string name="error_wrong_data">Неверные данные</string>
     <string name="error_val_on_board">Введите корректное значение на борту в кг</string>
-	<string name="error_val_proc_pvk">Введите корректное значение процента ПВК</string>
+    <string name="error_val_proc_pvk">Введите корректное значение процента ПВК</string>
     <string name="error_val_req">Введите корректное значение требуемого в кг</string>
     <string name="error_val_density">Введите корректное значение плотности в кг/л</string>
     <string name="error_calulate_requied">Необходим расчет</string>
@@ -56,11 +57,22 @@
     <string name="file_del">Удалить файл</string>
     <string name="full_percent">100</string>
     <string name="press_back_again_to_exit">Нажмите еще раз для выхода</string>
-	<string name="storage_permission_denied">Запись на SD запрещена</string>
+    <string name="storage_permission_denied">Запись на SD запрещена</string>
     <string name="response_text">Вы подтверждаете,что разработчик приложения не несёт ответственность за появление
         неточной или ложной информации, а также за использование вами данных расчета и обработки информации.
     </string>
     <string name="confirm">Подтверждаю</string>
     <string name="responsibility_title">Отказ от ответственности</string>
     <string name="need_confirm_resp">Неоходимо принять отказ от ответственности</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
 </resources>
