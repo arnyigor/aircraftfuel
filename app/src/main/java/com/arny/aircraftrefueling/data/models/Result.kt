@@ -1,4 +1,4 @@
-package com.arny.aircraftrefueling.models
+package com.arny.aircraftrefueling.data.models
 
 import androidx.annotation.StringRes
 

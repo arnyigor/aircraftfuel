@@ -16,7 +16,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.arny.aircraftrefueling.R;
-import com.arny.aircraftrefueling.utils.Local;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -110,15 +111,21 @@ public class LitreFragment extends Fragment implements View.OnClickListener {
     }
 
     private void getLitreFileText() {
-        FileText = new SimpleDateFormat("dd MMM yyyy HH:mm:ss", Locale.getDefault()).format(new Date()) + "\n"
+        String s = edtMassFuel.getText().toString();
+        FileText = getPvkStringResult(s);
+    }
+
+    @NotNull
+    private String getPvkStringResult(String totalMass) {
+        return new SimpleDateFormat("dd MMM yyyy HH:mm:ss", Locale.getDefault()).format(new Date()) + "\n"
                 + getString(R.string.litre_qty) +
-                Local.getFString(":%.0f", mVolTotal) + "(" + getString(R.string.sh_unit_volume) + ");"
+                String.format(Locale.getDefault(), ":%.0f", mVolTotal) + "(" + getString(R.string.sh_unit_volume) + ");"
                 + getString(R.string.file_percent_pvk) +
-                Local.getFString(":%.0f", mPercPVK) + "(" + getString(R.string.sh_unit_percent) + ");"
+                String.format(Locale.getDefault(), ":%.0f", mPercPVK) + "(" + getString(R.string.sh_unit_percent) + ");"
                 + getString(R.string.file_density_pvk) +
-                Local.getFString(":%.3f", mRo) + "(" + getString(R.string.sh_unit_density) + ");"
+                String.format(Locale.getDefault(), ":%.3f", mRo) + "(" + getString(R.string.sh_unit_density) + ");"
                 + getString(R.string.file_total_mass) + ":" +
-                edtMassFuel.getText().toString() + "(" + getString(R.string.sh_unit_mass) + ")\n";
+                totalMass + "(" + getString(R.string.sh_unit_mass) + ")\n";
     }
 
     private void calculateLitre() {
@@ -146,7 +153,7 @@ public class LitreFragment extends Fragment implements View.OnClickListener {
 
     private String MassCnt(double mvtot, double mro, double percpvk) {
         double d4 = mvtot * (percpvk / 100.0);
-        return Local.getFString("%.0f", (mvtot - d4 + d4 * mro));
+        return String.format(Locale.getDefault(), "%.0f", (mvtot - d4 + d4 * mro));
     }
 
     @Override

@@ -35,7 +35,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.*
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 import kotlin.math.roundToInt
 
 fun AppCompatActivity.replaceFragment(
@@ -81,7 +83,6 @@ fun Fragment.replaceFragment(
     }
     onLoadFunc()
 }
-
 
 
 /**
@@ -796,6 +797,20 @@ fun <T> Collection<T>.copy(): ArrayList<T> {
     val newList = ArrayList<T>()
     newList.addAll(this)
     return newList
+}
+
+fun <T> launchAsync(block: suspend () -> T, onComplete: (T) -> Unit = {}, onError: (Throwable) -> Unit = {}, dispatcher: CoroutineDispatcher = Dispatchers.IO, context: CoroutineContext = Dispatchers.Main + SupervisorJob(), onCanceled: () -> Unit = {}): Job {
+    val scope = CoroutineScope(context)
+    return scope.launch {
+        try {
+            val result = withContext(dispatcher) { block.invoke() }
+            onComplete.invoke(result)
+        } catch (e: CancellationException) {
+            onCanceled()
+        } catch (e: Exception) {
+            onError(e)
+        }
+    }
 }
 
 fun String?.parseLong(): Long? {

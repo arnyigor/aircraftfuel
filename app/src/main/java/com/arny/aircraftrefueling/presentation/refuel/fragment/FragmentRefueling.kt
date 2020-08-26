@@ -1,4 +1,4 @@
-package com.arny.aircraftrefueling.presenter.fragment
+package com.arny.aircraftrefueling.presentation.refuel.fragment
 
 
 import android.os.Bundle
@@ -11,11 +11,11 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.arny.aircraftrefueling.R
-import com.arny.aircraftrefueling.models.Result
-import com.arny.aircraftrefueling.presenter.viewmodel.RefuelingViewModel
-import com.arny.aircraftrefueling.presenter.viewmodel.RefuelingViewModelFactory
-import com.arny.aircraftrefueling.presenter.viewmodel.RerfuelUIState
-import com.arny.aircraftrefueling.presenter.viewmodel.TankRefueler
+import com.arny.aircraftrefueling.data.models.Result
+import com.arny.aircraftrefueling.data.models.TankRefuelResult
+import com.arny.aircraftrefueling.presentation.refuel.viewmodel.RefuelingViewModel
+import com.arny.aircraftrefueling.presentation.refuel.viewmodel.RefuelingViewModelFactory
+import com.arny.aircraftrefueling.presentation.refuel.viewmodel.RerfuelUIState
 import com.arny.aircraftrefueling.utils.ToastMaker.toastError
 import kotlinx.android.synthetic.main.refuel_fragment.*
 
@@ -46,7 +46,7 @@ class FragmentRefueling : Fragment() {
             when (it) {
                 is RerfuelUIState.ResultState -> {
                     when (val result = it.result) {
-                        is Result.Success -> showData(result.data as TankRefueler)
+                        is Result.Success -> showData(result.data as TankRefuelResult)
                         is Result.Error -> toastError(requireContext(), result.throwable.message)
                         is Result.ErrorRes -> toastError(requireContext(), getString(result.messageRes))
                     }
@@ -55,12 +55,12 @@ class FragmentRefueling : Fragment() {
         })
     }
 
-    private fun showData(tankRefueler: TankRefueler) {
-        tvTotalLitre.text = tankRefueler.volumeResult
-        tvTotalKilo.text = tankRefueler.massTotal
-        tvLT.text = String.format("%s:\n%s", getString(R.string.left_fuel_tank), tankRefueler.left)
-        tvRT.text = String.format("%s:\n%s", getString(R.string.right_fuel_tank), tankRefueler.right)
-        tvCT.text = String.format("%s:\n%s", getString(R.string.center_fuel_tank), tankRefueler.centre)
+    private fun showData(refuelResult: TankRefuelResult) {
+        tvTotalLitre.text = refuelResult.volumeResult
+        tvTotalKilo.text = refuelResult.massTotal
+        tvLT.text = String.format("%s:\n%s", getString(R.string.left_fuel_tank), refuelResult.left)
+        tvRT.text = String.format("%s:\n%s", getString(R.string.right_fuel_tank), refuelResult.right)
+        tvCT.text = String.format("%s:\n%s", getString(R.string.center_fuel_tank), refuelResult.centre)
     }
 
     private fun calculateFuelCapacity() {
@@ -80,27 +80,6 @@ class FragmentRefueling : Fragment() {
             return
         }
         refuelingViewModel.refuel(density, onBoard, required, volumeUnitType)
-/*        try {
-            mRo = desnsity.toDouble()
-            mMassOstat = edtTotalFuel.getText().toString().toFloat().toDouble()
-            mMassRequired = edtRequiredfuel.getText().toString().toFloat().toDouble()
-            val totStr: String = LitreCnt(mMassOstat, mRo, mMassRequired)
-            var totLit: Double = if (totStr != "0" || totStr != "") totStr.toDouble() else 0
-            if (totLit < 0) {
-                Local.toast(context, getString(R.string.error_wrong_data), false)
-                return
-            }
-            totLit = getTotLit(totLit)
-            tvTotalLitre.text = String.format(Locale.getDefault(), "%.0f", totLit)
-            tvTotalKilo.text = String.format(Locale.getDefault(), "%.0f", mReqMassTotal)
-            tankFueling(mMassRequired, mRo)
-            tvLT.text = String.format("%s:\n%s", getString(R.string.left_fuel_tank), left)
-            tvRT.text = String.format("%s:\n%s", getString(R.string.right_fuel_tank), right)
-            tvCT.text = String.format("%s:\n%s", getString(R.string.center_fuel_tank), centre)
-            btnKiloFileSave.setVisibility(View.VISIBLE)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }*/
     }
 
     private fun initVolumeSpinner() {

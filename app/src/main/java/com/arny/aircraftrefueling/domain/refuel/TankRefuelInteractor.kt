@@ -1,11 +1,12 @@
-package com.arny.aircraftrefueling.presenter.viewmodel
+package com.arny.aircraftrefueling.domain.refuel
 
 import com.arny.aircraftrefueling.constants.Consts.LITRE_AM_GALLON
 import com.arny.aircraftrefueling.constants.Consts.NO_USE_LITRE
 import com.arny.aircraftrefueling.constants.Consts.WING_TANK_MAX_LITRE
+import com.arny.aircraftrefueling.data.models.TankRefuelResult
 import java.util.*
 
-class TankRefueler {
+class TankRefuelInteractor {
     var massTotal: String = ""
     var volumeResult: String = ""
     var left: String = ""
@@ -20,7 +21,7 @@ class TankRefueler {
      * @param mRo     массовая плотность
      * @param onBoard     масса, остаток
      */
-    fun calculate(massReq: Double, mRo: Double, onBoard: Double) {
+    fun calculate(massReq: Double, mRo: Double, onBoard: Double): TankRefuelResult {
         val maxCen: Double = 2 * (WING_TANK_MAX_LITRE * mRo - NO_USE_LITRE)
         val l: Double
         val r: Double
@@ -40,6 +41,7 @@ class TankRefueler {
             centre = String.format("%.0f", c)
         }
         calcVolume(onBoard, mRo, massReq)
+        return TankRefuelResult(massTotal, volumeResult, left, right, centre)
     }
 
     private fun getTotLit(totLitre: Double): Double {

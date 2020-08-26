@@ -1,6 +1,6 @@
-package com.arny.aircraftrefueling.presenter.viewmodel
+package com.arny.aircraftrefueling.presentation.refuel.viewmodel
 
-import com.arny.aircraftrefueling.models.Result
+import com.arny.aircraftrefueling.data.models.Result
 
 sealed class RerfuelUIState {
     object LoadingState : RerfuelUIState()

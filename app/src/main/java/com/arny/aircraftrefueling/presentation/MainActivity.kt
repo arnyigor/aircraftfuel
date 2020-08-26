@@ -1,11 +1,12 @@
-package com.arny.aircraftrefueling
+package com.arny.aircraftrefueling.presentation
 
 import android.os.Bundle
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.arny.aircraftrefueling.fragments.LitreFragment
-import com.arny.aircraftrefueling.presenter.fragment.FragmentRefueling
+import com.arny.aircraftrefueling.R
+import com.arny.aircraftrefueling.presentation.deicing.fragment.DeicingFragment
+import com.arny.aircraftrefueling.presentation.refuel.fragment.FragmentRefueling
 import com.arny.aircraftrefueling.utils.getFragmentByTag
 import com.arny.aircraftrefueling.utils.replaceFragment
 import com.arny.aircraftrefueling.utils.showSnackBar
@@ -50,6 +51,7 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+        selectItem(MENU_FUEL)
     }
 
 /*    private fun respDialog() {
@@ -74,7 +76,7 @@ class MainActivity : AppCompatActivity() {
     private fun navigateFragments(position: Int): Fragment? {
         return when (position) {
             MENU_FUEL -> FragmentRefueling.getInstance()
-            MENU_DEICE -> LitreFragment.getInstance()
+            MENU_DEICE -> DeicingFragment.getInstance()
             else -> null
         }
     }
