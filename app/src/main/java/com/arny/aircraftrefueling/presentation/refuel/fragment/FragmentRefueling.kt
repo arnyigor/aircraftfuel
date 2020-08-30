@@ -8,27 +8,25 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.data.models.Result
 import com.arny.aircraftrefueling.data.models.TankRefuelResult
-import com.arny.aircraftrefueling.presentation.refuel.viewmodel.RefuelingViewModel
-import com.arny.aircraftrefueling.presentation.refuel.viewmodel.RefuelingViewModelFactory
-import com.arny.aircraftrefueling.presentation.refuel.viewmodel.RerfuelUIState
+import com.arny.aircraftrefueling.presentation.refuel.presenter.RefuelPresenter
 import com.arny.aircraftrefueling.utils.ToastMaker.toastError
 import kotlinx.android.synthetic.main.refuel_fragment.*
+import moxy.MvpAppCompatFragment
+import moxy.ktx.moxyPresenter
 
-class FragmentRefueling : Fragment() {
-
+class FragmentRefueling : MvpAppCompatFragment(), RefuelView {
     companion object {
         private const val V_UNIT_LITRE: Int = 0
         fun getInstance() = FragmentRefueling()
     }
 
+    private val presenter by moxyPresenter { RefuelPresenter() }
+
     private var volumeUnitType: Int = 0
     private var volumeUnitName: String = ""
-    private val refuelingViewModel by viewModels<RefuelingViewModel> { RefuelingViewModelFactory() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.refuel_fragment, container, false)
@@ -39,21 +37,14 @@ class FragmentRefueling : Fragment() {
         activity?.title = getString(R.string.menu_fueling)
         initVolumeSpinner()
         buttonKiloCnt.setOnClickListener { calculateFuelCapacity() }
-        observeUIState()
     }
 
-    private fun observeUIState() {
-        refuelingViewModel.uiState.observe(viewLifecycleOwner, {
-            when (it) {
-                is RerfuelUIState.ResultState -> {
-                    when (val result = it.result) {
-                        is Result.Success -> showData(result.data as TankRefuelResult)
-                        is Result.Error -> toastError(requireContext(), result.throwable.message)
-                        is Result.ErrorRes -> toastError(requireContext(), getString(result.messageRes))
-                    }
-                }
-            }
-        })
+    override fun showResult(result: Result<Any>) {
+        when (result) {
+            is Result.Success -> showData(result.data as TankRefuelResult)
+            is Result.Error -> toastError(requireContext(), result.throwable.message)
+            is Result.ErrorRes -> toastError(requireContext(), getString(result.messageRes))
+        }
     }
 
     private fun showData(refuelResult: TankRefuelResult) {
@@ -80,7 +71,7 @@ class FragmentRefueling : Fragment() {
             toastError(context, getString(R.string.error_val_density))
             return
         }
-        refuelingViewModel.refuel(density, onBoard, required, volumeUnitType)
+        presenter.refuel(density, onBoard, required, volumeUnitType)
     }
 
     private fun initVolumeSpinner() {

@@ -1,7 +1,12 @@
 package com.arny.aircraftrefueling.domain.deicing
 
-class DeicingInteractor {
-    fun getPvkMass(total: Double, mRo: Double, percent: Double): Double {
+import com.arny.aircraftrefueling.data.repository.IFilesRepository
+import javax.inject.Inject
+
+class DeicingInteractor @Inject constructor(
+        private val filesRepository: IFilesRepository
+) : IDeicingInteractor {
+    override fun calcMass(total: Double, mRo: Double, percent: Double): Double {
         val d4 = total * (percent / 100.0)
         return total - d4 + d4 * mRo
     }

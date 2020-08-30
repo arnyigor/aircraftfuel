@@ -99,6 +99,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun selectItem(position: Int) {
+        KeyboardHelper.hideKeyboard(this)
         val fragmentItem = navigateFragments(position)
         val fragmentTag = fragmentItem?.javaClass?.simpleName
         var fragment = getFragmentByTag(fragmentTag)

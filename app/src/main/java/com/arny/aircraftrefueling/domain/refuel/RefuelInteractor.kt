@@ -5,15 +5,19 @@ import com.arny.aircraftrefueling.constants.Consts.LITRE_AM_GALLON
 import com.arny.aircraftrefueling.constants.Consts.NO_USE_LITRE
 import com.arny.aircraftrefueling.constants.Consts.WING_TANK_MAX_LITRE
 import com.arny.aircraftrefueling.data.models.TankRefuelResult
+import com.arny.aircraftrefueling.data.repository.IFilesRepository
 import java.util.*
+import javax.inject.Inject
 
-class TankRefuelInteractor {
-    var massTotal: String = ""
-    var volumeResult: String = ""
-    var left: String = ""
-    var right: String = ""
-    var centre: String = ""
-    var vUnit: Int = 0
+class RefuelInteractor @Inject constructor(
+        private val filesRepository: IFilesRepository
+) : IRefuelInteractor {
+    private var massTotal: String = ""
+    private var volumeResult: String = ""
+    private var left: String = ""
+    private var right: String = ""
+    private var centre: String = ""
+    override var vUnit: Int = 0
 
     /**
      * Функция заправки
@@ -22,7 +26,7 @@ class TankRefuelInteractor {
      * @param mRo     массовая плотность
      * @param onBoard     масса, остаток
      */
-    fun calculate(massReq: Double, mRo: Double, onBoard: Double): TankRefuelResult {
+    override fun calculate(massReq: Double, mRo: Double, onBoard: Double): TankRefuelResult {
         val maxCen: Double = 2 * (WING_TANK_MAX_LITRE * mRo - NO_USE_LITRE)
         val l: Double
         val r: Double

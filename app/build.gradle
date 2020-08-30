@@ -31,6 +31,13 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //mvp
+    implementation libs.moxy
+    implementation libs.moxyAndroidX
+    implementation libs.moxyKtx
+    kapt libs.moxyCompiler
+    implementation libs.dagger
+    kapt libs.daggerCompiler
     implementation libs.multidex
     implementation libs.kotlinStdlib
     implementation libs.appCompat
@@ -47,11 +54,5 @@ dependencies {
     implementation libs.materialDialogsCore
     implementation libs.materialDialogsInput
     implementation libs.ktxCore
-    implementation libs.lifecycleVMKtx
-    implementation libs.lifecycleExt
-    implementation libs.fragmentKTX
-    implementation libs.activityKTX
     implementation libs.jodaTime
-    implementation libs.coroutinesCore
-    implementation libs.coroutinesAndroid
 }

@@ -12,5 +12,7 @@ object Consts {
 
     const val ERROR_TOTAL_LESS = "error_total_less"
 
-    const val PREF_RESP = "responsibility_2020"
+    const val PREF_RESP = "pref_responsibility_2020"
+    const val PREF_VOLUME_UNIT = "pref_volume_unit"
+    const val PREF_MASS_UNIT = "pref_mass_unit"
 }
