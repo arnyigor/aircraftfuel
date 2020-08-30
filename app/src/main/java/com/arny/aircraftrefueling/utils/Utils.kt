@@ -532,6 +532,10 @@ fun getHexColor(color: Int): String {
     return String.format("#%06X", (0xFFFFFF and color))
 }
 
+fun String.sFormat(vararg args: Any?): String {
+    return String.format(Locale.getDefault(), this, args)
+}
+
 @RequiresApi(Build.VERSION_CODES.O)
 private fun createNotificationChannel(context: Context): String {
     val channelId = "my_service"

@@ -31,6 +31,7 @@ class DeicingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.title  = getString(R.string.menu_deicing)
         observeUIState()
         buttonLitreCnt.setOnClickListener { caclMass() }
         checkPVK.setOnCheckedChangeListener { _, isChecked ->

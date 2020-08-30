@@ -36,6 +36,7 @@ class FragmentRefueling : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.title = getString(R.string.menu_fueling)
         initVolumeSpinner()
         buttonKiloCnt.setOnClickListener { calculateFuelCapacity() }
         observeUIState()
@@ -104,4 +105,5 @@ class FragmentRefueling : Fragment() {
             }
         }
     }
+
 }

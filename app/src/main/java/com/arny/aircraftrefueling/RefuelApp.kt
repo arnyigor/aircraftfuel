@@ -1,10 +1,17 @@
-package com.arny.aircraftrefueling;
+package com.arny.aircraftrefueling
 
-import android.app.Application;
+import android.app.Application
+import android.content.Context
+import androidx.multidex.MultiDex
 
-public class RefuelApp extends Application {
-    @Override
-    public void onCreate() {
-        super.onCreate();
+class RefuelApp : Application() {
+    companion object {
+        lateinit var appContext: Context
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        MultiDex.install(this)
+        appContext = applicationContext;
     }
 }

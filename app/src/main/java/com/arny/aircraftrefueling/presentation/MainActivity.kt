@@ -1,18 +1,23 @@
 package com.arny.aircraftrefueling.presentation
 
+import android.Manifest
 import android.os.Bundle
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.arny.aircraftrefueling.R
+import com.arny.aircraftrefueling.constants.Consts
 import com.arny.aircraftrefueling.presentation.deicing.fragment.DeicingFragment
 import com.arny.aircraftrefueling.presentation.refuel.fragment.FragmentRefueling
-import com.arny.aircraftrefueling.utils.getFragmentByTag
-import com.arny.aircraftrefueling.utils.replaceFragment
-import com.arny.aircraftrefueling.utils.showSnackBar
+import com.arny.aircraftrefueling.utils.*
+import com.tbruyelle.rxpermissions2.RxPermissions
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var rxPermissions: RxPermissions
+    private val compositeDisposable = CompositeDisposable()
 
     companion object {
         private const val MENU_FUEL = 1
@@ -26,6 +31,26 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+        setDrawer()
+        selectItem(MENU_FUEL)
+        respDialog()
+    }
+
+    private fun requestSDPermission() {
+        rxPermissions = RxPermissions(this)
+        compositeDisposable.add(
+                rxPermissions.request(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+                        .subscribe({ permissionGranded ->
+                        }, { throwable ->
+                            ToastMaker.toastError(this, getString(R.string.error_sd_card_not_avalable) + ":" +
+                                    throwable.message)
+                        }))
+    }
+
+    private fun setDrawer() {
         val actionBarDrawerToggle = ActionBarDrawerToggle(
                 this,
                 dlMain,
@@ -51,15 +76,27 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
-        selectItem(MENU_FUEL)
     }
 
-/*    private fun respDialog() {
-        val responsibility: Boolean = Config.getBoolean("responsibility", false, this)
-        if (!responsibility) {
-            ResponsibilityDialog(this).show()
+    private fun respDialog() {
+        val responsibility = Prefs.getInstance(this).get<Boolean>(Consts.PREF_RESP) ?: false
+        if (responsibility) {
+            alertDialog(
+                    this,
+                    getString(R.string.responsibility_title),
+                    getString(R.string.response_text),
+                    getString(R.string.confirm),
+                    getString(android.R.string.cancel),
+                    onConfirm = {
+                        Prefs.getInstance(this).put(Consts.PREF_RESP, true)
+                        requestSDPermission()
+                    },
+                    onCancel = {
+                        requestSDPermission()
+                    }
+            )
         }
-    }*/
+    }
 
     private fun selectItem(position: Int) {
         val fragmentItem = navigateFragments(position)
@@ -104,5 +141,10 @@ class MainActivity : AppCompatActivity() {
                 backPressedTime = System.currentTimeMillis()
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.dispose()
     }
 }

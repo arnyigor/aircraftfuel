@@ -7,12 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.data.models.DeicingResult
 import com.arny.aircraftrefueling.data.models.Result
+import com.arny.aircraftrefueling.data.repository.FilesRepository
 import com.arny.aircraftrefueling.domain.deicing.DeicingInteractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class DeicingViewModel(private val deicingInteractor: DeicingInteractor) : ViewModel() {
+class DeicingViewModel(private val deicingInteractor: DeicingInteractor, filesRepository: FilesRepository) : ViewModel() {
     private val _uiState = MutableLiveData<DeicingUIState>()
     val uiState: LiveData<DeicingUIState> = _uiState
 

@@ -12,6 +12,7 @@ android {
         applicationId "com.arny.aircraftrefueling"
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -30,12 +31,17 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation libs.multidex
     implementation libs.kotlinStdlib
     implementation libs.appCompat
     implementation libs.constraint
     implementation libs.drawerlayout
     implementation libs.design
     implementation libs.support
+    implementation libs.preference
+    implementation libs.rxpermissions
+    implementation libs.rxJava
+    implementation libs.rxAndroid
     implementation libs.toasty
     implementation libs.materialTypeface
     implementation libs.materialDialogsCore

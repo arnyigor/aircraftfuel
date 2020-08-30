@@ -1,5 +1,6 @@
 package com.arny.aircraftrefueling.domain.refuel
 
+import com.arny.aircraftrefueling.constants.Consts
 import com.arny.aircraftrefueling.constants.Consts.LITRE_AM_GALLON
 import com.arny.aircraftrefueling.constants.Consts.NO_USE_LITRE
 import com.arny.aircraftrefueling.constants.Consts.WING_TANK_MAX_LITRE
@@ -61,7 +62,7 @@ class TankRefuelInteractor {
         massTotal = String.format("%.0f", diff)
         if (total < 0.0) {
             volumeResult = ""
-            return
+            throw Exception(Consts.ERROR_TOTAL_LESS)
         }
         volumeResult = String.format(Locale.getDefault(), "%.0f", getTotLit(total))
     }
