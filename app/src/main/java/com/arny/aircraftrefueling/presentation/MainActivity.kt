@@ -9,6 +9,7 @@ import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.constants.Consts
 import com.arny.aircraftrefueling.presentation.deicing.fragment.DeicingFragment
 import com.arny.aircraftrefueling.presentation.refuel.fragment.FragmentRefueling
+import com.arny.aircraftrefueling.presentation.settings.SettingsFragment
 import com.arny.aircraftrefueling.utils.*
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.disposables.CompositeDisposable
@@ -22,6 +23,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val MENU_FUEL = 1
         private const val MENU_DEICE = 2
+        private const val MENU_SETTINGS = 3
         private const val TIME_DELAY = 2000
     }
 
@@ -65,12 +67,14 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.menu_refuel -> {
                     selectItem(MENU_FUEL)
-                    dlMain.closeDrawers()
                     true
                 }
                 R.id.menu_deicing -> {
                     selectItem(MENU_DEICE)
-                    dlMain.closeDrawers()
+                    true
+                }
+                R.id.menu_settings -> {
+                    selectItem(MENU_SETTINGS)
                     true
                 }
                 else -> false
@@ -115,6 +119,7 @@ class MainActivity : AppCompatActivity() {
         return when (position) {
             MENU_FUEL -> FragmentRefueling.getInstance()
             MENU_DEICE -> DeicingFragment.getInstance()
+            MENU_SETTINGS -> SettingsFragment.getInstance()
             else -> null
         }
     }
