@@ -1,11 +1,11 @@
 package com.arny.aircraftrefueling.domain.refuel
 
 import com.arny.aircraftrefueling.constants.Consts
-import com.arny.aircraftrefueling.constants.Consts.LITRE_AM_GALLON
+import com.arny.aircraftrefueling.constants.Consts.LITRE_TO_GALLON
 import com.arny.aircraftrefueling.constants.Consts.NO_USE_LITRE
 import com.arny.aircraftrefueling.constants.Consts.WING_TANK_MAX_LITRE
 import com.arny.aircraftrefueling.data.models.TankRefuelResult
-import com.arny.aircraftrefueling.data.repository.IFilesRepository
+import com.arny.aircraftrefueling.data.repository.files.IFilesRepository
 import java.util.*
 import javax.inject.Inject
 
@@ -18,6 +18,10 @@ class RefuelInteractor @Inject constructor(
     private var right: String = ""
     private var centre: String = ""
     override var vUnit: Int = 0
+
+    override fun loadUnits() {
+        TODO("Not yet implemented")
+    }
 
     /**
      * Функция заправки
@@ -52,7 +56,7 @@ class RefuelInteractor @Inject constructor(
     private fun getTotLit(totLitre: Double): Double {
         var totLit = totLitre
         if (vUnit == 1) {
-            totLit *= LITRE_AM_GALLON
+            totLit *= LITRE_TO_GALLON
         }
         return totLit
     }

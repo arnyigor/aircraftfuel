@@ -125,7 +125,7 @@ public class LitreFragment extends Fragment implements View.OnClickListener {
                 + getString(R.string.file_density_pvk) +
                 String.format(Locale.getDefault(), ":%.3f", mRo) + "(" + getString(R.string.sh_unit_density) + ");"
                 + getString(R.string.file_total_mass) + ":" +
-                totalMass + "(" + getString(R.string.sh_unit_mass) + ")\n";
+                totalMass + "(" + getString(R.string.sh_unit_mass_kg) + ")\n";
     }
 
     private void calculateLitre() {

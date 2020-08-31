@@ -37,4 +37,14 @@ class DeicingPresenter : BaseMvpPresenter<DeicingView>() {
         }
         return Result.Success(DeicingResult(interactor.calcMass(onBoard.toDouble(), mRo, percent.toDouble())))
     }
+
+    fun onVolumeUnitChange(checked: Boolean) {
+        interactor.onVolumeUnitChange(checked)
+        viewState.onVolumeChanged(if (checked) R.string.unit_am_gallons else R.string.unit_litre)
+    }
+
+    fun onMassUnitChange(checked: Boolean) {
+        interactor.onMassUnitChange(checked)
+        viewState.onMassChanged(if (checked) R.string.sh_unit_mass_lb else R.string.sh_unit_mass_kg)
+    }
 }

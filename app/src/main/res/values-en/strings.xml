@@ -29,7 +29,7 @@
 	<string name="unit_litre">liters</string>
 	<string name="unit_am_gallons">am.galons</string>
 	<string name="sh_unit_density">kg/litre</string>
-	<string name="sh_unit_mass">kg</string>
+	<string name="sh_unit_mass_kg">kg</string>
 	<string name="sh_unit_volume">l</string>
 	<string name="sh_unit_percent">%</string>
 	<string name="file_fuel_remain">"Rest: "</string>

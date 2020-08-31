@@ -17,4 +17,5 @@ interface DomainModule {
     @Binds
     @Singleton
     fun bindsDeicingInteractor(interactor: DeicingInteractor): IDeicingInteractor
+
 }

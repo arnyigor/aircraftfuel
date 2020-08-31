@@ -1,10 +1,10 @@
-package com.arny.aircraftrefueling.data.repository
+package com.arny.aircraftrefueling.data.repository.files
 
 import android.content.Context
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.constants.Consts.DIR_SD
 import com.arny.aircraftrefueling.constants.Consts.FILENAME_SD
-import com.arny.aircraftrefueling.constants.Consts.PREF_VOLUME_UNIT
+import com.arny.aircraftrefueling.data.repository.units.IUnitsRepository
 import com.arny.aircraftrefueling.utils.DateTimeUtils
 import com.arny.aircraftrefueling.utils.FileUtils
 import com.arny.aircraftrefueling.utils.Prefs
@@ -13,16 +13,12 @@ import javax.inject.Inject
 
 class FilesRepository @Inject constructor(
         private val context: Context,
-        private val prefs: Prefs
+        private val prefs: Prefs,
+        private val unitsRepository: IUnitsRepository
 ) : IFilesRepository {
 
-    private fun getVolumeUnit(): String? {
-        return prefs.get<Int>(PREF_VOLUME_UNIT)?.let { context.getString(it) }
-    }
-
-    private fun getMassUnit(): String? {
-        return prefs.get<Int>(PREF_VOLUME_UNIT)?.let { context.getString(it) }
-    }
+    private fun getVolumeUnit(): String? = unitsRepository.getVolumeUnitName()
+    private fun getMassUnit(): String? = unitsRepository.getMassUnitName()
 
     private fun getRefuelText(onBoard: Double, require: Double, mRo: Double, volume: Double): String {
         return DateTimeUtils.getDateTime("dd MMM yyyy HH:mm:ss") + "\n" +

@@ -20,6 +20,15 @@ class RefuelPresenter : BaseMvpPresenter<RefuelView>() {
         RefuelApp.appComponent.inject(this)
     }
 
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        loadUnits()
+    }
+
+    private fun loadUnits() {
+        interactor.loadUnits()
+    }
+
     fun refuel(density: String, onBoard: String, required: String, volumeUnitType: Int) {
         interactor.vUnit = volumeUnitType
         fromSingle {

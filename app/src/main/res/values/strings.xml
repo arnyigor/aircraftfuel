@@ -38,7 +38,8 @@
     <string name="unit_litre">литры</string>
     <string name="unit_am_gallons">ам.галлоны</string>
     <string name="sh_unit_density">кг/л</string>
-    <string name="sh_unit_mass">кг</string>
+    <string name="sh_unit_mass_kg">кг</string>
+    <string name="sh_unit_mass_lb">фунты</string>
     <string name="sh_unit_volume">л</string>
     <string name="sh_unit_percent">%</string>
     <string name="file_fuel_remain">Остаток: </string>

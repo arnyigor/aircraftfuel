@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_unit_volume"
+        android:checkable="true"
+        android:title="@string/unit_litre"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_unit_mass"
+        android:checkable="true"
+        android:title="@string/sh_unit_mass_kg"
+        app:showAsAction="never" />
+</menu>
