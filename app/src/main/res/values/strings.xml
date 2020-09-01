@@ -77,4 +77,6 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="menu_settings">Настройки</string>
+    <string name="weight">Вес:</string>
+    <string name="volume">Объем</string>
 </resources>

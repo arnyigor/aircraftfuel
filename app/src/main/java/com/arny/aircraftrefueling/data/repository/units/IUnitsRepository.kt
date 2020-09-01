@@ -7,4 +7,6 @@ interface IUnitsRepository {
     fun getMassUnitName(): String?
     fun getVolumeUnit(): String?
     fun getMassUnit(): String?
+    fun getMassUnits(): List<String>
+    fun getVolumeUnits(): List<String>
 }

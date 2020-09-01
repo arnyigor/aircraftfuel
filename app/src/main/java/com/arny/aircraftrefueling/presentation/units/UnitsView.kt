@@ -1,9 +1,9 @@
-package com.arny.aircraftrefueling.presentation.settings
+package com.arny.aircraftrefueling.presentation.units
 
 import moxy.MvpView
 import moxy.viewstate.strategy.alias.AddToEndSingle
 
 @AddToEndSingle
-interface SettingsView : MvpView {
+interface UnitsView : MvpView {
 
 }

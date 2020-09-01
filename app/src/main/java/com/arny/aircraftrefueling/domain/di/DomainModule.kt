@@ -4,6 +4,8 @@ import com.arny.aircraftrefueling.domain.deicing.DeicingInteractor
 import com.arny.aircraftrefueling.domain.deicing.IDeicingInteractor
 import com.arny.aircraftrefueling.domain.refuel.IRefuelInteractor
 import com.arny.aircraftrefueling.domain.refuel.RefuelInteractor
+import com.arny.aircraftrefueling.domain.units.IUnitsInteractor
+import com.arny.aircraftrefueling.domain.units.UnitsInteractor
 import dagger.Binds
 import dagger.Module
 import javax.inject.Singleton
@@ -18,4 +20,7 @@ interface DomainModule {
     @Singleton
     fun bindsDeicingInteractor(interactor: DeicingInteractor): IDeicingInteractor
 
+    @Binds
+    @Singleton
+    fun bindsUnitsInteractor(interactor: UnitsInteractor): IUnitsInteractor
 }

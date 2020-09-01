@@ -49,6 +49,7 @@ dependencies {
     implementation libs.rxpermissions
     implementation libs.rxJava
     implementation libs.rxAndroid
+    implementation libs.rxKotlin
     implementation libs.toasty
     implementation libs.materialTypeface
     implementation libs.materialDialogsCore

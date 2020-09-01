@@ -44,6 +44,14 @@ class UnitsRepository @Inject constructor(
         return resName?.let { context.getString(it) }
     }
 
+    override fun getMassUnits(): List<String> {
+        return listOf(UNIT_KG, UNIT_LB)
+    }
+
+    override fun getVolumeUnits(): List<String> {
+        return listOf(UNIT_LITRE, UNIT_AM_GALL)
+    }
+
     override fun getVolumeUnit(): String? {
         return prefs.get<String>(Consts.PREF_VOLUME_UNIT)
     }

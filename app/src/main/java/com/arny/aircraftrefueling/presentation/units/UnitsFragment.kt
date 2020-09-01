@@ -1,4 +1,4 @@
-package com.arny.aircraftrefueling.presentation.settings
+package com.arny.aircraftrefueling.presentation.units
 
 
 import android.os.Bundle
@@ -9,15 +9,15 @@ import com.arny.aircraftrefueling.R
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 
-class SettingsFragment : MvpAppCompatFragment(), SettingsView {
+class UnitsFragment : MvpAppCompatFragment(), UnitsView {
     companion object {
-        fun getInstance() = SettingsFragment()
+        fun getInstance() = UnitsFragment()
     }
 
-    private val presenter by moxyPresenter { SettingsPresener() }
+    private val presenter by moxyPresenter { UnitsPresener() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.f_settings, container, false)
+        return inflater.inflate(R.layout.f_units, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

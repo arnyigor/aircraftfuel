@@ -9,7 +9,7 @@ import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.constants.Consts
 import com.arny.aircraftrefueling.presentation.deicing.fragment.DeicingFragment
 import com.arny.aircraftrefueling.presentation.refuel.fragment.FragmentRefueling
-import com.arny.aircraftrefueling.presentation.settings.SettingsFragment
+import com.arny.aircraftrefueling.presentation.units.UnitsFragment
 import com.arny.aircraftrefueling.utils.*
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.disposables.CompositeDisposable
@@ -119,7 +119,7 @@ class MainActivity : AppCompatActivity() {
         return when (position) {
             MENU_FUEL -> FragmentRefueling.getInstance()
             MENU_DEICE -> DeicingFragment.getInstance()
-            MENU_SETTINGS -> SettingsFragment.getInstance()
+            MENU_SETTINGS -> UnitsFragment.getInstance()
             else -> null
         }
     }
