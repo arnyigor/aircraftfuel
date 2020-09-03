@@ -1,7 +1,8 @@
 package com.arny.aircraftrefueling.domain.units
 
+import com.arny.aircraftrefueling.data.models.MeasureUnit
 import io.reactivex.Single
 
 interface IUnitsInteractor {
-    fun loadMassUnits(): Single<Pair<List<String>, String>>
+    fun loadUnits(): Single<List<MeasureUnit>>
 }

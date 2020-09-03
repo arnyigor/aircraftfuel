@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatSpinner
-        android:id="@+id/spinnMassUnit"
+        android:id="@+id/spinMassUnit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -43,7 +43,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tvMassUnit" />
 
     <androidx.appcompat.widget.AppCompatSpinner
-        android:id="@+id/spinnVolumeUnit"
+        android:id="@+id/spinVolumeUnit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

@@ -79,4 +79,5 @@
     <string name="menu_settings">Настройки</string>
     <string name="weight">Вес:</string>
     <string name="volume">Объем</string>
+    <string name="load_units_error">Ошибка загрузки измерений</string>
 </resources>

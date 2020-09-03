@@ -8,6 +8,8 @@ import com.arny.aircraftrefueling.constants.Consts.UNIT_AM_GALL
 import com.arny.aircraftrefueling.constants.Consts.UNIT_KG
 import com.arny.aircraftrefueling.constants.Consts.UNIT_LB
 import com.arny.aircraftrefueling.constants.Consts.UNIT_LITRE
+import com.arny.aircraftrefueling.data.models.MeasureType
+import com.arny.aircraftrefueling.data.models.MeasureUnit
 import com.arny.aircraftrefueling.utils.Prefs
 import javax.inject.Inject
 
@@ -44,8 +46,17 @@ class UnitsRepository @Inject constructor(
         return resName?.let { context.getString(it) }
     }
 
-    override fun getMassUnits(): List<String> {
-        return listOf(UNIT_KG, UNIT_LB)
+    override fun getUnits(): List<MeasureUnit> {
+        val mutableList = mutableListOf<MeasureUnit>()
+        mutableList.addAll(
+                listOf(UNIT_KG, UNIT_LB)
+                        .map { MeasureUnit(getUnitName(it) ?: "", getSavedMassUnit() == it, MeasureType.MASS) }
+        )
+        mutableList.addAll(
+                listOf(UNIT_LITRE, UNIT_AM_GALL)
+                        .map { MeasureUnit(getUnitName(it) ?: "", getVolumeUnit() == it, MeasureType.VOLUME) }
+        )
+        return mutableList.toList()
     }
 
     override fun getVolumeUnits(): List<String> {
@@ -53,11 +64,11 @@ class UnitsRepository @Inject constructor(
     }
 
     override fun getVolumeUnit(): String? {
-        return prefs.get<String>(Consts.PREF_VOLUME_UNIT)
+        return prefs.get<String>(Consts.PREF_VOLUME_UNIT) ?: UNIT_LITRE
     }
 
-    override fun getMassUnit(): String? {
-        return prefs.get<String>(Consts.PREF_MASS_UNIT)
+    override fun getSavedMassUnit(): String? {
+        return prefs.get<String>(Consts.PREF_MASS_UNIT) ?: UNIT_KG
     }
 
     override fun getVolumeUnitName(): String? {
@@ -65,6 +76,6 @@ class UnitsRepository @Inject constructor(
     }
 
     override fun getMassUnitName(): String? {
-        return getUnitName(getMassUnit())
+        return getUnitName(getSavedMassUnit())
     }
 }
