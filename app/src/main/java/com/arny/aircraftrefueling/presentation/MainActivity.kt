@@ -7,8 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.constants.Consts
-import com.arny.aircraftrefueling.presentation.deicing.fragment.DeicingFragment
-import com.arny.aircraftrefueling.presentation.refuel.fragment.FragmentRefueling
+import com.arny.aircraftrefueling.presentation.deicing.DeicingFragment
+import com.arny.aircraftrefueling.presentation.refuel.FragmentRefueling
 import com.arny.aircraftrefueling.presentation.units.UnitsFragment
 import com.arny.aircraftrefueling.utils.*
 import com.tbruyelle.rxpermissions2.RxPermissions

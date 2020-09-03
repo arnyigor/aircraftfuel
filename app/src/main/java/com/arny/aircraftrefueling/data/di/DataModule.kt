@@ -13,6 +13,7 @@ interface DataModule {
     @Binds
     @Singleton
     fun bindsRepository(filesRepository: FilesRepository): IFilesRepository
+
     @Binds
     @Singleton
     fun bindsUnitsRepository(unitsRepository: UnitsRepository): IUnitsRepository

@@ -1,11 +1,12 @@
-package com.arny.aircraftrefueling.presentation.refuel.presenter
+package com.arny.aircraftrefueling.presentation.refuel
 
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.RefuelApp
 import com.arny.aircraftrefueling.constants.Consts
+import com.arny.aircraftrefueling.data.models.MeasureUnit
 import com.arny.aircraftrefueling.data.models.Result
 import com.arny.aircraftrefueling.domain.refuel.IRefuelInteractor
-import com.arny.aircraftrefueling.presentation.refuel.fragment.RefuelView
+import com.arny.aircraftrefueling.domain.units.IUnitsInteractor
 import com.arny.aircraftrefueling.utils.BaseMvpPresenter
 import com.arny.aircraftrefueling.utils.fromSingle
 import moxy.InjectViewState
@@ -13,24 +14,39 @@ import javax.inject.Inject
 
 @InjectViewState
 class RefuelPresenter : BaseMvpPresenter<RefuelView>() {
+    private var massUnit: MeasureUnit? = null
+    private var volumeUnit: MeasureUnit? = null
+
     @Inject
     lateinit var interactor: IRefuelInteractor
+
+    @Inject
+    lateinit var unitsInteractor: IUnitsInteractor
 
     init {
         RefuelApp.appComponent.inject(this)
     }
 
     override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
-        loadUnits()
+        unitsInteractor.getMassUnitObs()
+                .subscribeFromPresenter({
+                    massUnit = it
+                    println("getMassUnitObs :$it")
+                }, {
+                    it.printStackTrace()
+                })
+        unitsInteractor.getVolumeUnitObs()
+                .subscribeFromPresenter({
+                    volumeUnit = it
+                    println("getVolumeUnitObs :$it")
+                }, {
+                    it.printStackTrace()
+                })
     }
 
-    private fun loadUnits() {
-        interactor.loadUnits()
-    }
-
-    fun refuel(density: String, onBoard: String, required: String, volumeUnitType: Int) {
-        interactor.vUnit = volumeUnitType
+    fun refuel(density: String, onBoard: String, required: String) {
+        interactor.volumeUnit = volumeUnit
+        interactor.massUnit = massUnit
         fromSingle {
             interactor.calculate(
                     required.toDouble(),

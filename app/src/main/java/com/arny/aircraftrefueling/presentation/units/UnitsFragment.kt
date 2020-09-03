@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.data.models.MeasureUnit
 import com.arny.aircraftrefueling.utils.ToastMaker
@@ -32,6 +33,25 @@ class UnitsFragment : MvpAppCompatFragment(), UnitsView {
         measureVolumeAdapter = MeasureUnitsAdapter(requireContext())
         spinMassUnit.adapter = measureMassAdapter
         spinVolumeUnit.adapter = measureVolumeAdapter
+
+        spinVolumeUnit.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                measureVolumeAdapter.items.forEach { it.selected = false }
+                presenter.onVolumeUnitChange(measureVolumeAdapter.getItem(position))
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
+        spinMassUnit.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                measureMassAdapter.items.forEach { it.selected = false }
+                presenter.onMassUnitChange(measureMassAdapter.getItem(position))
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
     }
 
     override fun toastError(errorRes: Int, message: String?) {

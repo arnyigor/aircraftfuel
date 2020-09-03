@@ -1,4 +1,4 @@
-package com.arny.aircraftrefueling.presentation.deicing.fragment
+package com.arny.aircraftrefueling.presentation.deicing
 
 import androidx.annotation.StringRes
 import com.arny.aircraftrefueling.data.models.Result

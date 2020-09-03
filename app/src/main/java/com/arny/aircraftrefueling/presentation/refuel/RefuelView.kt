@@ -1,4 +1,4 @@
-package com.arny.aircraftrefueling.presentation.refuel.fragment
+package com.arny.aircraftrefueling.presentation.refuel
 
 import com.arny.aircraftrefueling.data.models.Result
 import moxy.MvpView

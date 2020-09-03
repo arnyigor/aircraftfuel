@@ -5,7 +5,7 @@ object Consts {
     const val LITRE_TO_GALLON = 1 / GALLON_TO_LITRE
     const val LB_TO_KG = 0.45359237 //kg
     const val KG_TO_LB = 1 / LB_TO_KG
-    const val WING_TANK_MAX_LITRE = 4876.0
+    const val WING_TANK_MAX_VOLUME = 4876.0
     const val NO_USE_LITRE = 50.0
 
     const val DIR_SD = "AirRefuelFiles"

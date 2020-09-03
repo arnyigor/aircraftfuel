@@ -1,18 +1,16 @@
-package com.arny.aircraftrefueling.presentation.refuel.fragment
+package com.arny.aircraftrefueling.presentation.refuel
 
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.AdapterView.OnItemSelectedListener
-import android.widget.ArrayAdapter
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.data.models.Result
 import com.arny.aircraftrefueling.data.models.TankRefuelResult
-import com.arny.aircraftrefueling.presentation.refuel.presenter.RefuelPresenter
+import com.arny.aircraftrefueling.presentation.units.UnitsFragment
 import com.arny.aircraftrefueling.utils.ToastMaker.toastError
+import com.arny.aircraftrefueling.utils.replaceFragment
 import kotlinx.android.synthetic.main.refuel_fragment.*
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
@@ -25,17 +23,14 @@ class FragmentRefueling : MvpAppCompatFragment(), RefuelView {
 
     private val presenter by moxyPresenter { RefuelPresenter() }
 
-    private var volumeUnitType: Int = 0
-    private var volumeUnitName: String = ""
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.refuel_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        replaceFragment(UnitsFragment.getInstance(), R.id.flMeasureContainer)
         activity?.title = getString(R.string.menu_fueling)
-        initVolumeSpinner()
         buttonKiloCnt.setOnClickListener { calculateFuelCapacity() }
     }
 
@@ -71,30 +66,6 @@ class FragmentRefueling : MvpAppCompatFragment(), RefuelView {
             toastError(context, getString(R.string.error_val_density))
             return
         }
-        presenter.refuel(density, onBoard, required, volumeUnitType)
+        presenter.refuel(density, onBoard, required)
     }
-
-    private fun initVolumeSpinner() {
-        spinUnits.adapter = ArrayAdapter(
-                requireContext(),
-                R.layout.v_unit_item,
-                resources.getStringArray(R.array.volumeUnits)
-        )
-        spinUnits.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
-                volumeUnitName = adapterView.getItemAtPosition(i).toString()
-                volumeUnitType = i
-                tvReqHeader.text = volumeUnitName
-                tvTotalLitre.text = null
-            }
-
-            override fun onNothingSelected(adapterView: AdapterView<*>) {
-                volumeUnitName = adapterView.getItemAtPosition(V_UNIT_LITRE).toString()
-                volumeUnitType = V_UNIT_LITRE
-                tvReqHeader.text = volumeUnitName
-                tvTotalLitre.text = null
-            }
-        }
-    }
-
 }

@@ -5,19 +5,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <FrameLayout
+        android:id="@+id/flMeasureContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilOnBoard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="4dp"
         android:layout_marginRight="4dp"
         app:layout_constraintEnd_toStartOf="@+id/tilDensity"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/flMeasureContainer">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTotalMass"
@@ -35,13 +42,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginLeft="4dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/tilOnBoard"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/flMeasureContainer">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editDensityFuel"
@@ -69,7 +75,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/spinUnits"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/barrier">
 
@@ -83,17 +89,6 @@
             android:inputType="number" />
 
     </com.google.android.material.textfield.TextInputLayout>
-
-    <Spinner
-        android:id="@+id/spinUnits"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:entries="@array/volumeUnits"
-        app:layout_constraintBottom_toBottomOf="@+id/tilReq"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tilReq" />
 
     <TextView
         android:id="@+id/tvRemainToFill"
@@ -134,7 +129,8 @@
                 android:background="#C2C2C2"
                 android:gravity="center"
                 android:text="@string/unit_litre"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textSize="18sp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -143,7 +139,8 @@
                 android:background="#C2C2C2"
                 android:gravity="center"
                 android:text="@string/sh_unit_mass_kg"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textSize="18sp" />
         </TableRow>
 
         <TableRow
@@ -159,7 +156,8 @@
                 android:background="#fff"
                 android:gravity="center"
                 android:hint="@string/vol_empty"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/tvTotalKilo"
@@ -169,7 +167,8 @@
                 android:background="#fff"
                 android:gravity="center"
                 android:hint="@string/vol_empty"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textSize="20sp" />
         </TableRow>
     </TableLayout>
 
@@ -211,7 +210,8 @@
                 android:background="#fff"
                 android:gravity="center"
                 android:text="@string/left_fuel_tank"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/tvRT"
@@ -221,7 +221,8 @@
                 android:background="#fff"
                 android:gravity="center"
                 android:text="@string/right_fuel_tank"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textSize="20sp" />
         </TableRow>
 
         <TableRow
@@ -238,7 +239,8 @@
                 android:gravity="center"
                 android:padding="5dip"
                 android:text="@string/center_fuel_tank"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textSize="20sp" />
         </TableRow>
     </TableLayout>
 

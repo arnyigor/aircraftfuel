@@ -1,11 +1,10 @@
-package com.arny.aircraftrefueling.presentation.deicing.presenter
+package com.arny.aircraftrefueling.presentation.deicing
 
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.RefuelApp
 import com.arny.aircraftrefueling.data.models.DeicingResult
 import com.arny.aircraftrefueling.data.models.Result
 import com.arny.aircraftrefueling.domain.deicing.IDeicingInteractor
-import com.arny.aircraftrefueling.presentation.deicing.fragment.DeicingView
 import com.arny.aircraftrefueling.utils.BaseMvpPresenter
 import com.arny.aircraftrefueling.utils.fromSingle
 import moxy.InjectViewState
@@ -38,13 +37,4 @@ class DeicingPresenter : BaseMvpPresenter<DeicingView>() {
         return Result.Success(DeicingResult(interactor.calcMass(onBoard.toDouble(), mRo, percent.toDouble())))
     }
 
-    fun onVolumeUnitChange(checked: Boolean) {
-        interactor.onVolumeUnitChange(checked)
-        viewState.onVolumeChanged(if (checked) R.string.unit_am_gallons else R.string.unit_litre)
-    }
-
-    fun onMassUnitChange(checked: Boolean) {
-        interactor.onMassUnitChange(checked)
-        viewState.onMassChanged(if (checked) R.string.sh_unit_mass_lb else R.string.sh_unit_mass_kg)
-    }
 }

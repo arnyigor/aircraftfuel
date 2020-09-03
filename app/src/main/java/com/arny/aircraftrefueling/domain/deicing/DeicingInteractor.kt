@@ -12,12 +12,4 @@ class DeicingInteractor @Inject constructor(
         val d4 = total * (percent / 100.0)
         return total - d4 + d4 * mRo
     }
-
-    override fun onVolumeUnitChange(checked: Boolean) {
-        unitsRepository.onVolumeUnitChange(!checked)
-    }
-
-    override fun onMassUnitChange(checked: Boolean) {
-        unitsRepository.onMassUnitChange(!checked)
-    }
 }

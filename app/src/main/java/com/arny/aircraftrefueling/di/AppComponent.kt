@@ -1,7 +1,7 @@
 package com.arny.aircraftrefueling.di
 
-import com.arny.aircraftrefueling.presentation.deicing.presenter.DeicingPresenter
-import com.arny.aircraftrefueling.presentation.refuel.presenter.RefuelPresenter
+import com.arny.aircraftrefueling.presentation.deicing.DeicingPresenter
+import com.arny.aircraftrefueling.presentation.refuel.RefuelPresenter
 import com.arny.aircraftrefueling.presentation.units.UnitsPresener
 import dagger.Component
 import javax.inject.Singleton
