@@ -7,4 +7,11 @@ interface IRefuelInteractor {
     var massUnit: MeasureUnit?
     var volumeUnit: MeasureUnit?
     fun calculate(mReq: Double, mRo: Double, mBoard: Double): TankRefuelResult
+    fun saveData(
+            recordData: String,
+            onBoard: String,
+            require: String,
+            density: String,
+            volume: String
+    ): String
 }

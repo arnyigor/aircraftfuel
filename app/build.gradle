@@ -14,7 +14,6 @@ android {
         versionName "1.1"
         multiDexEnabled true
         setProperty("archivesBaseName", applicationId + "-v" + "(" + versionName + ")")
-        //or so
         archivesBaseName = "$applicationId-v$versionCode($versionName)"
     }
 

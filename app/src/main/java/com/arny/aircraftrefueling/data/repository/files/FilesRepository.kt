@@ -8,7 +8,6 @@ import com.arny.aircraftrefueling.data.repository.units.IUnitsRepository
 import com.arny.aircraftrefueling.utils.DateTimeUtils
 import com.arny.aircraftrefueling.utils.FileUtils
 import com.arny.aircraftrefueling.utils.Prefs
-import com.arny.aircraftrefueling.utils.sFormat
 import javax.inject.Inject
 
 class FilesRepository @Inject constructor(
@@ -20,16 +19,39 @@ class FilesRepository @Inject constructor(
     private fun getVolumeUnit(): String? = unitsRepository.getVolumeUnitName()
     private fun getMassUnit(): String? = unitsRepository.getMassUnitName()
 
-    private fun getRefuelText(onBoard: Double, require: Double, mRo: Double, volume: Double): String {
-        return DateTimeUtils.getDateTime("dd MMM yyyy HH:mm:ss") + "\n" +
-                context.getString(R.string.file_fuel_remain) + "%.0f".sFormat(onBoard) + "(" + getMassUnit() + "); " +
-                context.getString(R.string.file_fueled) + "%.0f".sFormat(require) + "(" + getMassUnit() + "); " +
-                context.getString(R.string.density) + ": " + "%.3f".sFormat(mRo) + "(" + context.getString(R.string.unit_density) + "); " +
-                context.getString(R.string.litre_qty) + ": " + "%.0f".sFormat(volume) + "(" + getVolumeUnit() + ")\n";
+    private fun getRefuelText(
+            recordData: String?,
+            onBoard: String,
+            require: String,
+            mRo: String,
+            volume: String
+    ): String {
+        val rData = if (!recordData.isNullOrBlank()) {
+            context.getString(R.string.record_data_title, recordData) + "\n"
+        } else {
+            ""
+        }
+        return "\n" + DateTimeUtils.getDateTime("dd MMM yyyy HH:mm:ss") + "\n" + rData +
+                context.getString(R.string.file_fuel_remain) + ": $onBoard(${getMassUnit()});\n" +
+                context.getString(R.string.file_fueled) + ": $require(${getMassUnit()});\n" +
+                context.getString(R.string.density) + ": $mRo(${context.getString(R.string.unit_density)});\n" +
+                context.getString(R.string.litre_qty) + ": $volume(${getVolumeUnit()})\n";
     }
 
-    override fun saveRefuel(onBoard: Double, require: Double, mRo: Double, volume: Double): Boolean {
+    override fun saveRefuel(
+            recordData: String?,
+            onBoard: String,
+            require: String,
+            mRo: String,
+            volume: String
+    ): String {
         val pathWithName = FileUtils.getWorkDir(context) + "/" + DIR_SD + "/"
-        return FileUtils.writeToFile(getRefuelText(onBoard, require, mRo, volume), pathWithName, FILENAME_SD, true)
+        val writeToFile = FileUtils.writeToFile(
+                getRefuelText(recordData, onBoard, require, mRo, volume),
+                pathWithName,
+                FILENAME_SD,
+                true
+        )
+        return if (writeToFile) pathWithName else ""
     }
 }

@@ -1,5 +1,5 @@
 package com.arny.aircraftrefueling.data.repository.files
 
 interface IFilesRepository {
-    fun saveRefuel(onBoard: Double, require: Double, mRo: Double, volume: Double): Boolean
+    fun saveRefuel(recordData: String?, onBoard: String, require: String, mRo: String, volume: String): String
 }

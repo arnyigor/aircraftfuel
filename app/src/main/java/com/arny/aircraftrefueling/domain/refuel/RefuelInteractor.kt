@@ -23,15 +23,25 @@ class RefuelInteractor @Inject constructor(
     override var massUnit: MeasureUnit? = null
     override var volumeUnit: MeasureUnit? = null
 
+    override fun saveData(
+            recordData: String,
+            onBoard: String,
+            require: String,
+            density: String,
+            volume: String
+    ): String {
+        return filesRepository.saveRefuel(recordData, onBoard, require, density, volume)
+    }
+
     private fun getMassCI(mass: Double): Double {
-       return when (massUnit?.name) {
+        return when (massUnit?.name) {
             UNIT_LB -> unitsRepository.convertMassFromLb(mass)
             else -> mass
         }
     }
 
     private fun getMassByUnit(mass: Double): Double {
-       return when (massUnit?.name) {
+        return when (massUnit?.name) {
             UNIT_LB -> unitsRepository.convertMassToLb(mass)
             else -> mass
         }
@@ -85,11 +95,13 @@ class RefuelInteractor @Inject constructor(
         val diff = massReq - onBoard
         val total = diff / mro
         massTotalStr = doubleFormat(diff)
-        if (total < 0.0) {
+        if (total <= 0.0) {
             volumeResultStr = ""
             throw Exception(Consts.ERROR_TOTAL_LESS)
         }
-        volumeResultStr = String.format("%.0f", getVolumeByUnit(total))
+        val args = getVolumeByUnit(total)
+        val format = String.format("%.0f", args)
+        volumeResultStr = format
     }
 
     private fun doubleFormat(mass: Double) = String.format("%.0f", getMassByUnit(mass))

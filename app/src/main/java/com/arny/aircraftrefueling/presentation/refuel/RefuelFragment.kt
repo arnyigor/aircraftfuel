@@ -5,10 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.data.models.Result
 import com.arny.aircraftrefueling.data.models.TankRefuelResult
+import com.arny.aircraftrefueling.utils.KeyboardHelper.hideKeyboard
 import com.arny.aircraftrefueling.utils.ToastMaker.toastError
+import com.arny.aircraftrefueling.utils.ToastMaker.toastSuccess
 import kotlinx.android.synthetic.main.refuel_fragment.*
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
@@ -32,6 +35,15 @@ class RefuelFragment : MvpAppCompatFragment(), RefuelView {
         super.onViewCreated(view, savedInstanceState)
         activity?.title = getString(R.string.menu_fueling)
         buttonKiloCnt.setOnClickListener { calculateFuelCapacity() }
+        btnKiloSave.setOnClickListener {
+            presenter.saveData(
+                    tiEdtRecodData.text.toString(),
+                    editTotalMass.text.toString(),
+                    editRequiredMass.text.toString(),
+                    editDensityFuel.text.toString(),
+                    tvTotalLitre.text.toString(),
+            )
+        }
     }
 
     override fun showResult(result: Result<Any>) {
@@ -66,6 +78,7 @@ class RefuelFragment : MvpAppCompatFragment(), RefuelView {
             toastError(context, getString(R.string.error_val_density))
             return
         }
+        hideKeyboard(requireActivity())
         presenter.refuel(density, onBoard, required)
     }
 
@@ -79,6 +92,10 @@ class RefuelFragment : MvpAppCompatFragment(), RefuelView {
 
     override fun toastError(errorRes: Int, message: String?) {
         toastError(requireContext(), getString(errorRes, message))
+    }
+
+    override fun toastError(message: String) {
+        toastError(requireContext(), message)
     }
 
     override fun setTotalMassUnit(unitRes: Int) {
@@ -95,5 +112,17 @@ class RefuelFragment : MvpAppCompatFragment(), RefuelView {
 
     override fun setOstatVolumeUnit(unitRes: Int) {
         tvReqHeader.text = getString(unitRes)
+    }
+
+    override fun setSaveResult(strRes: Int, path: String) {
+        toastSuccess(requireContext(), getString(strRes, path))
+    }
+
+    override fun setBtnDelVisible(visible: Boolean) {
+        btnKiloDel.isVisible = visible
+    }
+
+    override fun setBtnSaveVisible(visible: Boolean) {
+        btnKiloSave.isVisible = visible
     }
 }

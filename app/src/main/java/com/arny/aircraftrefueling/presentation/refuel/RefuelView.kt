@@ -9,7 +9,10 @@ import moxy.viewstate.strategy.alias.OneExecution
 @AddToEndSingle
 interface RefuelView : MvpView {
     @OneExecution
-    fun toastError(@StringRes errorRes: Int, message: String?)
+    fun toastError(@StringRes errorRes: Int, message: String? = null)
+
+    @OneExecution
+    fun toastError(message: String)
     fun setMassUnitName(@StringRes nameRes: Int)
     fun showResult(result: Result<Any>)
     fun setVolumeUnitName(@StringRes nameRes: Int)
@@ -17,4 +20,7 @@ interface RefuelView : MvpView {
     fun setOstatMassUnit(@StringRes unitRes: Int)
     fun setReqMassUnit(@StringRes unitRes: Int)
     fun setOstatVolumeUnit(@StringRes unitRes: Int)
+    fun setSaveResult(@StringRes strRes: Int, path: String)
+    fun setBtnDelVisible(visible: Boolean)
+    fun setBtnSaveVisible(visible: Boolean)
 }

@@ -26,15 +26,15 @@ class UnitsRepository @Inject constructor(
     )
 
     override fun convertMassFromLb(mass: Double): Double {
-        return convertors[Consts.CONV_LB_KG] ?: 1.0 * mass
+        return (convertors[Consts.CONV_LB_KG] ?: 1.0) * mass
     }
 
     override fun convertMassToLb(mass: Double): Double {
-        return convertors[Consts.CONV_KG_LB] ?: 1.0 * mass
+        return (convertors[Consts.CONV_KG_LB] ?: 1.0) * mass
     }
 
     override fun convertVolumeToGal(volume: Double): Double {
-        return convertors[Consts.CONV_LITRE_GALL] ?: 1.0 * volume
+        return (convertors[Consts.CONV_LITRE_GALL] ?: 1.0) * volume
     }
 
     override fun onMassUnitChange(unit: MeasureUnit) {

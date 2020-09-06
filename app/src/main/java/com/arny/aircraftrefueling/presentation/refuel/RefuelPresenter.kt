@@ -44,8 +44,8 @@ class RefuelPresenter : BaseMvpPresenter<RefuelView>() {
     private fun setUnitNames(list: List<MeasureUnit>) {
         val massUnits = list.filter { it.type == MeasureType.MASS }
         val volumeUnits = list.filter { it.type == MeasureType.VOLUME }
-        val massUnit = massUnits.find { it.selected }
-        val volumeUnit = volumeUnits.find { it.selected }
+        massUnit = massUnits.find { it.selected }
+        volumeUnit = volumeUnits.find { it.selected }
         when (massUnit?.name) {
             UNIT_KG -> {
                 viewState.setMassUnitName(R.string.unit_mass_kg)
@@ -84,6 +84,7 @@ class RefuelPresenter : BaseMvpPresenter<RefuelView>() {
             )
         }.subscribeFromPresenter({
             viewState.showResult(Result.Success(it))
+            viewState.setBtnSaveVisible(true)
         }, { e ->
             if (e.message == Consts.ERROR_TOTAL_LESS) {
                 viewState.showResult(Result.ErrorRes(R.string.error_val_on_board))
@@ -91,5 +92,27 @@ class RefuelPresenter : BaseMvpPresenter<RefuelView>() {
                 viewState.showResult(Result.Error(e))
             }
         })
+    }
+
+    fun saveData(
+            recordData: String,
+            onBoard: String,
+            require: String,
+            density: String,
+            volume: String,
+    ) {
+        fromSingle { interactor.saveData(recordData, onBoard, require, density, volume) }
+                .subscribeFromPresenter({ path ->
+                    if (path.isNotBlank()) {
+                        viewState.setSaveResult(R.string.success_file_write, path)
+                    } else {
+                        viewState.toastError(R.string.error_file_not_write)
+                    }
+                }, { e ->
+                    e.printStackTrace()
+                    e.message?.let {
+                        viewState.toastError(it)
+                    }
+                })
     }
 }
