@@ -10,16 +10,32 @@ android {
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
         applicationId "com.arny.aircraftrefueling"
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
         multiDexEnabled true
+        setProperty("archivesBaseName", applicationId + "-v" + "(" + versionName + ")")
+        //or so
+        archivesBaseName = "$applicationId-v$versionCode($versionName)"
     }
+
     buildTypes {
-        release {
+        debug {
+            debuggable true
+            applicationIdSuffix ".debug"
             minifyEnabled false
+            useProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
+        }
+        release {
+            debuggable false
+            minifyEnabled true
+            useProguard true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
