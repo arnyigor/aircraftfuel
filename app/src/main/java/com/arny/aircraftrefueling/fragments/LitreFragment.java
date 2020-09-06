@@ -119,13 +119,13 @@ public class LitreFragment extends Fragment implements View.OnClickListener {
     private String getPvkStringResult(String totalMass) {
         return new SimpleDateFormat("dd MMM yyyy HH:mm:ss", Locale.getDefault()).format(new Date()) + "\n"
                 + getString(R.string.litre_qty) +
-                String.format(Locale.getDefault(), ":%.0f", mVolTotal) + "(" + getString(R.string.sh_unit_volume) + ");"
+                String.format(Locale.getDefault(), ":%.0f", mVolTotal) + "(" + getString(R.string.unit_volume) + ");"
                 + getString(R.string.file_percent_pvk) +
-                String.format(Locale.getDefault(), ":%.0f", mPercPVK) + "(" + getString(R.string.sh_unit_percent) + ");"
+                String.format(Locale.getDefault(), ":%.0f", mPercPVK) + "(%);"
                 + getString(R.string.file_density_pvk) +
-                String.format(Locale.getDefault(), ":%.3f", mRo) + "(" + getString(R.string.sh_unit_density) + ");"
+                String.format(Locale.getDefault(), ":%.3f", mRo) + "(" + getString(R.string.unit_density) + ");"
                 + getString(R.string.file_total_mass) + ":" +
-                totalMass + "(" + getString(R.string.sh_unit_mass_kg) + ")\n";
+                totalMass + "(" + getString(R.string.unit_mass_kg) + ")\n";
     }
 
     private void calculateLitre() {

@@ -11,17 +11,12 @@ import com.arny.aircraftrefueling.constants.Consts.UNIT_LITRE
 import com.arny.aircraftrefueling.data.models.MeasureType
 import com.arny.aircraftrefueling.data.models.MeasureUnit
 import com.arny.aircraftrefueling.utils.Prefs
-import com.jakewharton.rxrelay2.PublishRelay
-import io.reactivex.Observable
-import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class UnitsRepository @Inject constructor(
         private val prefs: Prefs,
         private val context: Context
 ) : IUnitsRepository {
-    private val volumeUnit = PublishRelay.create<MeasureUnit>()
-    private val massUnit = PublishRelay.create<MeasureUnit>()
 
     private val convertors = mapOf(
             Consts.CONV_LB_KG to Consts.LB_TO_KG,
@@ -30,26 +25,32 @@ class UnitsRepository @Inject constructor(
             Consts.CONV_LITRE_GALL to Consts.LITRE_TO_GALLON
     )
 
-    override fun getVolumeUnitObs(): Observable<MeasureUnit> = volumeUnit.subscribeOn(Schedulers.io())
+    override fun convertMassFromLb(mass: Double): Double {
+        return convertors[Consts.CONV_LB_KG] ?: 1.0 * mass
+    }
 
-    override fun getMassUnitObs(): Observable<MeasureUnit> = massUnit.subscribeOn(Schedulers.io())
+    override fun convertMassToLb(mass: Double): Double {
+        return convertors[Consts.CONV_KG_LB] ?: 1.0 * mass
+    }
+
+    override fun convertVolumeToGal(volume: Double): Double {
+        return convertors[Consts.CONV_LITRE_GALL] ?: 1.0 * volume
+    }
 
     override fun onMassUnitChange(unit: MeasureUnit) {
         prefs.put(Consts.PREF_MASS_UNIT, unit.name)
-        massUnit.accept(unit)
     }
 
     override fun onVolumeUnitChange(unit: MeasureUnit) {
         prefs.put(Consts.PREF_VOLUME_UNIT, unit.name)
-        volumeUnit.accept(unit)
     }
 
     private fun getUnitName(unitKey: String?): String? {
         @StringRes
         val resName = when (unitKey) {
-            UNIT_KG -> R.string.sh_unit_mass_kg
+            UNIT_KG -> R.string.unit_mass_kg
             UNIT_LITRE -> R.string.unit_litre
-            UNIT_LB -> R.string.sh_unit_mass_lb
+            UNIT_LB -> R.string.unit_mass_lb
             UNIT_AM_GALL -> R.string.unit_am_gallons
             else -> null
         }

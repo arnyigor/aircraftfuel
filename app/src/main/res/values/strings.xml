@@ -9,10 +9,10 @@
     <string name="action_deletefile">Удалить файл</string>
     <string name="str_litrefragment">Известны литры</string>
     <string name="str_kilofragment">Известны килограммы</string>
-    <string name="has_on_board">На борту,кг</string>
-    <string name="total_mass_kilo">Всего,кг</string>
-    <string name="total_volume_litre">Всего,л</string>
-    <string name="required_kilo">Требуется,кг</string>
+    <string name="has_on_board">На борту,%s</string>
+    <string name="total_mass_kilo">Всего,%s</string>
+    <string name="total_volume_litre">Всего,%s</string>
+    <string name="required_kilo">Требуется,%s</string>
     <string name="remain_to_fill">Осталось залить</string>
     <string name="left_fuel_tank">Левый бак</string>
     <string name="right_fuel_tank">Правый бак</string>
@@ -22,13 +22,14 @@
     <string name="recom_refuel">Рекомендуемая заправка:</string>
     <!--Errors-->
     <string name="error_wrong_data">Неверные данные</string>
-    <string name="error_val_on_board">Введите корректное значение на борту в кг</string>
+    <string name="error_val_on_board_with_unit">Введите корректное значение на борту в %s</string>
+    <string name="error_val_on_board">Введите корректное значение на борту</string>
     <string name="error_val_proc_pvk">Введите корректное значение процента ПВК</string>
-    <string name="error_val_req">Введите корректное значение требуемого в кг</string>
+    <string name="error_val_req">Введите корректное значение требуемого в %s</string>
     <string name="error_val_density">Введите корректное значение плотности в кг/л</string>
     <string name="error_calulate_requied">Необходим расчет</string>
     <!--Unit info-->
-    <string name="unit_density">Плотность</string>
+    <string name="density">Плотность</string>
     <string name="unit_density_kg_litre">Плотность,кг/л</string>
     <!--Units-->
     <array name="volumeUnits">
@@ -37,11 +38,14 @@
     </array>
     <string name="unit_litre">литры</string>
     <string name="unit_am_gallons">ам.галлоны</string>
-    <string name="sh_unit_density">кг/л</string>
-    <string name="sh_unit_mass_kg">кг</string>
-    <string name="sh_unit_mass_lb">фунты</string>
-    <string name="sh_unit_volume">л</string>
-    <string name="sh_unit_percent">%</string>
+    <string name="unit_am_gallons_named">ам.галлонах</string>
+    <string name="unit_density">кг/л</string>
+    <string name="unit_mass_kg">кг</string>
+    <string name="unit_mass_lb">фунты</string>
+    <string name="unit_mass_lb_named">фунтах</string>
+    <string name="unit_volume">л</string>
+    <string name="unit_volume_named">литрах</string>
+    <string name="unit_percent">%</string>
     <string name="file_fuel_remain">Остаток: </string>
     <string name="file_fueled">Заправка: </string>
     <string name="litre_qty">Объем: </string>

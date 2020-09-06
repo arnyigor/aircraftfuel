@@ -50,7 +50,6 @@ dependencies {
     implementation libs.rxJava
     implementation libs.rxAndroid
     implementation libs.rxKotlin
-    implementation libs.rxRelay
     implementation libs.toasty
     implementation libs.materialTypeface
     implementation libs.materialDialogsCore

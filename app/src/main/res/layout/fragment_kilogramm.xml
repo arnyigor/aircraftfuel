@@ -113,7 +113,7 @@
                 android:layout_weight="1"
                 android:background="#C2C2C2"
                 android:gravity="center"
-                android:text="@string/sh_unit_mass_kg"
+                android:text="@string/unit_mass_kg"
                 android:textColor="#000000" />
         </TableRow>
 

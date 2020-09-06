@@ -1,4 +1,4 @@
-package com.arny.aircraftrefueling.presentation.units
+package com.arny.aircraftrefueling.presentation.settings
 
 import android.content.Context
 import com.arny.aircraftrefueling.data.models.MeasureUnit

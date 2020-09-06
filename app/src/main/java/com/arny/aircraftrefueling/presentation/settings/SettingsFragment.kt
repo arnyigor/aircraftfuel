@@ -1,4 +1,4 @@
-package com.arny.aircraftrefueling.presentation.units
+package com.arny.aircraftrefueling.presentation.settings
 
 
 import android.os.Bundle
@@ -13,14 +13,14 @@ import kotlinx.android.synthetic.main.f_units.*
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 
-class UnitsFragment : MvpAppCompatFragment(), UnitsView {
+class SettingsFragment : MvpAppCompatFragment(), SettingsView {
     companion object {
-        fun getInstance() = UnitsFragment()
+        fun getInstance() = SettingsFragment()
     }
 
     private lateinit var measureMassAdapter: MeasureUnitsAdapter
     private lateinit var measureVolumeAdapter: MeasureUnitsAdapter
-    private val presenter by moxyPresenter { UnitsPresener() }
+    private val presenter by moxyPresenter { SettingsPresener() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.f_units, container, false)

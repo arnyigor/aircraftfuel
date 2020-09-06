@@ -3,7 +3,6 @@ package com.arny.aircraftrefueling.domain.units
 import com.arny.aircraftrefueling.data.models.MeasureUnit
 import com.arny.aircraftrefueling.data.repository.units.IUnitsRepository
 import com.arny.aircraftrefueling.utils.fromSingle
-import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -16,10 +15,6 @@ class UnitsInteractor @Inject constructor(
         return fromSingle { unitsRepository.getUnits() }
                 .subscribeOn(Schedulers.io())
     }
-
-    override fun getMassUnitObs(): Observable<MeasureUnit> = unitsRepository.getMassUnitObs()
-
-    override fun getVolumeUnitObs(): Observable<MeasureUnit> = unitsRepository.getVolumeUnitObs()
 
     override fun onVolumeUnitChanged(item: MeasureUnit) {
         unitsRepository.onVolumeUnitChange(item)

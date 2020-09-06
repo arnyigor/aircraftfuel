@@ -24,7 +24,7 @@ class FilesRepository @Inject constructor(
         return DateTimeUtils.getDateTime("dd MMM yyyy HH:mm:ss") + "\n" +
                 context.getString(R.string.file_fuel_remain) + "%.0f".sFormat(onBoard) + "(" + getMassUnit() + "); " +
                 context.getString(R.string.file_fueled) + "%.0f".sFormat(require) + "(" + getMassUnit() + "); " +
-                context.getString(R.string.unit_density) + ": " + "%.3f".sFormat(mRo) + "(" + context.getString(R.string.sh_unit_density) + "); " +
+                context.getString(R.string.density) + ": " + "%.3f".sFormat(mRo) + "(" + context.getString(R.string.unit_density) + "); " +
                 context.getString(R.string.litre_qty) + ": " + "%.0f".sFormat(volume) + "(" + getVolumeUnit() + ")\n";
     }
 

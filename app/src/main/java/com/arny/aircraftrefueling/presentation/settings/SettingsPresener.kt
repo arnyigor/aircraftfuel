@@ -1,4 +1,4 @@
-package com.arny.aircraftrefueling.presentation.units
+package com.arny.aircraftrefueling.presentation.settings
 
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.RefuelApp
@@ -10,7 +10,7 @@ import moxy.InjectViewState
 import javax.inject.Inject
 
 @InjectViewState
-class UnitsPresener : BaseMvpPresenter<UnitsView>() {
+class SettingsPresener : BaseMvpPresenter<SettingsView>() {
 
     @Inject
     lateinit var unitsInteractor: IUnitsInteractor

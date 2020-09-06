@@ -26,7 +26,7 @@ class DeicingFragment : MvpAppCompatFragment(), DeicingView {
     private var volumeUnitRes: Int = R.string.unit_litre
 
     @StringRes
-    private var massUnitRes: Int = R.string.sh_unit_mass_kg
+    private var massUnitRes: Int = R.string.unit_mass_kg
     private val presenter by moxyPresenter { DeicingPresenter() }
 
     override fun onVolumeChanged(@StringRes stringRes: Int) {

@@ -3,6 +3,11 @@ package com.arny.aircraftrefueling.presentation.refuel
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.RefuelApp
 import com.arny.aircraftrefueling.constants.Consts
+import com.arny.aircraftrefueling.constants.Consts.UNIT_AM_GALL
+import com.arny.aircraftrefueling.constants.Consts.UNIT_KG
+import com.arny.aircraftrefueling.constants.Consts.UNIT_LB
+import com.arny.aircraftrefueling.constants.Consts.UNIT_LITRE
+import com.arny.aircraftrefueling.data.models.MeasureType
 import com.arny.aircraftrefueling.data.models.MeasureUnit
 import com.arny.aircraftrefueling.data.models.Result
 import com.arny.aircraftrefueling.domain.refuel.IRefuelInteractor
@@ -28,20 +33,44 @@ class RefuelPresenter : BaseMvpPresenter<RefuelView>() {
     }
 
     override fun onFirstViewAttach() {
-        unitsInteractor.getMassUnitObs()
-                .subscribeFromPresenter({
-                    massUnit = it
-                    println("getMassUnitObs :$it")
+        unitsInteractor.loadUnits()
+                .subscribeFromPresenter({ list ->
+                    setUnitNames(list)
                 }, {
-                    it.printStackTrace()
+                    viewState.toastError(R.string.load_units_error, it.message)
                 })
-        unitsInteractor.getVolumeUnitObs()
-                .subscribeFromPresenter({
-                    volumeUnit = it
-                    println("getVolumeUnitObs :$it")
-                }, {
-                    it.printStackTrace()
-                })
+    }
+
+    private fun setUnitNames(list: List<MeasureUnit>) {
+        val massUnits = list.filter { it.type == MeasureType.MASS }
+        val volumeUnits = list.filter { it.type == MeasureType.VOLUME }
+        val massUnit = massUnits.find { it.selected }
+        val volumeUnit = volumeUnits.find { it.selected }
+        when (massUnit?.name) {
+            UNIT_KG -> {
+                viewState.setMassUnitName(R.string.unit_mass_kg)
+                viewState.setTotalMassUnit(R.string.unit_mass_kg)
+                viewState.setOstatMassUnit(R.string.unit_mass_kg)
+                viewState.setReqMassUnit(R.string.unit_mass_kg)
+            }
+            UNIT_LB -> {
+                viewState.setMassUnitName(R.string.unit_mass_lb_named)
+                viewState.setTotalMassUnit(R.string.unit_mass_lb)
+                viewState.setOstatMassUnit(R.string.unit_mass_lb)
+                viewState.setReqMassUnit(R.string.unit_mass_lb)
+            }
+        }
+
+        when (volumeUnit?.name) {
+            UNIT_LITRE -> {
+                viewState.setVolumeUnitName(R.string.unit_volume_named)
+                viewState.setOstatVolumeUnit(R.string.unit_litre)
+            }
+            UNIT_AM_GALL -> {
+                viewState.setVolumeUnitName(R.string.unit_am_gallons_named)
+                viewState.setOstatVolumeUnit(R.string.unit_am_gallons)
+            }
+        }
     }
 
     fun refuel(density: String, onBoard: String, required: String) {

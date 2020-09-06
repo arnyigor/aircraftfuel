@@ -8,20 +8,21 @@ import android.view.ViewGroup
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.data.models.Result
 import com.arny.aircraftrefueling.data.models.TankRefuelResult
-import com.arny.aircraftrefueling.presentation.units.UnitsFragment
 import com.arny.aircraftrefueling.utils.ToastMaker.toastError
-import com.arny.aircraftrefueling.utils.replaceFragment
 import kotlinx.android.synthetic.main.refuel_fragment.*
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 
-class FragmentRefueling : MvpAppCompatFragment(), RefuelView {
+class RefuelFragment : MvpAppCompatFragment(), RefuelView {
+
     companion object {
-        private const val V_UNIT_LITRE: Int = 0
-        fun getInstance() = FragmentRefueling()
+        fun getInstance() = RefuelFragment()
     }
 
     private val presenter by moxyPresenter { RefuelPresenter() }
+
+    private var massUnitName: Int = R.string.unit_mass_kg
+    private var volumeUnitName: Int = R.string.unit_volume_named
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.refuel_fragment, container, false)
@@ -29,7 +30,6 @@ class FragmentRefueling : MvpAppCompatFragment(), RefuelView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        replaceFragment(UnitsFragment.getInstance(), R.id.flMeasureContainer)
         activity?.title = getString(R.string.menu_fueling)
         buttonKiloCnt.setOnClickListener { calculateFuelCapacity() }
     }
@@ -53,12 +53,12 @@ class FragmentRefueling : MvpAppCompatFragment(), RefuelView {
     private fun calculateFuelCapacity() {
         val onBoard = editTotalMass.text.toString()
         if (onBoard.isBlank()) {
-            toastError(context, getString(R.string.error_val_on_board))
+            toastError(context, getString(R.string.error_val_on_board_with_unit, getString(massUnitName)))
             return
         }
         val required = editRequiredMass.text.toString()
         if (required.isBlank() || required == "0") {
-            toastError(context, getString(R.string.error_val_req))
+            toastError(context, getString(R.string.error_val_req, getString(massUnitName)))
             return
         }
         val density = editDensityFuel.text.toString()
@@ -67,5 +67,33 @@ class FragmentRefueling : MvpAppCompatFragment(), RefuelView {
             return
         }
         presenter.refuel(density, onBoard, required)
+    }
+
+    override fun setMassUnitName(nameRes: Int) {
+        massUnitName = nameRes
+    }
+
+    override fun setVolumeUnitName(nameRes: Int) {
+        volumeUnitName = nameRes
+    }
+
+    override fun toastError(errorRes: Int, message: String?) {
+        toastError(requireContext(), getString(errorRes, message))
+    }
+
+    override fun setTotalMassUnit(unitRes: Int) {
+        tilOnBoard.hint = getString(R.string.has_on_board, getString(unitRes))
+    }
+
+    override fun setOstatMassUnit(unitRes: Int) {
+        tvOstatMass.text = getText(unitRes)
+    }
+
+    override fun setReqMassUnit(unitRes: Int) {
+        tilReq.hint = getString(R.string.required_kilo, getString(unitRes))
+    }
+
+    override fun setOstatVolumeUnit(unitRes: Int) {
+        tvReqHeader.text = getString(unitRes)
     }
 }

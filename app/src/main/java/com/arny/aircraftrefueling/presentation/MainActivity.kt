@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.constants.Consts
 import com.arny.aircraftrefueling.presentation.deicing.DeicingFragment
-import com.arny.aircraftrefueling.presentation.refuel.FragmentRefueling
-import com.arny.aircraftrefueling.presentation.units.UnitsFragment
+import com.arny.aircraftrefueling.presentation.refuel.RefuelFragment
+import com.arny.aircraftrefueling.presentation.settings.SettingsFragment
 import com.arny.aircraftrefueling.utils.*
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.disposables.CompositeDisposable
@@ -117,9 +117,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun navigateFragments(position: Int): Fragment? {
         return when (position) {
-            MENU_FUEL -> FragmentRefueling.getInstance()
+            MENU_FUEL -> RefuelFragment.getInstance()
             MENU_DEICE -> DeicingFragment.getInstance()
-            MENU_SETTINGS -> UnitsFragment.getInstance()
+            MENU_SETTINGS -> SettingsFragment.getInstance()
             else -> null
         }
     }
@@ -132,7 +132,7 @@ class MainActivity : AppCompatActivity() {
             val fragments = supportFragmentManager.fragments
             var isMain = false
             for (curFrag in fragments) {
-                if (curFrag != null && curFrag.isVisible && curFrag is FragmentRefueling) {
+                if (curFrag != null && curFrag.isVisible && curFrag is RefuelFragment) {
                     isMain = true
                 }
             }

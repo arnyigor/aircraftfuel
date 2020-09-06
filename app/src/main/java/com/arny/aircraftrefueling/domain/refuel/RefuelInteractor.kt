@@ -1,65 +1,82 @@
 package com.arny.aircraftrefueling.domain.refuel
 
 import com.arny.aircraftrefueling.constants.Consts
-import com.arny.aircraftrefueling.constants.Consts.LITRE_TO_GALLON
 import com.arny.aircraftrefueling.constants.Consts.NO_USE_LITRE
+import com.arny.aircraftrefueling.constants.Consts.UNIT_AM_GALL
+import com.arny.aircraftrefueling.constants.Consts.UNIT_LB
 import com.arny.aircraftrefueling.constants.Consts.WING_TANK_MAX_VOLUME
 import com.arny.aircraftrefueling.data.models.MeasureUnit
 import com.arny.aircraftrefueling.data.models.TankRefuelResult
 import com.arny.aircraftrefueling.data.repository.files.IFilesRepository
-import java.util.*
+import com.arny.aircraftrefueling.data.repository.units.IUnitsRepository
 import javax.inject.Inject
 
 class RefuelInteractor @Inject constructor(
         private val filesRepository: IFilesRepository,
+        private val unitsRepository: IUnitsRepository,
 ) : IRefuelInteractor {
-    private var massTotal: String = ""
-    private var volumeResult: String = ""
-    private var left: String = ""
-    private var right: String = ""
-    private var centre: String = ""
+    private var massTotalStr: String = ""
+    private var volumeResultStr: String = ""
+    private var leftStr: String = ""
+    private var rightStr: String = ""
+    private var centreStr: String = ""
     override var massUnit: MeasureUnit? = null
     override var volumeUnit: MeasureUnit? = null
+
+    private fun getMassCI(mass: Double): Double {
+       return when (massUnit?.name) {
+            UNIT_LB -> unitsRepository.convertMassFromLb(mass)
+            else -> mass
+        }
+    }
+
+    private fun getMassByUnit(mass: Double): Double {
+       return when (massUnit?.name) {
+            UNIT_LB -> unitsRepository.convertMassToLb(mass)
+            else -> mass
+        }
+    }
+
+    private fun getVolumeByUnit(volume: Double): Double {
+        return when (volumeUnit?.name) {
+            UNIT_AM_GALL -> unitsRepository.convertVolumeToGal(volume)
+            else -> volume
+        }
+    }
 
     /**
      * Функция заправки
      *
-     * @param massReq масса, сколько необходимо
+     * @param mReq масса, сколько необходимо
      * @param mRo     массовая плотность
      * @param onBoard     масса, остаток
      */
-    override fun calculate(massReq: Double, mRo: Double, onBoard: Double): TankRefuelResult {
-        val maxCen: Double = 2 * (WING_TANK_MAX_VOLUME * mRo - NO_USE_LITRE)
+    override fun calculate(mReq: Double, mRo: Double, mBoard: Double): TankRefuelResult {
+        val massReq = getMassCI(mReq)
+        val onBoard = getMassCI(mBoard)
+        val maxCen: Double = getMaxCenter(mRo)
         val l: Double
         val r: Double
         val c: Double
         if (massReq <= maxCen) {
             l = massReq / 2
             r = massReq / 2
-            left = String.format("%.0f", l)
-            right = String.format("%.0f", r)
-            centre = String.format("%d", 0)
+            leftStr = doubleFormat(l)
+            rightStr = doubleFormat(r)
+            centreStr = doubleFormat(0.0)
         } else {
             c = massReq - maxCen
             l = massReq - c
             r = l / 2
-            left = String.format("%.0f", r)
-            right = String.format("%.0f", r)
-            centre = String.format("%.0f", c)
+            leftStr = doubleFormat(r)
+            rightStr = doubleFormat(r)
+            centreStr = doubleFormat(c)
         }
         calcVolume(onBoard, mRo, massReq)
-        return TankRefuelResult(massTotal, volumeResult, left, right, centre)
+        return TankRefuelResult(massTotalStr, volumeResultStr, leftStr, rightStr, centreStr)
     }
 
-    private fun getMeasuredVolume(volume: Double): Double {
-        var totVolume = volume
-        when (volumeUnit?.name) {
-            Consts.UNIT_AM_GALL -> {
-                totVolume *= LITRE_TO_GALLON
-            }
-        }
-        return totVolume
-    }
+    private fun getMaxCenter(mRo: Double) = 2 * (WING_TANK_MAX_VOLUME * mRo - NO_USE_LITRE)
 
     /**
      * Расчет количества литров
@@ -67,11 +84,13 @@ class RefuelInteractor @Inject constructor(
     private fun calcVolume(onBoard: Double, mro: Double, massReq: Double) {
         val diff = massReq - onBoard
         val total = diff / mro
-        massTotal = String.format("%.0f", diff)
+        massTotalStr = doubleFormat(diff)
         if (total < 0.0) {
-            volumeResult = ""
+            volumeResultStr = ""
             throw Exception(Consts.ERROR_TOTAL_LESS)
         }
-        volumeResult = String.format(Locale.getDefault(), "%.0f", getMeasuredVolume(total))
+        volumeResultStr = String.format("%.0f", getVolumeByUnit(total))
     }
+
+    private fun doubleFormat(mass: Double) = String.format("%.0f", getMassByUnit(mass))
 }
