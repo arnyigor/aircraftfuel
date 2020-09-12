@@ -1,5 +1,6 @@
 package com.arny.aircraftrefueling.presentation.refuel
 
+import androidx.annotation.StringRes
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.RefuelApp
 import com.arny.aircraftrefueling.constants.Consts
@@ -10,6 +11,7 @@ import com.arny.aircraftrefueling.constants.Consts.UNIT_LITRE
 import com.arny.aircraftrefueling.data.models.MeasureType
 import com.arny.aircraftrefueling.data.models.MeasureUnit
 import com.arny.aircraftrefueling.data.models.Result
+import com.arny.aircraftrefueling.domain.files.IFilesInteractor
 import com.arny.aircraftrefueling.domain.refuel.IRefuelInteractor
 import com.arny.aircraftrefueling.domain.units.IUnitsInteractor
 import com.arny.aircraftrefueling.utils.BaseMvpPresenter
@@ -26,6 +28,9 @@ class RefuelPresenter : BaseMvpPresenter<RefuelView>() {
     lateinit var interactor: IRefuelInteractor
 
     @Inject
+    lateinit var filesInteractor: IFilesInteractor
+
+    @Inject
     lateinit var unitsInteractor: IUnitsInteractor
 
     init {
@@ -39,6 +44,24 @@ class RefuelPresenter : BaseMvpPresenter<RefuelView>() {
                 }, {
                     viewState.toastError(R.string.load_units_error, it.message)
                 })
+
+        // TODO включить потом
+/*        fromNullable { filesInteractor.loadSavedRefuelData() }
+                .subscribeFromPresenter({ optionalNull ->
+                    optionalNull.value?.let {
+                        viewState.setEdtRequire(it.mReq)
+                        viewState.setEdtRo(it.mRo)
+                        viewState.setEdtBoard(it.onBoard)
+                    }
+                })*/
+        checkFileExists()
+    }
+
+    private fun checkFileExists() {
+        fromSingle { filesInteractor.isDataFileExists() }
+                .subscribeFromPresenter({ exists ->
+                    viewState.setBtnDelVisible(exists)
+                })
     }
 
     private fun setUnitNames(list: List<MeasureUnit>) {
@@ -48,16 +71,19 @@ class RefuelPresenter : BaseMvpPresenter<RefuelView>() {
         volumeUnit = volumeUnits.find { it.selected }
         when (massUnit?.name) {
             UNIT_KG -> {
-                viewState.setMassUnitName(R.string.unit_mass_kg)
-                viewState.setTotalMassUnit(R.string.unit_mass_kg)
-                viewState.setOstatMassUnit(R.string.unit_mass_kg)
-                viewState.setReqMassUnit(R.string.unit_mass_kg)
+                @StringRes val massKg = R.string.unit_mass_kg
+                viewState.setMassUnitName(massKg)
+                viewState.setTotalMassUnit(massKg)
+                viewState.setOstatMassUnit(massKg)
+                viewState.setReqMassUnit(massKg)
             }
             UNIT_LB -> {
                 viewState.setMassUnitName(R.string.unit_mass_lb_named)
-                viewState.setTotalMassUnit(R.string.unit_mass_lb)
-                viewState.setOstatMassUnit(R.string.unit_mass_lb)
-                viewState.setReqMassUnit(R.string.unit_mass_lb)
+                @StringRes
+                val unitMassLb = R.string.unit_mass_lb
+                viewState.setTotalMassUnit(unitMassLb)
+                viewState.setOstatMassUnit(unitMassLb)
+                viewState.setReqMassUnit(unitMassLb)
             }
         }
 
@@ -77,7 +103,7 @@ class RefuelPresenter : BaseMvpPresenter<RefuelView>() {
         interactor.volumeUnit = volumeUnit
         interactor.massUnit = massUnit
         fromSingle {
-            interactor.calculate(
+            interactor.calculateRefuel(
                     required.toDouble(),
                     density.toDouble(),
                     onBoard.toDouble()
@@ -85,6 +111,7 @@ class RefuelPresenter : BaseMvpPresenter<RefuelView>() {
         }.subscribeFromPresenter({
             viewState.showResult(Result.Success(it))
             viewState.setBtnSaveVisible(true)
+            checkFileExists()
         }, { e ->
             if (e.message == Consts.ERROR_TOTAL_LESS) {
                 viewState.showResult(Result.ErrorRes(R.string.error_val_on_board))
@@ -104,13 +131,29 @@ class RefuelPresenter : BaseMvpPresenter<RefuelView>() {
         fromSingle { interactor.saveData(recordData, onBoard, require, density, volume) }
                 .subscribeFromPresenter({ path ->
                     if (path.isNotBlank()) {
-                        viewState.setSaveResult(R.string.success_file_write, path)
+                        viewState.toastSuccess(R.string.success_file_write, path)
                     } else {
                         viewState.toastError(R.string.error_file_not_write)
                     }
+                    checkFileExists()
                 }, { e ->
-                    e.printStackTrace()
                     e.message?.let {
+                        viewState.toastError(it)
+                    }
+                })
+    }
+
+    fun onRemoveFile() {
+        fromSingle { filesInteractor.removeFile() }
+                .subscribeFromPresenter({ exists ->
+                    viewState.setBtnDelVisible(exists)
+                    if (exists) {
+                        viewState.toastError(R.string.error_file_not_deleted)
+                    } else {
+                        viewState.toastSuccess(R.string.file_deleted)
+                    }
+                }, { throwable ->
+                    throwable.message?.let {
                         viewState.toastError(it)
                     }
                 })

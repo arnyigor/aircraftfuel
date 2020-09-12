@@ -52,4 +52,5 @@ abstract class BaseMvpPresenter<V : MvpView> : MvpPresenter<V>() {
         super.onDestroy()
         onDispose()
     }
+
 }

@@ -11,6 +11,8 @@ import com.arny.aircraftrefueling.constants.Consts.UNIT_LITRE
 import com.arny.aircraftrefueling.data.models.MeasureType
 import com.arny.aircraftrefueling.data.models.MeasureUnit
 import com.arny.aircraftrefueling.utils.Prefs
+import java.math.BigDecimal
+import java.math.RoundingMode
 import javax.inject.Inject
 
 class UnitsRepository @Inject constructor(
@@ -25,15 +27,19 @@ class UnitsRepository @Inject constructor(
             Consts.CONV_LITRE_GALL to Consts.LITRE_TO_GALLON
     )
 
-    override fun convertMassFromLb(mass: Double): Double {
+    private fun convertMassFromLb(mass: Double): Double {
         return (convertors[Consts.CONV_LB_KG] ?: 1.0) * mass
     }
 
-    override fun convertMassToLb(mass: Double): Double {
+    private fun convertVolumeFromGal(volume: Double): Double {
+        return (convertors[Consts.CONV_GALL_LITRE] ?: 1.0) * volume
+    }
+
+    private fun convertMassToLb(mass: Double): Double {
         return (convertors[Consts.CONV_KG_LB] ?: 1.0) * mass
     }
 
-    override fun convertVolumeToGal(volume: Double): Double {
+    private fun convertVolumeToGal(volume: Double): Double {
         return (convertors[Consts.CONV_LITRE_GALL] ?: 1.0) * volume
     }
 
@@ -43,6 +49,35 @@ class UnitsRepository @Inject constructor(
 
     override fun onVolumeUnitChange(unit: MeasureUnit) {
         prefs.put(Consts.PREF_VOLUME_UNIT, unit.name)
+    }
+
+    override fun getMassCI(mass: Double, unitName: String?): Double {
+        return when (unitName) {
+            UNIT_LB -> convertMassFromLb(mass)
+            else -> mass
+        }
+    }
+
+    override fun getVolumeCI(volume: Double, unitName: String?): Double {
+        return when (unitName) {
+            UNIT_AM_GALL -> convertVolumeFromGal(volume)
+            else -> volume
+        }
+    }
+
+    override fun getMassByUnit(mass: Double, unitName: String?): Double {
+        return when (unitName) {
+            UNIT_LB -> convertMassToLb(mass)
+            else -> mass
+        }
+    }
+
+
+    override fun getVolumeByUnit(volume: Double, volumeDimens: String?): Double {
+        return when (volumeDimens) {
+            UNIT_AM_GALL -> convertVolumeToGal(volume)
+            else -> volume
+        }
     }
 
     private fun getUnitName(unitKey: String?): String? {
@@ -68,6 +103,12 @@ class UnitsRepository @Inject constructor(
                         .map { MeasureUnit(it, getUnitName(it) ?: "", getVolumeUnit() == it, MeasureType.VOLUME) }
         )
         return mutableList.toList()
+    }
+
+    override fun formatTo(value: Double, scale: Int): String {
+        return BigDecimal(value)
+                .setScale(scale, RoundingMode.HALF_UP)
+                .toString()
     }
 
     override fun getVolumeUnits(): List<String> {

@@ -20,7 +20,10 @@ interface RefuelView : MvpView {
     fun setOstatMassUnit(@StringRes unitRes: Int)
     fun setReqMassUnit(@StringRes unitRes: Int)
     fun setOstatVolumeUnit(@StringRes unitRes: Int)
-    fun setSaveResult(@StringRes strRes: Int, path: String)
+    fun toastSuccess(@StringRes strRes: Int, path: String? = null)
     fun setBtnDelVisible(visible: Boolean)
     fun setBtnSaveVisible(visible: Boolean)
+    fun setEdtRequire(mReq: String?)
+    fun setEdtRo(mRo: String?)
+    fun setEdtBoard(onBoard: String?)
 }

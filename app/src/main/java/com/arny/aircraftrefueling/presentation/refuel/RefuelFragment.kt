@@ -12,6 +12,7 @@ import com.arny.aircraftrefueling.data.models.TankRefuelResult
 import com.arny.aircraftrefueling.utils.KeyboardHelper.hideKeyboard
 import com.arny.aircraftrefueling.utils.ToastMaker.toastError
 import com.arny.aircraftrefueling.utils.ToastMaker.toastSuccess
+import com.arny.aircraftrefueling.utils.alertDialog
 import kotlinx.android.synthetic.main.refuel_fragment.*
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
@@ -33,9 +34,9 @@ class RefuelFragment : MvpAppCompatFragment(), RefuelView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.title = getString(R.string.menu_fueling)
-        buttonKiloCnt.setOnClickListener { calculateFuelCapacity() }
-        btnKiloSave.setOnClickListener {
+        activity?.title = "${getString(R.string.menu_fueling)} ${getString(R.string.b736_739)}"
+        btnCalculate.setOnClickListener { calculateFuelCapacity() }
+        btnSaveToFile.setOnClickListener {
             presenter.saveData(
                     tiEdtRecodData.text.toString(),
                     editTotalMass.text.toString(),
@@ -44,6 +45,29 @@ class RefuelFragment : MvpAppCompatFragment(), RefuelView {
                     tvTotalLitre.text.toString(),
             )
         }
+        btnRemoveData.setOnClickListener {
+            alertDialog(
+                    requireContext(),
+                    title = getString(R.string.file_del) + "?",
+                    btnOkText = getString(android.R.string.ok),
+                    btnCancelText = getString(android.R.string.cancel),
+                    onConfirm = {
+                        presenter.onRemoveFile()
+                    }
+            )
+        }
+    }
+
+    override fun setEdtRequire(mReq: String?) {
+        editRequiredMass.setText(mReq)
+    }
+
+    override fun setEdtRo(mRo: String?) {
+        editDensityFuel.setText(mRo)
+    }
+
+    override fun setEdtBoard(onBoard: String?) {
+        editTotalMass.setText(onBoard)
     }
 
     override fun showResult(result: Result<Any>) {
@@ -114,15 +138,19 @@ class RefuelFragment : MvpAppCompatFragment(), RefuelView {
         tvReqHeader.text = getString(unitRes)
     }
 
-    override fun setSaveResult(strRes: Int, path: String) {
-        toastSuccess(requireContext(), getString(strRes, path))
+    override fun toastSuccess(strRes: Int, path: String?) {
+        if (path.isNullOrBlank()) {
+            toastSuccess(requireContext(), getString(strRes))
+        } else {
+            toastSuccess(requireContext(), getString(strRes, path))
+        }
     }
 
     override fun setBtnDelVisible(visible: Boolean) {
-        btnKiloDel.isVisible = visible
+        btnRemoveData.isVisible = visible
     }
 
     override fun setBtnSaveVisible(visible: Boolean) {
-        btnKiloSave.isVisible = visible
+        btnSaveToFile.isVisible = visible
     }
 }

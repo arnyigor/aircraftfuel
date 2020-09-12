@@ -6,7 +6,7 @@ import com.arny.aircraftrefueling.data.models.TankRefuelResult
 interface IRefuelInteractor {
     var massUnit: MeasureUnit?
     var volumeUnit: MeasureUnit?
-    fun calculate(mReq: Double, mRo: Double, mBoard: Double): TankRefuelResult
+    fun calculateRefuel(mReq: Double, mRo: Double, mBoard: Double): TankRefuelResult
     fun saveData(
             recordData: String,
             onBoard: String,

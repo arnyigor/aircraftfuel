@@ -2,15 +2,20 @@ package com.arny.aircraftrefueling.presentation.settings
 
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.RefuelApp
+import com.arny.aircraftrefueling.constants.Consts
 import com.arny.aircraftrefueling.data.models.MeasureType
 import com.arny.aircraftrefueling.data.models.MeasureUnit
 import com.arny.aircraftrefueling.domain.units.IUnitsInteractor
 import com.arny.aircraftrefueling.utils.BaseMvpPresenter
+import com.arny.aircraftrefueling.utils.Prefs
 import moxy.InjectViewState
 import javax.inject.Inject
 
 @InjectViewState
 class SettingsPresener : BaseMvpPresenter<SettingsView>() {
+
+    @Inject
+    lateinit var prefs: Prefs
 
     @Inject
     lateinit var unitsInteractor: IUnitsInteractor
@@ -21,6 +26,10 @@ class SettingsPresener : BaseMvpPresenter<SettingsView>() {
 
     override fun onFirstViewAttach() {
         loadUnits()
+        loadPrefs()
+    }
+
+    private fun loadPrefs() {
     }
 
     private fun loadUnits() {
@@ -43,5 +52,14 @@ class SettingsPresener : BaseMvpPresenter<SettingsView>() {
     fun onMassUnitChange(item: MeasureUnit) {
         item.selected = true
         unitsInteractor.onMassUnitChanged(item)
+    }
+
+    fun onSaveLastRefuelDataChanged(checked: Boolean) {
+        prefs.put(Consts.PREF_SAVE_REFUEL_LAST_DATA, checked)
+        if (!checked) {
+            prefs.remove(Consts.PREF_REFUEL_LAST_DATA_REQUIRE)
+            prefs.remove(Consts.PREF_REFUEL_LAST_DATA_BOARD)
+            prefs.remove(Consts.PREF_REFUEL_LAST_DATA_RO)
+        }
     }
 }

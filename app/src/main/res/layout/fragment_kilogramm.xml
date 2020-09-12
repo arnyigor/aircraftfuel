@@ -214,20 +214,20 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/buttonKiloCnt"
+            android:id="@+id/btnCalculate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/calculate" />
 
         <Button
-            android:id="@+id/btnKiloSave"
+            android:id="@+id/btnSaveToFile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/file_save_data"
             android:visibility="gone" />
 
         <Button
-            android:id="@+id/btnKiloDel"
+            android:id="@+id/btnRemoveData"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/file_del"

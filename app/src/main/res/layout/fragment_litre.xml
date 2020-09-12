@@ -102,13 +102,13 @@
             android:layout_height="wrap_content"
             android:text="@string/calculate" />
         <Button
-            android:id="@+id/btnKiloSave"
+            android:id="@+id/btnSaveToFile"
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/file_save_data" />
         <Button
-            android:id="@+id/btnKiloDel"
+            android:id="@+id/btnRemoveData"
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

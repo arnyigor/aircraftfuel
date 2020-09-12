@@ -1,44 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="8dp">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilTotalVolume"
-        android:layout_width="0dp"
+        style="@style/error"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
-        android:layout_marginRight="4dp"
-        app:layout_constraintEnd_toStartOf="@+id/tilDensity"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:hint="@string/total_volume_litre">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTotalOnboard"
+            android:id="@+id/tiedtTotalVolume"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/total_volume_litre"
             android:inputType="numberSigned" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilDensity"
-        android:layout_width="0dp"
+        style="@style/error"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginLeft="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tilTotalVolume"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_marginTop="8dp"
+        android:hint="@string/file_density_pvk">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editDensityPVK"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/file_density_pvk"
             android:inputType="numberDecimal" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -47,21 +41,18 @@
         android:id="@+id/checkPVK"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/file_percent_pvk"
-        app:layout_constraintBottom_toBottomOf="@+id/tilPercent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tilPercent" />
+        android:layout_marginTop="8dp"
+        android:text="@string/file_percent_pvk" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilPercent"
-        android:layout_width="0dp"
+        style="@style/error"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/checkPVK"
-        app:layout_constraintTop_toBottomOf="@+id/tilDensity">
+        android:hint="@string/file_percent_pvk"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editPercentPVK"
@@ -69,7 +60,6 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:enabled="false"
-            android:hint="@string/file_percent_pvk"
             android:inputType="numberSigned"
             android:text="@string/full_percent" />
 
@@ -77,12 +67,11 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilTotalMass"
+        style="@style/error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tilPercent">
+        android:hint="@string/total_mass_kilo">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTotalMassFuel"
@@ -90,39 +79,27 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:focusable="false"
-            android:hint="@string/total_mass_kilo"
             android:inputType="number" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/buttonLitreCnt"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/calculate"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tilTotalMass" />
+        android:text="@string/calculate" />
 
     <Button
-        android:id="@+id/btnKiloSave"
-        android:layout_width="0dp"
+        android:id="@+id/btnSaveToFile"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/file_save_data"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLitreCnt" />
+        android:visibility="gone" />
 
     <Button
-        android:id="@+id/btnKiloDel"
-        android:layout_width="0dp"
+        android:id="@+id/btnRemoveData"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/file_del"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnKiloSave" />
+        android:text="@string/file_del" />
 
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

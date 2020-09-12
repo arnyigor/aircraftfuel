@@ -5,6 +5,17 @@
     android:layout_height="wrap_content">
 
     <TextView
+        android:id="@+id/tvDimensSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/dimens_settings"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/tvMassUnit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,7 +25,7 @@
         android:padding="8dp"
         android:text="@string/weight"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tvDimensSettings" />
 
     <androidx.appcompat.widget.AppCompatSpinner
         android:id="@+id/spinMassUnit"
@@ -60,6 +71,5 @@
         android:layout_height="wrap_content"
         app:barrierDirection="right"
         app:constraint_referenced_ids="tvMassUnit,tvVolumeUnit" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

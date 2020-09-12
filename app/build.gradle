@@ -4,34 +4,59 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
 android {
+    signingConfigs {
+        release
+    }
+
     compileSdkVersion versions.compileSdk
     buildToolsVersion versions.buildTools
+    def vMajor = 1
+    def vMinor = 1
+    def vBuild = 1
+    def packageId = 'com.arny.aircraftrefueling'
+
+    def versionApp = "${vMajor}" + ((vMinor < 10) ? ".0" : ".") + "${vMinor}" + ((vBuild < 10) ? ".0" : ".") + "${vBuild}"
+
+    flavorDimensions "default"
+
     defaultConfig {
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
-        applicationId "com.arny.aircraftrefueling"
-        versionCode 2
-        versionName "1.1"
+        applicationId packageId
+        versionCode vMajor * 100 + vMinor * 10 + vBuild
+        versionName versionApp
         multiDexEnabled true
         setProperty("archivesBaseName", applicationId + "-v" + "(" + versionName + ")")
         archivesBaseName = "$applicationId-v$versionCode($versionName)"
     }
 
+    productFlavors {
+        product_dev {
+            applicationId packageId + '.debug'
+            resValue "string", "app_name", "Aircraft Refueling[DEBUG]"
+            dimension "default"
+        }
+
+        product_store {
+            applicationId packageId
+            resValue "string", "app_name", "Aircraft Refueling"
+            dimension "default"
+        }
+    }
+
     buildTypes {
         debug {
             debuggable true
-            applicationIdSuffix ".debug"
             minifyEnabled false
-            useProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
+            shrinkResources false
         }
         release {
             debuggable false
             minifyEnabled true
             useProguard true
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
+            shrinkResources true
         }
     }
 
@@ -71,4 +96,33 @@ dependencies {
     implementation libs.materialDialogsInput
     implementation libs.ktxCore
     implementation libs.jodaTime
+}
+
+// end of file
+android.applicationVariants.all { variant ->
+    variant.outputs.all {
+        if (outputFileName.endsWith('.apk')) {
+            outputFileName = "REFUEL-${variant.versionName}-${buildType.name}.apk"
+        }
+    }
+}
+
+Properties props = new Properties()
+def propFile = new File('signing.properties')
+if (propFile.canRead()){
+    props.load(new FileInputStream(propFile))
+
+    if (props!=null && props.containsKey('STORE_FILE') && props.containsKey('STORE_PASSWORD') &&
+            props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
+        android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
+        android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
+        android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
+        android.signingConfigs.release.keyPassword = props['KEY_PASSWORD']
+    } else {
+        println 'signing.properties found but some entries are missing'
+        android.buildTypes.release.signingConfig = null
+    }
+}else {
+    println 'signing.properties not found'
+    android.buildTypes.release.signingConfig = null
 }

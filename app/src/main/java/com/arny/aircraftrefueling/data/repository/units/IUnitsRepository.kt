@@ -11,7 +11,9 @@ interface IUnitsRepository {
     fun getSavedMassUnit(): String?
     fun getUnits(): List<MeasureUnit>
     fun getVolumeUnits(): List<String>
-    fun convertMassFromLb(mass: Double): Double
-    fun convertMassToLb(mass: Double): Double
-    fun convertVolumeToGal(volume: Double): Double
+    fun getMassCI(mass: Double, unitName: String?): Double
+    fun getVolumeCI(volume: Double, unitName: String?): Double
+    fun getMassByUnit(mass: Double, unitName: String?): Double
+    fun getVolumeByUnit(volume: Double, volumeDimens: String?): Double
+    fun formatTo(value: Double, scale: Int = 0): String
 }

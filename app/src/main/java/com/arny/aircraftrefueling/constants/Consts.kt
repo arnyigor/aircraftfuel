@@ -15,6 +15,10 @@ object Consts {
     const val PREF_RESP = "pref_responsibility_2020"
     const val PREF_VOLUME_UNIT = "pref_volume_unit"
     const val PREF_MASS_UNIT = "pref_mass_unit"
+    const val PREF_SAVE_REFUEL_LAST_DATA = "pref_save_refuel_last_data"
+    const val PREF_REFUEL_LAST_DATA_REQUIRE = "pref_refuel_last_data_req"
+    const val PREF_REFUEL_LAST_DATA_BOARD = "pref_refuel_last_data_board"
+    const val PREF_REFUEL_LAST_DATA_RO = "pref_refuel_last_data_ro"
 
     const val UNIT_LB = "lb"
     const val UNIT_KG = "kg"
