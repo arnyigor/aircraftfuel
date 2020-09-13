@@ -11,13 +11,11 @@ android {
     compileSdkVersion versions.compileSdk
     buildToolsVersion versions.buildTools
     def vMajor = 1
-    def vMinor = 1
-    def vBuild = 1
+    def vMinor = 2
+    def vBuild = 0
     def packageId = 'com.arny.aircraftrefueling'
 
-    def versionApp = "${vMajor}" + ((vMinor < 10) ? ".0" : ".") + "${vMinor}" + ((vBuild < 10) ? ".0" : ".") + "${vBuild}"
-
-    flavorDimensions "default"
+    def versionApp = "${vMajor}" + (".") + "${vMinor}" + (".") + "${vBuild}"
 
     defaultConfig {
         minSdkVersion versions.minSdk
@@ -30,33 +28,31 @@ android {
         archivesBaseName = "$applicationId-v$versionCode($versionName)"
     }
 
-    productFlavors {
-        product_dev {
-            applicationId packageId + '.debug'
-            resValue "string", "app_name", "Aircraft Refueling[DEBUG]"
-            dimension "default"
-        }
-
-        product_store {
-            applicationId packageId
-            resValue "string", "app_name", "Aircraft Refueling"
-            dimension "default"
-        }
-    }
-
     buildTypes {
         debug {
+            resValue "string", "app_name", "Aircraft Refueling[DEBUG]"
             debuggable true
             minifyEnabled false
             shrinkResources false
+            useProguard false
         }
         release {
+            resValue "string", "app_name", "Aircraft Refueling"
             debuggable false
             minifyEnabled true
             useProguard true
+            shrinkResources true
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            shrinkResources true
+        }
+        preRelease {
+            resValue "string", "app_name", "Aircraft Refueling"
+            debuggable false
+            minifyEnabled false
+            useProguard false
+            shrinkResources false
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
