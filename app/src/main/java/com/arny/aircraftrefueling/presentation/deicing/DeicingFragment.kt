@@ -4,16 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.Nullable
 import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.data.models.Result
+import com.arny.aircraftrefueling.databinding.FragmentDeicingBinding
 import com.arny.aircraftrefueling.utils.KeyboardHelper.hideKeyboard
 import com.arny.aircraftrefueling.utils.ToastMaker
 import com.arny.aircraftrefueling.utils.ToastMaker.toastError
 import com.arny.aircraftrefueling.utils.alertDialog
-import kotlinx.android.synthetic.main.fragment_deicing.*
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 
@@ -26,6 +27,7 @@ class DeicingFragment : MvpAppCompatFragment(), DeicingView {
         fun getInstance() = DeicingFragment()
     }
 
+    private lateinit var binding: FragmentDeicingBinding
     private val presenter by moxyPresenter { DeicingPresenter() }
 
     @StringRes
@@ -34,39 +36,45 @@ class DeicingFragment : MvpAppCompatFragment(), DeicingView {
     @StringRes
     private var volumeUnitName: Int = R.string.unit_volume_named
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_deicing, container, false)
+    @Nullable
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentDeicingBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.title = getString(R.string.menu_deicing)
-        buttonLitreCnt.setOnClickListener { caclMass() }
-        checkPVK.setOnCheckedChangeListener { _, isChecked ->
-            tilPercent.isVisible = isChecked
-            editPercentPVK.isEnabled = isChecked
-            if (isChecked) {
-                editPercentPVK.setText(HALF_PERCENT)
-            } else {
-                editPercentPVK.setText(FULL_PERCENT)
+        with(binding) {
+            buttonLitreCnt.setOnClickListener { caclMass() }
+            checkPVK.setOnCheckedChangeListener { _, isChecked ->
+                tilPercent.isVisible = isChecked
+                editPercentPVK.isEnabled = isChecked
+                if (isChecked) {
+                    editPercentPVK.setText(HALF_PERCENT)
+                } else {
+                    editPercentPVK.setText(FULL_PERCENT)
+                }
             }
-        }
-        tiedtTotalVolume.doAfterTextChanged { tilTotalVolume.error = null }
-        editDensityPVK.doAfterTextChanged { tilDensity.error = null }
-        editPercentPVK.doAfterTextChanged {
-            tilPercent.error = null
-        }
-        btnSaveToFile.setOnClickListener {
-            presenter.saveData(
+            tiedtTotalVolume.doAfterTextChanged { tilTotalVolume.error = null }
+            editDensityPVK.doAfterTextChanged { tilDensity.error = null }
+            editPercentPVK.doAfterTextChanged {
+                tilPercent.error = null
+            }
+            btnSaveToFile.setOnClickListener {
+                presenter.saveData(
                     tiedtTotalVolume.text.toString(),
                     editPercentPVK.text.toString(),
                     editDensityPVK.text.toString(),
                     editTotalMassFuel.text.toString()
-            )
-        }
-
-        btnRemoveData.setOnClickListener {
-            alertDialog(
+                )
+            }
+            btnRemoveData.setOnClickListener {
+                alertDialog(
                     requireContext(),
                     title = getString(R.string.file_del) + "?",
                     btnOkText = getString(android.R.string.ok),
@@ -74,11 +82,12 @@ class DeicingFragment : MvpAppCompatFragment(), DeicingView {
                     onConfirm = {
                         presenter.onRemoveFile()
                     }
-            )
+                )
+            }
         }
     }
 
-    private fun caclMass() {
+    private fun caclMass() = with(binding) {
         val onBoard = tiedtTotalVolume.text.toString()
         if (onBoard.isBlank() || onBoard == "0") {
             tilTotalVolume.error = getString(R.string.error_deicing_volume_with_unit, getString(volumeUnitName))
@@ -101,7 +110,7 @@ class DeicingFragment : MvpAppCompatFragment(), DeicingView {
     override fun showResult(result: Result<Any>) {
         when (result) {
             is Result.Success -> {
-                editTotalMassFuel.setText(result.data as String)
+                binding.editTotalMassFuel.setText(result.data as String)
             }
             is Result.Error -> toastError(requireContext(), result.throwable.message)
             is Result.ErrorRes -> toastError(requireContext(), getString(result.messageRes))
@@ -125,11 +134,11 @@ class DeicingFragment : MvpAppCompatFragment(), DeicingView {
     }
 
     override fun setEdtMassUnit(unitRes: Int) {
-        tilTotalMass.hint = getString(R.string.total_mass_kilo, getString(unitRes))
+        binding.tilTotalMass.hint = getString(R.string.total_mass_kilo, getString(unitRes))
     }
 
     override fun setEdtVolumeUnit(unitRes: Int) {
-        tilTotalVolume.hint = getString(R.string.total_volume_litre, getString(unitRes))
+        binding.tilTotalVolume.hint = getString(R.string.total_volume_litre, getString(unitRes))
     }
 
     override fun toastSuccess(strRes: Int, path: String?) {
@@ -141,10 +150,10 @@ class DeicingFragment : MvpAppCompatFragment(), DeicingView {
     }
 
     override fun setBtnDelVisible(visible: Boolean) {
-        btnRemoveData.isVisible = visible
+        binding.btnRemoveData.isVisible = visible
     }
 
     override fun setBtnSaveVisible(visible: Boolean) {
-        btnSaveToFile.isVisible = visible
+        binding.btnSaveToFile.isVisible = visible
     }
 }

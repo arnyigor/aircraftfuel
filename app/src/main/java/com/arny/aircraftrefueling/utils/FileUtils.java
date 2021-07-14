@@ -176,7 +176,6 @@ public class FileUtils {
         }
     }
 
-
     public static Bitmap getThumbnail(int id, Context context) {
         final String thumb_DATA = MediaStore.Images.Thumbnails.DATA;
         final String thumb_IMAGE_ID = MediaStore.Images.Thumbnails.IMAGE_ID;
@@ -1052,7 +1051,6 @@ public class FileUtils {
         return new BitmapDrawable(context.getResources(), canvasBitmap).getBitmap();
     }
 
-
     // Copy an InputStream to a File.
     public static boolean saveFile(InputStream in, File file) {
         OutputStream out = null;
@@ -1115,7 +1113,6 @@ public class FileUtils {
         }
 
     }
-
 
     public static Bitmap getThumb(Uri uri, Context context) {
         File image = new File(getUriFilePath(uri, context));

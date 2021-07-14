@@ -1,124 +1,24 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
-
+apply plugin: 'kotlin-parcelize'
+apply from: "$dep_aliases"
+apply from: "$rootProject.projectDir/commonconfig.gradle"
 android {
-    signingConfigs {
-        release
-    }
-
-    compileSdkVersion versions.compileSdk
-    buildToolsVersion versions.buildTools
-    def vMajor = 1
-    def vMinor = 2
-    def vBuild = 0
-    def packageId = 'com.arny.aircraftrefueling'
-
-    def versionApp = "${vMajor}" + (".") + "${vMinor}" + (".") + "${vBuild}"
-
-    defaultConfig {
-        minSdkVersion versions.minSdk
-        targetSdkVersion versions.targetSdk
-        applicationId packageId
-        versionCode vMajor * 100 + vMinor * 10 + vBuild
-        versionName versionApp
-        multiDexEnabled true
-        setProperty("archivesBaseName", applicationId + "-v" + "(" + versionName + ")")
-        archivesBaseName = "$applicationId-v$versionCode($versionName)"
-    }
-
-    buildTypes {
-        debug {
-            resValue "string", "app_name", "Aircraft Refueling[DEBUG]"
-            debuggable true
-            minifyEnabled false
-            shrinkResources false
-            useProguard false
-        }
-        release {
-            resValue "string", "app_name", "Aircraft Refueling"
-            debuggable false
-            minifyEnabled true
-            useProguard true
-            shrinkResources true
-            signingConfig signingConfigs.release
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-        preRelease {
-            resValue "string", "app_name", "Aircraft Refueling"
-            debuggable false
-            minifyEnabled false
-            useProguard false
-            shrinkResources false
-            signingConfig signingConfigs.release
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    //mvp
-    implementation libs.moxy
-    implementation libs.moxyAndroidX
-    implementation libs.moxyKtx
-    kapt libs.moxyCompiler
-    implementation libs.dagger
-    kapt libs.daggerCompiler
-    implementation libs.multidex
-    implementation libs.kotlinStdlib
-    implementation libs.appCompat
-    implementation libs.constraint
-    implementation libs.drawerlayout
-    implementation libs.design
-    implementation libs.support
-    implementation libs.preference
-    implementation libs.rxpermissions
-    implementation libs.rxJava
-    implementation libs.rxAndroid
-    implementation libs.rxKotlin
-    implementation libs.toasty
-    implementation libs.materialTypeface
-    implementation libs.materialDialogsCore
-    implementation libs.materialDialogsInput
-    implementation libs.ktxCore
-    implementation libs.jodaTime
-}
-
-// end of file
-android.applicationVariants.all { variant ->
-    variant.outputs.all {
-        if (outputFileName.endsWith('.apk')) {
-            outputFileName = "REFUEL-${variant.versionName}-${buildType.name}.apk"
-        }
-    }
-}
-
-Properties props = new Properties()
-def propFile = new File('signing.properties')
-if (propFile.canRead()){
-    props.load(new FileInputStream(propFile))
-
-    if (props!=null && props.containsKey('STORE_FILE') && props.containsKey('STORE_PASSWORD') &&
-            props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
-        android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
-        android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
-        android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
-        android.signingConfigs.release.keyPassword = props['KEY_PASSWORD']
-    } else {
-        println 'signing.properties found but some entries are missing'
-        android.buildTypes.release.signingConfig = null
-    }
-}else {
-    println 'signing.properties not found'
-    android.buildTypes.release.signingConfig = null
+    fragment()
+    kotlin()
+    moxy()
+    dagger()
+    appcompat()
+    constraintlayout()
+    drawerlayout()
+    material()
+    preference()
+    rxjava2()
+    toasty()
+    materialDialog()
+    jodaTime()
 }

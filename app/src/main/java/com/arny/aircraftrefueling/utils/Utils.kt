@@ -22,6 +22,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.*
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
@@ -39,6 +40,45 @@ import kotlinx.coroutines.*
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.roundToInt
+
+
+fun <T> Fragment.requestPermission(
+    resultLauncher: ActivityResultLauncher<T>,
+    permission: String,
+    input: T,
+    checkPermissionOk: () -> Unit = {}
+) {
+    when {
+        ContextCompat.checkSelfPermission(
+            requireContext(),
+            permission
+        ) == PackageManager.PERMISSION_GRANTED -> {
+            checkPermissionOk()
+        }
+        shouldShowRequestPermissionRationale(permission) -> {
+            resultLauncher.launch(input)
+        }
+        else -> {
+            resultLauncher.launch(input)
+        }
+    }
+}
+
+fun <T> Activity.requestPermission(
+    resultLauncher: ActivityResultLauncher<T>,
+    permission: String,
+    input: T,
+    checkPermissionOk: () -> Unit = {}
+) {
+    when (PackageManager.PERMISSION_GRANTED) {
+        ContextCompat.checkSelfPermission(this, permission) -> {
+            checkPermissionOk()
+        }
+        else -> {
+            resultLauncher.launch(input)
+        }
+    }
+}
 
 fun AppCompatActivity.replaceFragment(
         fragment: Fragment, @IdRes frameId: Int,
@@ -600,7 +640,7 @@ fun BottomNavigationView?.disableShiftMode() {
 
                 item.setShifting(false)
                 // set once again checked value, so view will be updated
-                item.setChecked(item.itemData.isChecked)
+                item.setChecked(item.itemData?.isChecked==true)
             }
         } catch (e: NoSuchFieldException) {
             e.printStackTrace()
