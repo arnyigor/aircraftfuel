@@ -2,11 +2,15 @@ package com.arny.aircraftrefueling.presentation.refuel
 
 
 import android.os.Bundle
+import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import androidx.annotation.Nullable
 import androidx.core.view.isVisible
+import androidx.core.widget.TextViewCompat
+import androidx.core.widget.doAfterTextChanged
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.data.models.Result
 import com.arny.aircraftrefueling.data.models.TankRefuelResult
@@ -17,6 +21,7 @@ import com.arny.aircraftrefueling.utils.ToastMaker.toastSuccess
 import com.arny.aircraftrefueling.utils.alertDialog
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
+import kotlin.properties.Delegates
 
 class RefuelFragment : MvpAppCompatFragment(), RefuelView {
 
@@ -30,6 +35,12 @@ class RefuelFragment : MvpAppCompatFragment(), RefuelView {
     private var massUnitName: Int = R.string.unit_mass_kg
     private var volumeUnitName: Int = R.string.unit_volume_named
 
+    private var selectedType by Delegates.observable("", { _, old, new ->
+        if (old != new) {
+            activity?.title = "${getString(R.string.menu_fueling)} ${new}"
+        }
+    })
+
     @Nullable
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,7 +53,7 @@ class RefuelFragment : MvpAppCompatFragment(), RefuelView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.title = "${getString(R.string.menu_fueling)} ${getString(R.string.b736_739)}"
+        activity?.title = getString(R.string.menu_fueling)
         with(binding) {
             btnCalculate.setOnClickListener { calculateFuelCapacity() }
             btnSaveToFile.setOnClickListener {
@@ -64,6 +75,23 @@ class RefuelFragment : MvpAppCompatFragment(), RefuelView {
                         presenter.onRemoveFile()
                     }
                 )
+            }
+            editDensityFuel.doAfterTextChanged { s ->
+                if (s.toString().contains(",")) {
+                    s?.replace(
+                        0,
+                        s.length,
+                        SpannableStringBuilder(s.toString().replace(",", "."))
+                    )
+                }
+            }
+            spinAircraftType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    selectedType = spinAircraftType.getItemAtPosition(position).toString()
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
             }
         }
     }
@@ -94,6 +122,10 @@ class RefuelFragment : MvpAppCompatFragment(), RefuelView {
         tvLT.text = String.format("%s:\n%s", getString(R.string.left_fuel_tank), refuelResult.left)
         tvRT.text = String.format("%s:\n%s", getString(R.string.right_fuel_tank), refuelResult.right)
         tvCT.text = String.format("%s:\n%s", getString(R.string.center_fuel_tank), refuelResult.centre)
+        TextViewCompat.setTextAppearance(
+            tvCT,
+            if (refuelResult.centreOver) R.style.TankInfoError else R.style.TankInfoDefault
+        )
     }
 
     private fun calculateFuelCapacity() = with(binding) {
@@ -113,7 +145,8 @@ class RefuelFragment : MvpAppCompatFragment(), RefuelView {
             return
         }
         hideKeyboard(requireActivity())
-        presenter.refuel(density, onBoard, required)
+        val type = spinAircraftType.getItemAtPosition(spinAircraftType.selectedItemPosition).toString()
+        presenter.refuel(density, onBoard, required, type)
     }
 
     override fun setMassUnitName(nameRes: Int) {

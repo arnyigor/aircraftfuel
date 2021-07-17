@@ -1,13 +1,33 @@
 package com.arny.aircraftrefueling.constants
 
+import com.arny.aircraftrefueling.domain.models.FuelTanks
+
 object Consts {
     const val GALLON_TO_LITRE = 3.78541
     const val LITRE_TO_GALLON = 1 / GALLON_TO_LITRE
     const val LB_TO_KG = 0.45359237 //kg
     const val KG_TO_LB = 1 / LB_TO_KG
-    const val WING_TANK_MAX_VOLUME = 4876.0 //B736/737/738
-    const val NO_USE_LITRE = 50.0
-
+    const val WINGS_TANK_MAX_VOLUME = "WING_TANK_MAX_VOLUME"
+    const val MAIN_TANK_MAX_VOLUME = "MAIN_TANK_MAX_VOLUME"
+    const val NO_USE_VOLUME = "NO_USE_VOLUME"
+    val fuelsData = listOf(
+        FuelTanks(
+            "B737",
+            hashMapOf(
+                WINGS_TANK_MAX_VOLUME to 4876.0,
+                MAIN_TANK_MAX_VOLUME to 16273.0,
+                NO_USE_VOLUME to 50.0
+            )
+        ),
+        FuelTanks(
+            "B767",
+            hashMapOf(
+                WINGS_TANK_MAX_VOLUME to 22751.0,
+                MAIN_TANK_MAX_VOLUME to 45045.0,
+                NO_USE_VOLUME to 50.0
+            )
+        ),
+    )
     const val DIR_SD = "AirRefuelFiles"
     const val FILENAME_SD = "AirRefuelKilo.txt"
     const val ERROR_TOTAL_LESS = "error_total_less"

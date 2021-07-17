@@ -99,14 +99,15 @@ class RefuelPresenter : BaseMvpPresenter<RefuelView>() {
         }
     }
 
-    fun refuel(density: String, onBoard: String, required: String) {
+    fun refuel(density: String, onBoard: String, required: String, type: String) {
         interactor.volumeUnit = volumeUnit
         interactor.massUnit = massUnit
         fromSingle {
             interactor.calculateRefuel(
-                    required.toDouble(),
-                    density.toDouble(),
-                    onBoard.toDouble()
+                required.toDouble(),
+                density.toDouble(),
+                onBoard.toDouble(),
+                type
             )
         }.subscribeFromPresenter({
             viewState.showResult(Result.Success(it))

@@ -39,6 +39,10 @@
         <item>@string/unit_litre</item>
         <item>@string/unit_am_gallons</item>
     </array>
+    <array name="aircraftTypes">
+        <item>B737</item>
+        <item>B767</item>
+    </array>
     <string name="unit_litre">литры</string>
     <string name="unit_am_gallons">ам.галлоны</string>
     <string name="unit_am_gallons_named">ам.галлонах</string>
@@ -91,4 +95,5 @@
     <string name="dimens_settings">Настройка измерений</string>
     <string name="other_settings">Остальные настройки</string>
     <string name="save_last_refuel_data">Сохранять последние рассчитанные данные заправки</string>
+    <string name="aircraft_type">Тип ВС</string>
 </resources>

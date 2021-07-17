@@ -5,19 +5,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/tvAircraftTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/aircraft_type"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/spinAircraftType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:entries="@array/aircraftTypes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvAircraftTitle" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilRecodData"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:hint="@string/record_data"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/spinAircraftType">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/tiEdtRecodData"
@@ -30,13 +53,9 @@
         android:id="@+id/tilOnBoard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginRight="4dp"
+        android:layout_marginHorizontal="8dp"
         android:hint="@string/has_on_board"
         app:layout_constraintEnd_toStartOf="@+id/tilDensity"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tilRecodData">
 
@@ -52,12 +71,8 @@
         android:id="@+id/tilDensity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginHorizontal="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/tilOnBoard"
         app:layout_constraintTop_toBottomOf="@+id/tilRecodData">
 
@@ -65,6 +80,7 @@
             android:id="@+id/editDensityFuel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:digits="0123456789,."
             android:hint="@string/unit_density_kg_litre"
             android:inputType="numberDecimal" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -244,14 +260,10 @@
 
             <TextView
                 android:id="@+id/tvCT"
+                style="@style/TankInfoStyleDefault"
                 android:layout_margin="1dp"
                 android:layout_weight="1"
-                android:background="#fff"
-                android:gravity="center"
-                android:padding="5dip"
-                android:text="@string/center_fuel_tank"
-                android:textColor="#000000"
-                android:textSize="20sp" />
+                android:text="@string/center_fuel_tank" />
         </TableRow>
     </TableLayout>
 
