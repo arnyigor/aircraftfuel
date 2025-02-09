@@ -6,8 +6,8 @@ interface IUnitsRepository {
     fun onMassUnitChange(unit: MeasureUnit)
     fun onVolumeUnitChange(unit: MeasureUnit)
     fun getVolumeUnitName(): String?
-    fun getMassUnitName(): String?
-    fun getVolumeUnit(): String?
+    fun getMassUnitName(): String
+    fun getVolumeUnit(): String
     fun getSavedMassUnit(): String?
     fun getUnits(): List<MeasureUnit>
     fun getVolumeUnits(): List<String>

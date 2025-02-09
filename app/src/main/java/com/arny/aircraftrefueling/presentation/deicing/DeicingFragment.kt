@@ -1,45 +1,33 @@
 package com.arny.aircraftrefueling.presentation.deicing
 
+import androidx.fragment.app.viewModels
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.Nullable
 import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import com.arny.aircraftrefueling.R
-import com.arny.aircraftrefueling.data.models.Result
 import com.arny.aircraftrefueling.databinding.FragmentDeicingBinding
 import com.arny.aircraftrefueling.utils.KeyboardHelper.hideKeyboard
 import com.arny.aircraftrefueling.utils.ToastMaker
-import com.arny.aircraftrefueling.utils.ToastMaker.toastError
 import com.arny.aircraftrefueling.utils.alertDialog
-import moxy.MvpAppCompatFragment
-import moxy.ktx.moxyPresenter
 
-
-class DeicingFragment : MvpAppCompatFragment(), DeicingView {
-
+class DeicingFragment : Fragment() {
     companion object {
         private const val FULL_PERCENT = "100"
         private const val HALF_PERCENT = "50"
-        fun getInstance() = DeicingFragment()
     }
-
     private lateinit var binding: FragmentDeicingBinding
-    private val presenter by moxyPresenter { DeicingPresenter() }
 
+    private val viewModel: DeicingViewModel by viewModels()
     @StringRes
     private var massUnitName: Int = R.string.unit_mass_kg
 
-    @StringRes
-    private var volumeUnitName: Int = R.string.unit_volume_named
-
-    @Nullable
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentDeicingBinding.inflate(inflater, container, false)
@@ -66,13 +54,13 @@ class DeicingFragment : MvpAppCompatFragment(), DeicingView {
                 tilPercent.error = null
             }
             btnSaveToFile.setOnClickListener {
-                presenter.saveData(
+                viewModel.saveData(
                     tiedtTotalVolume.text.toString(),
                     editPercentPVK.text.toString(),
                     editDensityPVK.text.toString(),
                     editTotalMassFuel.text.toString()
                 )
-            }
+}
             btnRemoveData.setOnClickListener {
                 alertDialog(
                     requireContext(),
@@ -80,7 +68,7 @@ class DeicingFragment : MvpAppCompatFragment(), DeicingView {
                     btnOkText = getString(android.R.string.ok),
                     btnCancelText = getString(android.R.string.cancel),
                     onConfirm = {
-                        presenter.onRemoveFile()
+                        viewModel.onRemoveFile()
                     }
                 )
             }
@@ -104,10 +92,10 @@ class DeicingFragment : MvpAppCompatFragment(), DeicingView {
             return
         }
         hideKeyboard(requireActivity())
-        presenter.calculateDeicing(onBoard, density, percent)
+        viewModel.calculateDeicing(onBoard, density, percent)
     }
 
-    override fun showResult(result: Result<Any>) {
+    private fun showResult(result: Result<Any>) {
         when (result) {
             is Result.Success -> {
                 binding.editTotalMassFuel.setText(result.data as String)
@@ -117,31 +105,31 @@ class DeicingFragment : MvpAppCompatFragment(), DeicingView {
         }
     }
 
-    override fun toastError(errorRes: Int, message: String?) {
+    private fun toastError(errorRes: Int, message: String?) {
         toastError(requireContext(), getString(errorRes, message))
     }
 
-    override fun toastError(message: String) {
+    private fun toastError(message: String) {
         toastError(requireContext(), message)
     }
 
-    override fun setMassUnitName(nameRes: Int) {
+    private fun setMassUnitName(nameRes: Int) {
         massUnitName = nameRes
     }
 
-    override fun setVolumeUnitName(nameRes: Int) {
+    private fun setVolumeUnitName(nameRes: Int) {
         volumeUnitName = nameRes
     }
 
-    override fun setEdtMassUnit(unitRes: Int) {
+    private fun setEdtMassUnit(unitRes: Int) {
         binding.tilTotalMass.hint = getString(R.string.total_mass_kilo, getString(unitRes))
     }
 
-    override fun setEdtVolumeUnit(unitRes: Int) {
+    private fun setEdtVolumeUnit(unitRes: Int) {
         binding.tilTotalVolume.hint = getString(R.string.total_volume_litre, getString(unitRes))
     }
 
-    override fun toastSuccess(strRes: Int, path: String?) {
+    private fun toastSuccess(strRes: Int, path: String?) {
         if (path.isNullOrBlank()) {
             ToastMaker.toastSuccess(requireContext(), getString(strRes))
         } else {
@@ -149,11 +137,11 @@ class DeicingFragment : MvpAppCompatFragment(), DeicingView {
         }
     }
 
-    override fun setBtnDelVisible(visible: Boolean) {
+    private fun setBtnDelVisible(visible: Boolean) {
         binding.btnRemoveData.isVisible = visible
     }
 
-    override fun setBtnSaveVisible(visible: Boolean) {
+    private fun setBtnSaveVisible(visible: Boolean) {
         binding.btnSaveToFile.isVisible = visible
     }
 }

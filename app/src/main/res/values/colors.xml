@@ -1,9 +1,23 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<color name="primary">#607D8B</color>
-	<color name="primary_dark">#455A64</color>
-	<color name="primary_light">#CFD8DC</color>
-	<color name="accent">#4CAF50</color>
-	<color name="primary_text">#212121</color>
-	<color name="icons">#FFFFFF</color>
+    <!-- Основные цвета -->
+    <color name="primary">#1E88E5</color>  <!-- Aviation Blue -->
+    <color name="on_primary">#FFFFFF</color>
+    <color name="primary_container">#BBDEFB</color>
+    <color name="primary_dark">#455A64</color>
+    <color name="primary_light">#CFD8DC</color>
+    <color name="accent">#4CAF50</color>
+    <color name="primary_text">#212121</color>
+    <color name="icons">#FFFFFF</color>
+
+    <!-- Вторичные цвета -->
+    <color name="secondary">#4CAF50</color>  <!-- Safety Green -->
+    <color name="on_secondary">#000000</color>
+
+    <!-- Третичный и фоновые -->
+    <color name="tertiary">#FF9800</color>  <!-- Alert Orange -->
+    <color name="surface">#F5F5F5</color>
+
+    <!-- Текст и иконки -->
+    <color name="on_surface">#212121</color>
+    <color name="outline">#BDBDBD</color>
 </resources>

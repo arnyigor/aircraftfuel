@@ -7,30 +7,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import androidx.annotation.Nullable
 import androidx.core.view.isVisible
 import androidx.core.widget.TextViewCompat
 import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.data.models.Result
 import com.arny.aircraftrefueling.data.models.TankRefuelResult
+import com.arny.aircraftrefueling.databinding.FragmentDeicingBinding
 import com.arny.aircraftrefueling.databinding.RefuelFragmentBinding
+import com.arny.aircraftrefueling.presentation.deicing.DeicingViewModel
 import com.arny.aircraftrefueling.utils.KeyboardHelper.hideKeyboard
 import com.arny.aircraftrefueling.utils.ToastMaker.toastError
 import com.arny.aircraftrefueling.utils.ToastMaker.toastSuccess
 import com.arny.aircraftrefueling.utils.alertDialog
-import moxy.MvpAppCompatFragment
-import moxy.ktx.moxyPresenter
 import kotlin.properties.Delegates
 
-class RefuelFragment : MvpAppCompatFragment(), RefuelView {
-
-    companion object {
-        fun getInstance() = RefuelFragment()
-    }
+class RefuelFragment : Fragment(), RefuelView {
 
     private lateinit var binding: RefuelFragmentBinding
-    private val presenter by moxyPresenter { RefuelPresenter() }
+
+    private val viewModel: DeicingViewModel by viewModels()
 
     private var massUnitName: Int = R.string.unit_mass_kg
     private var volumeUnitName: Int = R.string.unit_volume_named
@@ -41,10 +39,8 @@ class RefuelFragment : MvpAppCompatFragment(), RefuelView {
         }
     })
 
-    @Nullable
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = RefuelFragmentBinding.inflate(inflater, container, false)
@@ -57,7 +53,7 @@ class RefuelFragment : MvpAppCompatFragment(), RefuelView {
         with(binding) {
             btnCalculate.setOnClickListener { calculateFuelCapacity() }
             btnSaveToFile.setOnClickListener {
-                presenter.saveData(
+                viewModel.saveData(
                     tiEdtRecodData.text.toString(),
                     editTotalMass.text.toString(),
                     editRequiredMass.text.toString(),
@@ -72,7 +68,7 @@ class RefuelFragment : MvpAppCompatFragment(), RefuelView {
                     btnOkText = getString(android.R.string.ok),
                     btnCancelText = getString(android.R.string.cancel),
                     onConfirm = {
-                        presenter.onRemoveFile()
+                        viewModel.onRemoveFile()
                     }
                 )
             }

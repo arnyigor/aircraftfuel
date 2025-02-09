@@ -115,11 +115,11 @@ class UnitsRepository @Inject constructor(
         return listOf(UNIT_LITRE, UNIT_AM_GALL)
     }
 
-    override fun getVolumeUnit(): String? {
+    override fun getVolumeUnit(): String {
         return prefs.get<String>(Consts.PREF_VOLUME_UNIT) ?: UNIT_LITRE
     }
 
-    override fun getSavedMassUnit(): String? {
+    override fun getSavedMassUnit(): String {
         return prefs.get<String>(Consts.PREF_MASS_UNIT) ?: UNIT_KG
     }
 

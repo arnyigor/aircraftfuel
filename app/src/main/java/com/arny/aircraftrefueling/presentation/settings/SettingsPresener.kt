@@ -8,10 +8,8 @@ import com.arny.aircraftrefueling.data.models.MeasureUnit
 import com.arny.aircraftrefueling.domain.units.IUnitsInteractor
 import com.arny.aircraftrefueling.utils.BaseMvpPresenter
 import com.arny.aircraftrefueling.utils.Prefs
-import moxy.InjectViewState
 import javax.inject.Inject
 
-@InjectViewState
 class SettingsPresener : BaseMvpPresenter<SettingsView>() {
 
     @Inject

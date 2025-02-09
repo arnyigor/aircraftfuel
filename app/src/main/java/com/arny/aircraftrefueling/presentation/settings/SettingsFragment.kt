@@ -5,25 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import androidx.annotation.Nullable
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.data.models.MeasureUnit
 import com.arny.aircraftrefueling.databinding.FUnitsBinding
+import com.arny.aircraftrefueling.presentation.deicing.DeicingViewModel
 import com.arny.aircraftrefueling.utils.ToastMaker
-import moxy.MvpAppCompatFragment
-import moxy.ktx.moxyPresenter
 
-class SettingsFragment : MvpAppCompatFragment(), SettingsView {
-    companion object {
-        fun getInstance() = SettingsFragment()
-    }
-
+class SettingsFragment : Fragment() {
+    private val viewModel: DeicingViewModel by viewModels()
     private lateinit var binding: FUnitsBinding
     private lateinit var measureMassAdapter: MeasureUnitsAdapter
     private lateinit var measureVolumeAdapter: MeasureUnitsAdapter
-    private val presenter by moxyPresenter { SettingsPresener() }
 
-    @Nullable
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -44,7 +39,7 @@ class SettingsFragment : MvpAppCompatFragment(), SettingsView {
             spinVolumeUnit.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     measureVolumeAdapter.items.forEach { it.selected = false }
-                    presenter.onVolumeUnitChange(measureVolumeAdapter.getItem(position))
+                    viewModel.onVolumeUnitChange(measureVolumeAdapter.getItem(position))
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -53,7 +48,7 @@ class SettingsFragment : MvpAppCompatFragment(), SettingsView {
             spinMassUnit.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     measureMassAdapter.items.forEach { it.selected = false }
-                    presenter.onMassUnitChange(measureMassAdapter.getItem(position))
+                    viewModel.onMassUnitChange(measureMassAdapter.getItem(position))
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -62,16 +57,16 @@ class SettingsFragment : MvpAppCompatFragment(), SettingsView {
         }
     }
 
-    override fun toastError(errorRes: Int, message: String?) {
+    private fun toastError(errorRes: Int, message: String?) {
         ToastMaker.toastError(requireContext(), getString(errorRes, message))
     }
 
-    override fun setMassUnits(massUnits: List<MeasureUnit>, selectedIndex: Int) {
+    private fun setMassUnits(massUnits: List<MeasureUnit>, selectedIndex: Int) {
         measureMassAdapter.addAll(massUnits)
         binding.spinMassUnit.setSelection(selectedIndex)
     }
 
-    override fun setVolumeUnits(volumeUnits: List<MeasureUnit>, selectedIndex: Int) {
+    private fun setVolumeUnits(volumeUnits: List<MeasureUnit>, selectedIndex: Int) {
         measureVolumeAdapter.addAll(volumeUnits)
         binding.spinVolumeUnit.setSelection(selectedIndex)
     }

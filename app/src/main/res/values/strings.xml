@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name" translatable="false">Aircraft Refueling</string>
     <string name="menu_fueling">Расчет заправки</string>
     <string name="b736_739" translatable="false">B736-B739</string>
     <string name="openNavDrawer" translatable="false">Open navigation drawer</string>
