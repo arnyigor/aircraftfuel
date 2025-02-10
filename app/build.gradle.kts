@@ -45,6 +45,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
     kotlinOptions {
         jvmTarget = "17"
@@ -55,7 +56,15 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+    implementation(libs.material){}
+    implementation(libs.glide){
+        isTransitive = true
+    }
+    kapt(libs.glide.compiler)
+    implementation(libs.glide.okhttp3.integration) {
+        exclude(group = "glide-parent")
+    }
+    implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)

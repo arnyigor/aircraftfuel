@@ -1,6 +1,7 @@
 [versions]
 agp = "8.8.0"
 drawerlayout = "1.2.0"
+glide = "4.11.0"
 jakewhartonTimber = "5.0.1"
 kotlin = "1.9.24"
 coreKtx = "1.15.0"
@@ -17,12 +18,14 @@ lifecycleViewmodelKtx = "2.8.7"
 navigationFragmentKtx = "2.8.6"
 navigationSafeArgsGradlePlugin = "2.8.6"
 preferenceKtx = "1.2.1"
+recyclerview = "1.4.0"
 toasty = "1.5.2"
 legacySupportV4 = "1.0.0"
 lifecycleLivedataKtx = "2.8.7"
 fragmentKtx = "1.8.5"
 
 [libraries]
+androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
 dagger = { module = "com.google.dagger:dagger", version.ref = "daggerCompiler" }
 dagger-android = { module = "com.google.dagger:dagger-android", version.ref = "daggerCompiler" }
 dagger-android-support = { module = "com.google.dagger:dagger-android-support", version.ref = "daggerCompiler" }
@@ -33,6 +36,9 @@ androidx-drawerlayout = { module = "androidx.drawerlayout:drawerlayout", version
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 androidx-navigation-safe-args-gradle-plugin = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "navigationSafeArgsGradlePlugin" }
 androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preferenceKtx" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+glide-okhttp3-integration = { module = "com.github.bumptech.glide:okhttp3-integration", version.ref = "glide" }
+glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
 jakewharton-timber = { module = "com.jakewharton.timber:timber", version.ref = "jakewhartonTimber" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

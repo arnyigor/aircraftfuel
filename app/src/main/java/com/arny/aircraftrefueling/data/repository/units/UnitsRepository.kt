@@ -8,8 +8,8 @@ import com.arny.aircraftrefueling.constants.Consts.UNIT_AM_GALL
 import com.arny.aircraftrefueling.constants.Consts.UNIT_KG
 import com.arny.aircraftrefueling.constants.Consts.UNIT_LB
 import com.arny.aircraftrefueling.constants.Consts.UNIT_LITRE
-import com.arny.aircraftrefueling.data.models.MeasureType
-import com.arny.aircraftrefueling.data.models.MeasureUnit
+import com.arny.aircraftrefueling.domain.models.MeasureType
+import com.arny.aircraftrefueling.domain.models.MeasureUnit
 import com.arny.aircraftrefueling.utils.Prefs
 import java.math.BigDecimal
 import java.math.RoundingMode

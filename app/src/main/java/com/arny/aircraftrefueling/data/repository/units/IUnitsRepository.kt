@@ -1,6 +1,6 @@
 package com.arny.aircraftrefueling.data.repository.units
 
-import com.arny.aircraftrefueling.data.models.MeasureUnit
+import com.arny.aircraftrefueling.domain.models.MeasureUnit
 
 interface IUnitsRepository {
     fun onMassUnitChange(unit: MeasureUnit)

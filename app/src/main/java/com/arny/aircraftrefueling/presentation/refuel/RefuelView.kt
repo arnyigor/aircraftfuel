@@ -1,7 +1,6 @@
 package com.arny.aircraftrefueling.presentation.refuel
 
 import androidx.annotation.StringRes
-import com.arny.aircraftrefueling.data.models.Result
 import moxy.MvpView
 import moxy.viewstate.strategy.alias.AddToEndSingle
 import moxy.viewstate.strategy.alias.OneExecution

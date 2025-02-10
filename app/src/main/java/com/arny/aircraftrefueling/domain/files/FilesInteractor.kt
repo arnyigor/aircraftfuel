@@ -13,11 +13,11 @@ class FilesInteractor @Inject constructor(
         private val prefs: Prefs
 ) : IFilesInteractor {
 
-    override fun removeFile(): Boolean {
+    override suspend fun removeFile(): Boolean {
         return filesRepository.removeFile()
     }
 
-    override fun loadSavedRefuelData(massUnitName: String?): RefuelSavedData? {
+    override suspend fun loadSavedRefuelData(massUnitName: String?): RefuelSavedData? {
         if (prefs.get<Boolean>(Consts.PREF_SAVE_REFUEL_LAST_DATA) == true) {
             val reqFormatted = prefs.get<String>(Consts.PREF_REFUEL_LAST_DATA_REQUIRE)
                     ?.let { formatMassToInt(it.toDouble(), massUnitName) }
@@ -30,7 +30,7 @@ class FilesInteractor @Inject constructor(
         return null
     }
 
-    override fun isDataFileExists(): Boolean {
+    override suspend fun isDataFileExists(): Boolean {
         return filesRepository.isDataFileExists()
     }
 

@@ -7,23 +7,25 @@ import com.arny.aircraftrefueling.constants.Consts.FILENAME_SD
 import com.arny.aircraftrefueling.data.repository.units.IUnitsRepository
 import com.arny.aircraftrefueling.utils.DateTimeUtils
 import com.arny.aircraftrefueling.utils.FileUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
 class FilesRepository @Inject constructor(
-        private val context: Context,
-        private val unitsRepository: IUnitsRepository
+    private val context: Context,
+    private val unitsRepository: IUnitsRepository
 ) : IFilesRepository {
 
     private fun getVolumeUnit(): String? = unitsRepository.getVolumeUnitName()
     private fun getMassUnit(): String? = unitsRepository.getMassUnitName()
 
     private fun getRefuelText(
-            recordData: String?,
-            onBoard: String,
-            require: String,
-            mRo: String,
-            volume: String
+        recordData: String?,
+        onBoard: String,
+        require: String,
+        mRo: String,
+        volume: String
     ): String {
         return "\n" + context.getString(R.string.fueling) + "\n" +
                 getCurrentDateTime() + "\n" + getRecordData(recordData) +
@@ -37,11 +39,11 @@ class FilesRepository @Inject constructor(
         context.getString(R.string.record_data_title, recordData) + "\n" else ""
 
     private fun getDeicingData(
-            recordData: String?,
-            mVolTotal: String,
-            mPercPVK: String,
-            mRo: String,
-            totalMass: String
+        recordData: String?,
+        mVolTotal: String,
+        mPercPVK: String,
+        mRo: String,
+        totalMass: String
     ): String {
         return "\n" + context.getString(R.string.deicing) + "\n" +
                 getCurrentDateTime() + "\n" + getRecordData(recordData) +
@@ -53,40 +55,39 @@ class FilesRepository @Inject constructor(
 
     private fun getCurrentDateTime() = DateTimeUtils.getDateTime("dd MMM yyyy HH:mm:ss")
 
-    override fun isDataFileExists() = FileUtils.isFileExist(folderPath() + File.separator + FILENAME_SD)
+    override suspend fun isDataFileExists() =
+        FileUtils.isFileExist(folderPath() + File.separator + FILENAME_SD)
 
-    override fun saveDeicingData(
-            recordData: String?,
-            mVolTotal: String,
-            mPercPVK: String,
-            mRo: String,
-            totalMass: String
-    ): String {
-        return saveData(getDeicingData(recordData, mVolTotal, mPercPVK, mRo, totalMass))
+    override suspend fun saveDeicingData(
+        recordData: String?,
+        mVolTotal: String,
+        mPercPVK: String,
+        mRo: String,
+        totalMass: String
+    ): String = withContext(Dispatchers.IO) {
+        saveData(getDeicingData(recordData, mVolTotal, mPercPVK, mRo, totalMass))
     }
 
-    override fun saveRefuelData(
-            recordData: String?,
-            onBoard: String,
-            require: String,
-            mRo: String,
-            volume: String
-    ) = saveData(getRefuelText(recordData, onBoard, require, mRo, volume))
+    override suspend fun saveRefuelData(
+        recordData: String?,
+        onBoard: String,
+        require: String,
+        mRo: String,
+        volume: String
+    ) = withContext(Dispatchers.IO) {
+        saveData(getRefuelText(recordData, onBoard, require, mRo, volume))
+    }
 
     private fun saveData(data: String): String {
         val folderPath = folderPath()
-        return if (FileUtils.writeToFile(
-                        data,
-                        folderPath,
-                        FILENAME_SD,
-                        true
-                )) folderPath + File.separator + FILENAME_SD else ""
+        val writeToFile = FileUtils.writeToFile(data, folderPath, FILENAME_SD, true)
+        return if (writeToFile) folderPath + File.separator + FILENAME_SD else ""
     }
 
     private fun folderPath() = FileUtils.getWorkDir(context) + File.separator + DIR_SD
 
-    override fun removeFile(): Boolean {
+    override suspend fun removeFile(): Boolean = withContext(Dispatchers.IO) {
         FileUtils.deleteFile(File(folderPath() + File.separator + FILENAME_SD))
-        return isDataFileExists()
+        isDataFileExists()
     }
 }

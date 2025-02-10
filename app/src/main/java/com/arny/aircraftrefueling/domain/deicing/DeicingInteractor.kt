@@ -1,6 +1,6 @@
 package com.arny.aircraftrefueling.domain.deicing
 
-import com.arny.aircraftrefueling.data.models.MeasureUnit
+import com.arny.aircraftrefueling.domain.models.MeasureUnit
 import com.arny.aircraftrefueling.data.repository.files.IFilesRepository
 import com.arny.aircraftrefueling.data.repository.units.IUnitsRepository
 import javax.inject.Inject

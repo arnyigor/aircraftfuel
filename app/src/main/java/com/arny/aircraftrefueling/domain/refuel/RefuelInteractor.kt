@@ -6,8 +6,8 @@ import com.arny.aircraftrefueling.constants.Consts.PREF_REFUEL_LAST_DATA_REQUIRE
 import com.arny.aircraftrefueling.constants.Consts.PREF_REFUEL_LAST_DATA_RO
 import com.arny.aircraftrefueling.constants.Consts.PREF_SAVE_REFUEL_LAST_DATA
 import com.arny.aircraftrefueling.constants.Consts.fuelsData
-import com.arny.aircraftrefueling.data.models.MeasureUnit
-import com.arny.aircraftrefueling.data.models.TankRefuelResult
+import com.arny.aircraftrefueling.domain.models.MeasureUnit
+import com.arny.aircraftrefueling.domain.models.TankRefuelResult
 import com.arny.aircraftrefueling.data.repository.files.IFilesRepository
 import com.arny.aircraftrefueling.data.repository.units.IUnitsRepository
 import com.arny.aircraftrefueling.utils.Prefs
@@ -26,15 +26,13 @@ class RefuelInteractor @Inject constructor(
     override var massUnit: MeasureUnit? = null
     override var volumeUnit: MeasureUnit? = null
 
-    override fun saveData(
+    override suspend fun saveData(
         recordData: String,
         onBoard: String,
         require: String,
         density: String,
         volume: String
-    ): String {
-        return filesRepository.saveRefuelData(recordData, onBoard, require, density, volume)
-    }
+    ): String = filesRepository.saveRefuelData(recordData, onBoard, require, density, volume)
 
     /**
      * @param mReq масса, сколько необходимо

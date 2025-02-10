@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_nav_home_to_settingsFragment"
             app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_nav_home_to_refuelFragment"
+            app:destination="@id/refuelFragment" />
     </fragment>
     <fragment
         android:id="@+id/deicingFragment"
@@ -25,4 +28,8 @@
         android:id="@+id/settingsFragment"
         android:name="com.arny.aircraftrefueling.presentation.settings.SettingsFragment"
         android:label="SettingsFragment" />
+    <fragment
+        android:id="@+id/refuelFragment"
+        android:name="com.arny.aircraftrefueling.presentation.refuel.RefuelFragment"
+        android:label="RefuelFragment" />
 </navigation>

@@ -1,21 +1,18 @@
 package com.arny.aircraftrefueling
 
-import android.app.Application
-import com.arny.aircraftrefueling.di.AppComponent
-import com.arny.aircraftrefueling.di.AppModule
-import com.arny.aircraftrefueling.di.DaggerAppComponent
+import dagger.android.DaggerApplication
+import timber.log.Timber
 
-class RefuelApp : Application() {
-    companion object {
-        @JvmStatic
-        lateinit var appComponent: AppComponent
-    }
+class RefuelApp : DaggerApplication(){
+    private val applicationInjector = DaggerAppComponent.builder()
+        .application(this)
+        .build()
 
     override fun onCreate() {
         super.onCreate()
-        appComponent = DaggerAppComponent
-                .builder()
-                .appModule(AppModule(this))
-                .build()
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
     }
+    override fun applicationInjector() = applicationInjector
 }

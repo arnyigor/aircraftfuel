@@ -3,8 +3,8 @@ package com.arny.aircraftrefueling.presentation.settings
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.RefuelApp
 import com.arny.aircraftrefueling.constants.Consts
-import com.arny.aircraftrefueling.data.models.MeasureType
-import com.arny.aircraftrefueling.data.models.MeasureUnit
+import com.arny.aircraftrefueling.domain.models.MeasureType
+import com.arny.aircraftrefueling.domain.models.MeasureUnit
 import com.arny.aircraftrefueling.domain.units.IUnitsInteractor
 import com.arny.aircraftrefueling.utils.BaseMvpPresenter
 import com.arny.aircraftrefueling.utils.Prefs

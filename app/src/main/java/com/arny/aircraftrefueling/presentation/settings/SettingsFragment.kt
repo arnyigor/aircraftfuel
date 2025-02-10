@@ -1,20 +1,37 @@
 package com.arny.aircraftrefueling.presentation.settings
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import com.arny.aircraftrefueling.R
-import com.arny.aircraftrefueling.data.models.MeasureUnit
+import com.arny.aircraftrefueling.domain.models.MeasureUnit
 import com.arny.aircraftrefueling.databinding.FUnitsBinding
-import com.arny.aircraftrefueling.presentation.deicing.DeicingViewModel
+import com.arny.aircraftrefueling.di.viewModelFactory
 import com.arny.aircraftrefueling.utils.ToastMaker
+import dagger.android.support.AndroidSupportInjection
+import dagger.assisted.AssistedFactory
+import javax.inject.Inject
+import kotlin.getValue
 
 class SettingsFragment : Fragment() {
-    private val viewModel: DeicingViewModel by viewModels()
+    @AssistedFactory
+    internal interface ViewModelFactory {
+        fun create(): SettingsViewModel
+    }
+
+    @Inject
+    internal lateinit var viewModelFactory: ViewModelFactory
+    private val viewModel: SettingsViewModel by viewModelFactory { viewModelFactory.create() }
+
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
+    }
+
     private lateinit var binding: FUnitsBinding
     private lateinit var measureMassAdapter: MeasureUnitsAdapter
     private lateinit var measureVolumeAdapter: MeasureUnitsAdapter

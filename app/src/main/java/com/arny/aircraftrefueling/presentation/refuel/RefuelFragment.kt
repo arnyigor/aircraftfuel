@@ -13,22 +13,22 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.arny.aircraftrefueling.R
-import com.arny.aircraftrefueling.data.models.Result
-import com.arny.aircraftrefueling.data.models.TankRefuelResult
-import com.arny.aircraftrefueling.databinding.FragmentDeicingBinding
+import com.arny.aircraftrefueling.domain.models.TankRefuelResult
 import com.arny.aircraftrefueling.databinding.RefuelFragmentBinding
+import com.arny.aircraftrefueling.di.viewModelFactory
 import com.arny.aircraftrefueling.presentation.deicing.DeicingViewModel
 import com.arny.aircraftrefueling.utils.KeyboardHelper.hideKeyboard
 import com.arny.aircraftrefueling.utils.ToastMaker.toastError
 import com.arny.aircraftrefueling.utils.ToastMaker.toastSuccess
 import com.arny.aircraftrefueling.utils.alertDialog
+import dagger.assisted.AssistedFactory
+import javax.inject.Inject
+import kotlin.getValue
 import kotlin.properties.Delegates
 
 class RefuelFragment : Fragment(), RefuelView {
 
     private lateinit var binding: RefuelFragmentBinding
-
-    private val viewModel: DeicingViewModel by viewModels()
 
     private var massUnitName: Int = R.string.unit_mass_kg
     private var volumeUnitName: Int = R.string.unit_volume_named
@@ -38,6 +38,16 @@ class RefuelFragment : Fragment(), RefuelView {
             activity?.title = "${getString(R.string.menu_fueling)} ${new}"
         }
     })
+
+
+    @AssistedFactory
+    internal interface ViewModelFactory {
+        fun create(): RefuelViewModel
+    }
+
+    @Inject
+    internal lateinit var viewModelFactory: ViewModelFactory
+    private val viewModel: RefuelViewModel by viewModelFactory { viewModelFactory.create() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

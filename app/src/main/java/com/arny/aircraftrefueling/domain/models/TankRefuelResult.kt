@@ -1,4 +1,4 @@
-package com.arny.aircraftrefueling.data.models
+package com.arny.aircraftrefueling.domain.models
 
 data class TankRefuelResult(
     var massTotal: String = "",

@@ -10,7 +10,6 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import com.arny.aircraftrefueling.R
-import com.arny.aircraftrefueling.data.models.Result
 import com.arny.aircraftrefueling.databinding.FragmentDeicingBinding
 import com.arny.aircraftrefueling.utils.KeyboardHelper.hideKeyboard
 import com.arny.aircraftrefueling.utils.ToastMaker

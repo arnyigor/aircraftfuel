@@ -1,30 +1,45 @@
 package com.arny.aircraftrefueling.presentation.deicing
 
-import androidx.fragment.app.viewModels
+import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.Fragment
 import com.arny.aircraftrefueling.R
+import com.arny.aircraftrefueling.data.utils.DataResult
 import com.arny.aircraftrefueling.databinding.FragmentDeicingBinding
+import com.arny.aircraftrefueling.di.viewModelFactory
 import com.arny.aircraftrefueling.utils.KeyboardHelper.hideKeyboard
 import com.arny.aircraftrefueling.utils.ToastMaker
 import com.arny.aircraftrefueling.utils.alertDialog
+import dagger.android.support.AndroidSupportInjection
+import dagger.assisted.AssistedFactory
+import javax.inject.Inject
 
 class DeicingFragment : Fragment() {
-    companion object {
-        private const val FULL_PERCENT = "100"
-        private const val HALF_PERCENT = "50"
-    }
+
     private lateinit var binding: FragmentDeicingBinding
 
-    private val viewModel: DeicingViewModel by viewModels()
     @StringRes
     private var massUnitName: Int = R.string.unit_mass_kg
+
+    @AssistedFactory
+    internal interface ViewModelFactory {
+        fun create(): DeicingViewModel
+    }
+
+    @Inject
+    internal lateinit var viewModelFactory: ViewModelFactory
+    private val viewModel: DeicingViewModel by viewModelFactory { viewModelFactory.create() }
+
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,7 +75,7 @@ class DeicingFragment : Fragment() {
                     editDensityPVK.text.toString(),
                     editTotalMassFuel.text.toString()
                 )
-}
+            }
             btnRemoveData.setOnClickListener {
                 alertDialog(
                     requireContext(),
@@ -78,7 +93,8 @@ class DeicingFragment : Fragment() {
     private fun caclMass() = with(binding) {
         val onBoard = tiedtTotalVolume.text.toString()
         if (onBoard.isBlank() || onBoard == "0") {
-            tilTotalVolume.error = getString(R.string.error_deicing_volume_with_unit, getString(volumeUnitName))
+            tilTotalVolume.error =
+                getString(R.string.error_deicing_volume_with_unit, getString(volumeUnitName))
             return
         }
         val density = editDensityPVK.text.toString()
@@ -97,9 +113,10 @@ class DeicingFragment : Fragment() {
 
     private fun showResult(result: Result<Any>) {
         when (result) {
-            is Result.Success -> {
+            is DataResult.Success -> {
                 binding.editTotalMassFuel.setText(result.data as String)
             }
+
             is Result.Error -> toastError(requireContext(), result.throwable.message)
             is Result.ErrorRes -> toastError(requireContext(), getString(result.messageRes))
         }
