@@ -9,15 +9,13 @@ class UnitsInteractor @Inject constructor(
         private val unitsRepository: IUnitsRepository
 ) : IUnitsInteractor {
 
-    override fun loadUnits():List<MeasureUnit> {
-        return fromSingle { unitsRepository.getUnits() }
-    }
+    override suspend fun loadUnits():List<MeasureUnit> = unitsRepository.getUnits()
 
-    override fun onVolumeUnitChanged(item: MeasureUnit) {
+    override suspend fun onVolumeUnitChanged(item: MeasureUnit) {
         unitsRepository.onVolumeUnitChange(item)
     }
 
-    override fun onMassUnitChanged(item: MeasureUnit) {
+    override suspend fun onMassUnitChanged(item: MeasureUnit) {
         unitsRepository.onMassUnitChange(item)
     }
 }

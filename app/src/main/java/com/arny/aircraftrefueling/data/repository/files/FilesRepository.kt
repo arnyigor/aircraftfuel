@@ -2,8 +2,8 @@ package com.arny.aircraftrefueling.data.repository.files
 
 import android.content.Context
 import com.arny.aircraftrefueling.R
-import com.arny.aircraftrefueling.constants.Consts.DIR_SD
-import com.arny.aircraftrefueling.constants.Consts.FILENAME_SD
+import com.arny.aircraftrefueling.domain.constants.Consts.DIR_SD
+import com.arny.aircraftrefueling.domain.constants.Consts.FILENAME_SD
 import com.arny.aircraftrefueling.data.repository.units.IUnitsRepository
 import com.arny.aircraftrefueling.utils.DateTimeUtils
 import com.arny.aircraftrefueling.utils.FileUtils

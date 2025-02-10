@@ -3,28 +3,30 @@ package com.arny.aircraftrefueling.data.repository.units
 import android.content.Context
 import androidx.annotation.StringRes
 import com.arny.aircraftrefueling.R
-import com.arny.aircraftrefueling.constants.Consts
-import com.arny.aircraftrefueling.constants.Consts.UNIT_AM_GALL
-import com.arny.aircraftrefueling.constants.Consts.UNIT_KG
-import com.arny.aircraftrefueling.constants.Consts.UNIT_LB
-import com.arny.aircraftrefueling.constants.Consts.UNIT_LITRE
+import com.arny.aircraftrefueling.domain.constants.Consts
+import com.arny.aircraftrefueling.domain.constants.Consts.UNIT_AM_GALL
+import com.arny.aircraftrefueling.domain.constants.Consts.UNIT_KG
+import com.arny.aircraftrefueling.domain.constants.Consts.UNIT_LB
+import com.arny.aircraftrefueling.domain.constants.Consts.UNIT_LITRE
 import com.arny.aircraftrefueling.domain.models.MeasureType
 import com.arny.aircraftrefueling.domain.models.MeasureUnit
 import com.arny.aircraftrefueling.utils.Prefs
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.math.RoundingMode
 import javax.inject.Inject
 
 class UnitsRepository @Inject constructor(
-        private val prefs: Prefs,
-        private val context: Context
+    private val prefs: Prefs,
+    private val context: Context
 ) : IUnitsRepository {
 
     private val convertors = mapOf(
-            Consts.CONV_LB_KG to Consts.LB_TO_KG,
-            Consts.CONV_KG_LB to Consts.KG_TO_LB,
-            Consts.CONV_GALL_LITRE to Consts.GALLON_TO_LITRE,
-            Consts.CONV_LITRE_GALL to Consts.LITRE_TO_GALLON
+        Consts.CONV_LB_KG to Consts.LB_TO_KG,
+        Consts.CONV_KG_LB to Consts.KG_TO_LB,
+        Consts.CONV_GALL_LITRE to Consts.GALLON_TO_LITRE,
+        Consts.CONV_LITRE_GALL to Consts.LITRE_TO_GALLON
     )
 
     private fun convertMassFromLb(mass: Double): Double {
@@ -92,23 +94,38 @@ class UnitsRepository @Inject constructor(
         return resName?.let { context.getString(it) }
     }
 
-    override fun getUnits(): List<MeasureUnit> {
-        val mutableList = mutableListOf<MeasureUnit>()
-        mutableList.addAll(
-                listOf(UNIT_KG, UNIT_LB)
-                        .map { MeasureUnit(it, getUnitName(it) ?: "", getSavedMassUnit() == it, MeasureType.MASS) }
-        )
-        mutableList.addAll(
-                listOf(UNIT_LITRE, UNIT_AM_GALL)
-                        .map { MeasureUnit(it, getUnitName(it) ?: "", getVolumeUnit() == it, MeasureType.VOLUME) }
-        )
-        return mutableList.toList()
+    override suspend fun getUnits(): List<MeasureUnit> = withContext(Dispatchers.IO) {
+        mutableListOf<MeasureUnit>()
+            .apply {
+                addAll(
+                    listOf(UNIT_KG, UNIT_LB)
+                        .map {
+                            MeasureUnit(
+                                name = it,
+                                title = getUnitName(it) ?: "",
+                                selected = getSavedMassUnit() == it,
+                                type = MeasureType.MASS
+                            )
+                        }
+                )
+                addAll(
+                    listOf(UNIT_LITRE, UNIT_AM_GALL)
+                        .map {
+                            MeasureUnit(
+                                name = it,
+                                title = getUnitName(it) ?: "",
+                                selected = getVolumeUnit() == it,
+                                type = MeasureType.VOLUME
+                            )
+                        }
+                )
+            }
     }
 
     override fun formatTo(value: Double, scale: Int): String {
         return BigDecimal(value)
-                .setScale(scale, RoundingMode.HALF_UP)
-                .toString()
+            .setScale(scale, RoundingMode.HALF_UP)
+            .toString()
     }
 
     override fun getVolumeUnits(): List<String> {

@@ -1,6 +1,6 @@
 package com.arny.aircraftrefueling.domain.files
 
-import com.arny.aircraftrefueling.constants.Consts
+import com.arny.aircraftrefueling.domain.constants.Consts
 import com.arny.aircraftrefueling.data.repository.files.IFilesRepository
 import com.arny.aircraftrefueling.data.repository.units.IUnitsRepository
 import com.arny.aircraftrefueling.domain.models.RefuelSavedData
@@ -30,11 +30,8 @@ class FilesInteractor @Inject constructor(
         return null
     }
 
-    override suspend fun isDataFileExists(): Boolean {
-        return filesRepository.isDataFileExists()
-    }
+    override suspend fun isDataFileExists(): Boolean = filesRepository.isDataFileExists()
 
-    private fun formatMassToInt(mass: Double, unitName: String?): String {
-        return unitsRepository.formatTo(unitsRepository.getMassByUnit(mass, unitName))
-    }
+    private fun formatMassToInt(mass: Double, unitName: String?): String =
+        unitsRepository.formatTo(unitsRepository.getMassByUnit(mass, unitName))
 }

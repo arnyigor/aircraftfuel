@@ -4,15 +4,25 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arny.aircraftrefueling.R
-import com.arny.aircraftrefueling.constants.Consts
+import com.arny.aircraftrefueling.data.utils.strings.IWrappedString
+import com.arny.aircraftrefueling.data.utils.strings.ResourceString
+import com.arny.aircraftrefueling.data.utils.strings.SimpleString
+import com.arny.aircraftrefueling.domain.constants.Consts
 import com.arny.aircraftrefueling.domain.deicing.IDeicingInteractor
 import com.arny.aircraftrefueling.domain.files.IFilesInteractor
 import com.arny.aircraftrefueling.domain.models.MeasureType
 import com.arny.aircraftrefueling.domain.models.MeasureUnit
 import com.arny.aircraftrefueling.domain.units.IUnitsInteractor
+import com.arny.aircraftrefueling.utils.KeyboardHelper.hideKeyboard
 import com.arny.aircraftrefueling.utils.fromSingle
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class DeicingViewModel @AssistedInject constructor(
@@ -26,49 +36,65 @@ class DeicingViewModel @AssistedInject constructor(
         const val HALF_PERCENT = "50"
     }
 
-    private var massUnit: MeasureUnit? = null
-    private var volumeUnit: MeasureUnit? = null
-
-    fun onVolumeUnitChange(item: MeasureUnit?) {
-        TODO("Not yet implemented")
+    init {
+        loadUnits()
+        checkFileExists()
     }
 
-    fun onMassUnitChange(item: MeasureUnit?) {
-        TODO("Not yet implemented")
+    private var massUnit: MeasureUnit? = null
+
+    @StringRes
+    private var massUnitName: Int = R.string.unit_mass_kg
+
+    @StringRes
+    private var volumeUnitName: Int = R.string.unit_volume_named
+    private var volumeUnit: MeasureUnit? = null
+
+    private val _deicingUIState = MutableStateFlow<DeicingUIState>(DeicingUIState.IDLE)
+    val deicingUIState = _deicingUIState.asStateFlow()
+
+    private val _toastError = MutableSharedFlow<IWrappedString?>()
+    val toastError = _toastError.asSharedFlow()
+
+    private val _toastSuccess = MutableSharedFlow<IWrappedString?>()
+    val toastSuccess = _toastSuccess.asSharedFlow()
+
+    private val _btnDelVisible = MutableStateFlow(false)
+    val btnDelVisible = _btnDelVisible.asStateFlow()
+
+    private val _edtMassUnit = MutableStateFlow<Int?>(null)
+    val edtMassUnit = _edtMassUnit.asStateFlow()
+
+    private val _edtVolumeUnit = MutableStateFlow<Int?>(null)
+    val edtVolumeUnit = _edtVolumeUnit.asStateFlow()
+
+    private fun loadUnits() {
+        viewModelScope.launch {
+            flow { emit(unitsInteractor.loadUnits()) }
+                .catch { _toastError.emit(ResourceString(R.string.load_units_error, it.message)) }
+                .collect(::setUnitNames)
+        }
     }
 
     fun saveData(volume: String, percPvk: String, mRo: String, massTotal: String) {
         viewModelScope.launch {
             flow { emit(interactor.saveDeicingData(null, volume, percPvk, mRo, massTotal)) }
+                .catch { _toastError.emit() = SimpleString(it.message) }
                 .collect { path ->
                     if (path.isNotBlank()) {
-                        viewState.toastSuccess(R.string.success_file_write, path)
+                        _toastSuccess.value = ResourceString(R.string.success_file_write, path)
                     } else {
-                        viewState.toastError(R.string.error_file_not_write)
+                        _toastError.value = ResourceString(R.string.error_file_not_write)
                     }
                 }
-            fromSingle { interactor.saveDeicingData(null, volume, percPvk, mRo, massTotal) }
-                .subscribeFromPresenter({ path ->
-                    if (path.isNotBlank()) {
-                        viewState.toastSuccess(R.string.success_file_write, path)
-                    } else {
-                        viewState.toastError(R.string.error_file_not_write)
-                    }
-                    checkFileExists()
-                }, { e ->
-                    e.message?.let {
-                        viewState.toastError(it)
-                    }
-                })
         }
     }
 
-
     private fun checkFileExists() {
-        fromSingle { filesInteractor.isDataFileExists() }
-            .subscribeFromPresenter({ exists ->
-                viewState.setBtnDelVisible(exists)
-            })
+        viewModelScope.launch {
+            flow { emit(filesInteractor.isDataFileExists()) }
+                .collect { exists -> _btnDelVisible.value = exists }
+        }
     }
 
     private fun setUnitNames(list: List<MeasureUnit>) {
@@ -78,29 +104,24 @@ class DeicingViewModel @AssistedInject constructor(
         volumeUnit = volumeUnits.find { it.selected }
         when (massUnit?.name) {
             Consts.UNIT_KG -> {
-                @StringRes
-                val massKg = R.string.unit_mass_kg
-                viewState.setMassUnitName(massKg)
-                viewState.setEdtMassUnit(massKg)
+                massUnitName = R.string.unit_mass_kg
+                _edtMassUnit.value = R.string.unit_mass_kg
             }
 
             Consts.UNIT_LB -> {
-                @StringRes
-                val unitMassLb = R.string.unit_mass_lb
-                viewState.setMassUnitName(R.string.unit_mass_lb_named)
-                viewState.setEdtMassUnit(unitMassLb)
+                massUnitName = R.string.unit_mass_lb_named
+                _edtMassUnit.value = R.string.unit_mass_lb
             }
         }
-
         when (volumeUnit?.name) {
             Consts.UNIT_LITRE -> {
-                viewState.setVolumeUnitName(R.string.unit_volume_named)
-                viewState.setEdtVolumeUnit(R.string.unit_litre)
+                volumeUnitName = R.string.unit_volume_named
+                _edtVolumeUnit.value = R.string.unit_litre
             }
 
             Consts.UNIT_AM_GALL -> {
-                viewState.setVolumeUnitName(R.string.unit_am_gallons_named)
-                viewState.setEdtVolumeUnit(R.string.unit_am_gallons)
+                volumeUnitName = R.string.unit_am_gallons_named
+                _edtVolumeUnit.value = R.string.unit_am_gallons
             }
         }
     }
@@ -140,5 +161,46 @@ class DeicingViewModel @AssistedInject constructor(
                     viewState.toastError(it)
                 }
             })
+    }
+
+    fun onCheckPvk(checked: Boolean) {
+        viewModelScope.launch {
+            _deicingUIState.update {
+                DeicingUIState.CheckPVK(checked, if (checked) HALF_PERCENT else FULL_PERCENT)
+            }
+        }
+    }
+
+    fun onLitreCountClick(onBoard: String, density: String, percent: String) {
+        when {
+            onBoard.isBlank() || onBoard == "0" -> {
+                _deicingUIState.update {
+                    DeicingUIState.InputError(
+                        boardError = ResourceString(R.string.error_deicing_volume_with_unit) to volumeUnitName
+                    )
+                }
+            }
+
+            density.isBlank() || density == "0" -> {
+                _deicingUIState.update {
+                    DeicingUIState.InputError(
+                        densityError = ResourceString(R.string.error_val_density_pvk) to null
+                    )
+                }
+            }
+
+            percent.isBlank() || percent == "0" -> {
+                _deicingUIState.update {
+                    DeicingUIState.InputError(
+                        percentError = ResourceString(R.string.error_val_proc_pvk) to null
+                    )
+                }
+            }
+            else->{
+
+            }
+        }
+        hideKeyboard(requireActivity())
+        calculateDeicing(onBoard, density, percent)
     }
 }

@@ -3,11 +3,11 @@ package com.arny.aircraftrefueling.presentation.refuel
 import androidx.annotation.StringRes
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.RefuelApp
-import com.arny.aircraftrefueling.constants.Consts
-import com.arny.aircraftrefueling.constants.Consts.UNIT_AM_GALL
-import com.arny.aircraftrefueling.constants.Consts.UNIT_KG
-import com.arny.aircraftrefueling.constants.Consts.UNIT_LB
-import com.arny.aircraftrefueling.constants.Consts.UNIT_LITRE
+import com.arny.aircraftrefueling.domain.constants.Consts
+import com.arny.aircraftrefueling.domain.constants.Consts.UNIT_AM_GALL
+import com.arny.aircraftrefueling.domain.constants.Consts.UNIT_KG
+import com.arny.aircraftrefueling.domain.constants.Consts.UNIT_LB
+import com.arny.aircraftrefueling.domain.constants.Consts.UNIT_LITRE
 import com.arny.aircraftrefueling.domain.models.MeasureType
 import com.arny.aircraftrefueling.domain.models.MeasureUnit
 import com.arny.aircraftrefueling.domain.files.IFilesInteractor

@@ -1,11 +1,11 @@
 package com.arny.aircraftrefueling.domain.refuel
 
-import com.arny.aircraftrefueling.constants.Consts
-import com.arny.aircraftrefueling.constants.Consts.PREF_REFUEL_LAST_DATA_BOARD
-import com.arny.aircraftrefueling.constants.Consts.PREF_REFUEL_LAST_DATA_REQUIRE
-import com.arny.aircraftrefueling.constants.Consts.PREF_REFUEL_LAST_DATA_RO
-import com.arny.aircraftrefueling.constants.Consts.PREF_SAVE_REFUEL_LAST_DATA
-import com.arny.aircraftrefueling.constants.Consts.fuelsData
+import com.arny.aircraftrefueling.domain.constants.Consts
+import com.arny.aircraftrefueling.domain.constants.Consts.PREF_REFUEL_LAST_DATA_BOARD
+import com.arny.aircraftrefueling.domain.constants.Consts.PREF_REFUEL_LAST_DATA_REQUIRE
+import com.arny.aircraftrefueling.domain.constants.Consts.PREF_REFUEL_LAST_DATA_RO
+import com.arny.aircraftrefueling.domain.constants.Consts.PREF_SAVE_REFUEL_LAST_DATA
+import com.arny.aircraftrefueling.domain.constants.Consts.fuelsData
 import com.arny.aircraftrefueling.domain.models.MeasureUnit
 import com.arny.aircraftrefueling.domain.models.TankRefuelResult
 import com.arny.aircraftrefueling.data.repository.files.IFilesRepository

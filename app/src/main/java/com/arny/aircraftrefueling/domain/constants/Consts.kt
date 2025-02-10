@@ -1,4 +1,4 @@
-package com.arny.aircraftrefueling.constants
+package com.arny.aircraftrefueling.domain.constants
 
 import com.arny.aircraftrefueling.domain.models.FuelTanks
 

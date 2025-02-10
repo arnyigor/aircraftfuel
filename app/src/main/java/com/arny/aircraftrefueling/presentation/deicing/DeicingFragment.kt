@@ -5,17 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import com.arny.aircraftrefueling.R
-import com.arny.aircraftrefueling.data.utils.DataResult
+import com.arny.aircraftrefueling.data.utils.launchWhenCreated
+import com.arny.aircraftrefueling.data.utils.strings.IWrappedString
 import com.arny.aircraftrefueling.databinding.FragmentDeicingBinding
 import com.arny.aircraftrefueling.di.viewModelFactory
-import com.arny.aircraftrefueling.utils.KeyboardHelper.hideKeyboard
-import com.arny.aircraftrefueling.utils.ToastMaker
 import com.arny.aircraftrefueling.utils.alertDialog
+import com.arny.aircraftrefueling.utils.toastError
+import com.arny.aircraftrefueling.utils.toastSuccess
 import dagger.android.support.AndroidSupportInjection
 import dagger.assisted.AssistedFactory
 import javax.inject.Inject
@@ -23,9 +23,6 @@ import javax.inject.Inject
 class DeicingFragment : Fragment() {
 
     private lateinit var binding: FragmentDeicingBinding
-
-    @StringRes
-    private var massUnitName: Int = R.string.unit_mass_kg
 
     @AssistedFactory
     internal interface ViewModelFactory {
@@ -52,22 +49,54 @@ class DeicingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.title = getString(R.string.menu_deicing)
-        with(binding) {
-            buttonLitreCnt.setOnClickListener { caclMass() }
-            checkPVK.setOnCheckedChangeListener { _, isChecked ->
-                tilPercent.isVisible = isChecked
-                editPercentPVK.isEnabled = isChecked
-                if (isChecked) {
-                    editPercentPVK.setText(HALF_PERCENT)
+        initUI()
+        observeData()
+    }
+
+    private fun observeData() {
+        launchWhenCreated { viewModel.deicingUIState.collect(::updateState) }
+        launchWhenCreated { viewModel.toastError.collect(::toastError) }
+        launchWhenCreated { viewModel.toastSuccess.collect(::toastSuccess) }
+        launchWhenCreated { viewModel.btnDelVisible.collect(::setBtnDelVisible) }
+        launchWhenCreated { viewModel.edtMassUnit.collect(::setEdtMassUnit) }
+        launchWhenCreated { viewModel.edtVolumeUnit.collect(::setEdtVolumeUnit) }
+    }
+
+    private fun updateState(state: DeicingUIState) = with(binding) {
+        when (state) {
+            is DeicingUIState.CheckPVK -> {
+                tilPercent.isVisible = state.checked
+                editPercentPVK.isEnabled = state.checked
+                editPercentPVK.setText(state.percentPvk)
+            }
+
+            DeicingUIState.IDLE -> {}
+            is DeicingUIState.InputError -> TODO()
+            is DeicingUIState.Result -> {
+                if (state.success) {
+                    binding.editTotalMassFuel.setText(state.data)
                 } else {
-                    editPercentPVK.setText(FULL_PERCENT)
+                    toastError(state.error)
                 }
+            }
+        }
+    }
+
+    private fun initUI() {
+        with(binding) {
+            buttonLitreCnt.setOnClickListener {
+                viewModel.onLitreCountClick(
+                    tiedtTotalVolume.text.toString(),
+                    editDensityPVK.text.toString(),
+                    editPercentPVK.text.toString()
+                )
+            }
+            checkPVK.setOnCheckedChangeListener { _, isChecked ->
+                viewModel.onCheckPvk(isChecked)
             }
             tiedtTotalVolume.doAfterTextChanged { tilTotalVolume.error = null }
             editDensityPVK.doAfterTextChanged { tilDensity.error = null }
-            editPercentPVK.doAfterTextChanged {
-                tilPercent.error = null
-            }
+            editPercentPVK.doAfterTextChanged { tilPercent.error = null }
             btnSaveToFile.setOnClickListener {
                 viewModel.saveData(
                     tiedtTotalVolume.text.toString(),
@@ -90,67 +119,27 @@ class DeicingFragment : Fragment() {
         }
     }
 
-    private fun caclMass() = with(binding) {
-        val onBoard = tiedtTotalVolume.text.toString()
-        if (onBoard.isBlank() || onBoard == "0") {
-            tilTotalVolume.error =
-                getString(R.string.error_deicing_volume_with_unit, getString(volumeUnitName))
-            return
-        }
-        val density = editDensityPVK.text.toString()
-        if (density.isBlank() || density == "0") {
-            tilDensity.error = getString(R.string.error_val_density_pvk)
-            return
-        }
-        val percent = editPercentPVK.text.toString()
-        if (percent.isBlank() || percent == "0") {
-            tilPercent.error = getString(R.string.error_val_proc_pvk)
-            return
-        }
-        hideKeyboard(requireActivity())
-        viewModel.calculateDeicing(onBoard, density, percent)
-    }
-
-    private fun showResult(result: Result<Any>) {
-        when (result) {
-            is DataResult.Success -> {
-                binding.editTotalMassFuel.setText(result.data as String)
-            }
-
-            is Result.Error -> toastError(requireContext(), result.throwable.message)
-            is Result.ErrorRes -> toastError(requireContext(), getString(result.messageRes))
+    private fun toastError(wrappedString: IWrappedString?) {
+        wrappedString?.toString(requireContext())?.let {
+            toastError(requireContext(), it)
         }
     }
 
-    private fun toastError(errorRes: Int, message: String?) {
-        toastError(requireContext(), getString(errorRes, message))
+    private fun setEdtMassUnit(unitRes: Int?) {
+        if (unitRes != null) {
+            binding.tilTotalMass.hint = getString(R.string.total_mass_kilo, getString(unitRes))
+        }
     }
 
-    private fun toastError(message: String) {
-        toastError(requireContext(), message)
+    private fun setEdtVolumeUnit(unitRes: Int?) {
+        if (unitRes != null) {
+            binding.tilTotalVolume.hint = getString(R.string.total_volume_litre, getString(unitRes))
+        }
     }
 
-    private fun setMassUnitName(nameRes: Int) {
-        massUnitName = nameRes
-    }
-
-    private fun setVolumeUnitName(nameRes: Int) {
-        volumeUnitName = nameRes
-    }
-
-    private fun setEdtMassUnit(unitRes: Int) {
-        binding.tilTotalMass.hint = getString(R.string.total_mass_kilo, getString(unitRes))
-    }
-
-    private fun setEdtVolumeUnit(unitRes: Int) {
-        binding.tilTotalVolume.hint = getString(R.string.total_volume_litre, getString(unitRes))
-    }
-
-    private fun toastSuccess(strRes: Int, path: String?) {
-        if (path.isNullOrBlank()) {
-            ToastMaker.toastSuccess(requireContext(), getString(strRes))
-        } else {
-            ToastMaker.toastSuccess(requireContext(), getString(strRes, path))
+    private fun toastSuccess(wrappedString: IWrappedString?) {
+        wrappedString?.toString(requireContext())?.let {
+            toastSuccess(requireContext(), it)
         }
     }
 
