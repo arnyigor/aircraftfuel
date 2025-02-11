@@ -4,17 +4,17 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arny.aircraftrefueling.R
+import com.arny.aircraftrefueling.data.utils.DataResult
 import com.arny.aircraftrefueling.data.utils.strings.IWrappedString
 import com.arny.aircraftrefueling.data.utils.strings.ResourceString
 import com.arny.aircraftrefueling.data.utils.strings.SimpleString
 import com.arny.aircraftrefueling.domain.constants.Consts
 import com.arny.aircraftrefueling.domain.deicing.IDeicingInteractor
 import com.arny.aircraftrefueling.domain.files.IFilesInteractor
+import com.arny.aircraftrefueling.domain.models.DataThrowable
 import com.arny.aircraftrefueling.domain.models.MeasureType
 import com.arny.aircraftrefueling.domain.models.MeasureUnit
 import com.arny.aircraftrefueling.domain.units.IUnitsInteractor
-import com.arny.aircraftrefueling.utils.KeyboardHelper.hideKeyboard
-import com.arny.aircraftrefueling.utils.fromSingle
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,11 +56,17 @@ class DeicingViewModel @AssistedInject constructor(
     private val _toastError = MutableSharedFlow<IWrappedString?>()
     val toastError = _toastError.asSharedFlow()
 
+    private val _hideKeyboard = MutableSharedFlow<Unit>()
+    val hideKeyboard = _hideKeyboard.asSharedFlow()
+
     private val _toastSuccess = MutableSharedFlow<IWrappedString?>()
     val toastSuccess = _toastSuccess.asSharedFlow()
 
     private val _btnDelVisible = MutableStateFlow(false)
     val btnDelVisible = _btnDelVisible.asStateFlow()
+
+    private val _btnSaveVisible = MutableStateFlow(false)
+    val btnSaveVisible = _btnSaveVisible.asStateFlow()
 
     private val _edtMassUnit = MutableStateFlow<Int?>(null)
     val edtMassUnit = _edtMassUnit.asStateFlow()
@@ -79,12 +85,12 @@ class DeicingViewModel @AssistedInject constructor(
     fun saveData(volume: String, percPvk: String, mRo: String, massTotal: String) {
         viewModelScope.launch {
             flow { emit(interactor.saveDeicingData(null, volume, percPvk, mRo, massTotal)) }
-                .catch { _toastError.emit() = SimpleString(it.message) }
+                .catch { _toastError.emit(SimpleString(it.message)) }
                 .collect { path ->
                     if (path.isNotBlank()) {
-                        _toastSuccess.value = ResourceString(R.string.success_file_write, path)
+                        _toastSuccess.emit(ResourceString(R.string.success_file_write, path))
                     } else {
-                        _toastError.value = ResourceString(R.string.error_file_not_write)
+                        _toastError.emit(ResourceString(R.string.error_file_not_write))
                     }
                 }
         }
@@ -127,40 +133,61 @@ class DeicingViewModel @AssistedInject constructor(
     }
 
     fun calculateDeicing(onBoard: String, density: String, percent: String) {
-        interactor.volumeUnit = volumeUnit
-        interactor.massUnit = massUnit
-        fromSingle { getResult(onBoard, density, percent) }
-            .subscribeFromPresenter({
-                viewState.showResult(it)
-                viewState.setBtnSaveVisible(true)
-                checkFileExists()
-            }, {
-                viewState.showResult(Result.Error(it))
-            })
-    }
-
-    private fun getResult(onBoard: String, densityStr: String, percent: String): Result<String> {
-        val density = densityStr.toDouble()
-        if (density !in 0.0..100.0) {
-            return Result.ErrorRes(R.string.error_val_proc_pvk)
+        viewModelScope.launch {
+            interactor.volumeUnit = volumeUnit
+            interactor.massUnit = massUnit
+            val densityF = density.toDouble()
+            if (densityF !in 0.0..100.0) {
+                _toastError.emit(ResourceString(R.string.error_val_proc_pvk))
+            } else {
+                interactor.calcMass(onBoard.toDouble(), densityF, percent.toDouble())
+                    .catch { error ->
+                        _deicingUIState.update {
+                            if (error is DataThrowable) {
+                                DeicingUIState.Result(false, "", ResourceString(error.errorRes))
+                            } else {
+                                DeicingUIState.Result(false, "", SimpleString(error.message))
+                            }
+                        }
+                    }
+                    .collect { result ->
+                        when (result) {
+                            is DataResult.Error -> {}
+                            is DataResult.Success -> {
+                                _deicingUIState.update {
+                                    DeicingUIState.Result(true, result.result, null)
+                                }
+                                _btnSaveVisible.emit(true)
+                                checkFileExists()
+                            }
+                        }
+                    }
+            }
         }
-        return Result.Success(interactor.calcMass(onBoard.toDouble(), density, percent.toDouble()))
     }
 
     fun onRemoveFile() {
-        fromSingle { filesInteractor.removeFile() }
-            .subscribeFromPresenter({ exists ->
-                viewState.setBtnDelVisible(exists)
-                if (exists) {
-                    viewState.toastError(R.string.error_file_not_deleted)
-                } else {
-                    viewState.toastSuccess(R.string.file_deleted)
+        viewModelScope.launch {
+            filesInteractor.removeFile()
+                .collect { result ->
+                    when (result) {
+                        is DataResult.Error -> {
+                            _toastError.emit(SimpleString(result.throwable.message))
+                        }
+
+                        is DataResult.Success -> {
+                            val exists = result.result
+                            _btnDelVisible.emit(exists)
+                            if (exists) {
+                                _toastError.emit(ResourceString(R.string.error_file_not_deleted))
+                            } else {
+                                _toastSuccess.emit(ResourceString(R.string.file_deleted))
+                            }
+                        }
+                    }
                 }
-            }, { throwable ->
-                throwable.message?.let {
-                    viewState.toastError(it)
-                }
-            })
+
+        }
     }
 
     fun onCheckPvk(checked: Boolean) {
@@ -172,35 +199,34 @@ class DeicingViewModel @AssistedInject constructor(
     }
 
     fun onLitreCountClick(onBoard: String, density: String, percent: String) {
-        when {
-            onBoard.isBlank() || onBoard == "0" -> {
-                _deicingUIState.update {
-                    DeicingUIState.InputError(
-                        boardError = ResourceString(R.string.error_deicing_volume_with_unit) to volumeUnitName
-                    )
+        viewModelScope.launch {
+            when {
+                onBoard.isBlank() || onBoard == "0" -> {
+                    _deicingUIState.update {
+                        DeicingUIState.InputError(
+                            boardError = R.string.error_deicing_volume_with_unit to volumeUnitName
+                        )
+                    }
+                }
+
+                density.isBlank() || density == "0" -> {
+                    _deicingUIState.update {
+                        DeicingUIState.InputError(
+                            densityError = R.string.error_val_density_pvk to null
+                        )
+                    }
+                }
+
+                percent.isBlank() || percent == "0" -> {
+                    _deicingUIState.update {
+                        DeicingUIState.InputError(
+                            percentError = R.string.error_val_proc_pvk to null
+                        )
+                    }
                 }
             }
-
-            density.isBlank() || density == "0" -> {
-                _deicingUIState.update {
-                    DeicingUIState.InputError(
-                        densityError = ResourceString(R.string.error_val_density_pvk) to null
-                    )
-                }
-            }
-
-            percent.isBlank() || percent == "0" -> {
-                _deicingUIState.update {
-                    DeicingUIState.InputError(
-                        percentError = ResourceString(R.string.error_val_proc_pvk) to null
-                    )
-                }
-            }
-            else->{
-
-            }
+            _hideKeyboard.emit(Unit)
+            calculateDeicing(onBoard, density, percent)
         }
-        hideKeyboard(requireActivity())
-        calculateDeicing(onBoard, density, percent)
     }
 }

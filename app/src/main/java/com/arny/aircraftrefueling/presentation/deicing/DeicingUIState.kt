@@ -10,14 +10,14 @@ sealed class DeicingUIState {
     ) : DeicingUIState()
 
     data class InputError(
-        val boardError: Pair<IWrappedString, Int?>? = null,
-        val densityError: Pair<IWrappedString, Int?>? = null,
-        val percentError: Pair<IWrappedString, Int?>? = null
+        val boardError: Pair<Int, Int?>? = null,
+        val densityError: Pair<Int, Int?>? = null,
+        val percentError: Pair<Int, Int?>? = null
     ) : DeicingUIState()
 
     data class Result(
         val success: Boolean,
         val data: String,
-        val error: IWrappedString,
+        val error: IWrappedString? = null,
     ) : DeicingUIState()
 }

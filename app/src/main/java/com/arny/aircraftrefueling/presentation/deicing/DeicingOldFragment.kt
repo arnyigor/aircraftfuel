@@ -1,4 +1,5 @@
 package com.arny.aircraftrefueling.presentation.deicing
+/*
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -153,3 +154,4 @@ class DeicingOldFragment : Fragment(), DeicingView {
         binding.btnSaveToFile.isVisible = visible
     }
 }
+*/

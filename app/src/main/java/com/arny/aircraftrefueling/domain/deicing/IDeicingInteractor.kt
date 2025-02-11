@@ -1,13 +1,15 @@
 package com.arny.aircraftrefueling.domain.deicing
 
+import com.arny.aircraftrefueling.data.utils.DataResult
 import com.arny.aircraftrefueling.domain.models.MeasureUnit
+import kotlinx.coroutines.flow.Flow
 
 interface IDeicingInteractor {
     var massUnit: MeasureUnit?
     var volumeUnit: MeasureUnit?
-    fun calcMass(totalVolume: Double, mRo: Double, percent: Double): String
+    suspend fun calcMass(totalVolume: Double, mRo: Double, percent: Double): Flow<DataResult<String>>
 
-    fun saveDeicingData(
+    suspend fun saveDeicingData(
             recordData: String?,
             mVolTotal: String,
             mPercPVK: String,

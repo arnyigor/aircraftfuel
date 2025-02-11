@@ -13,9 +13,11 @@ import com.arny.aircraftrefueling.data.utils.launchWhenCreated
 import com.arny.aircraftrefueling.data.utils.strings.IWrappedString
 import com.arny.aircraftrefueling.databinding.FragmentDeicingBinding
 import com.arny.aircraftrefueling.di.viewModelFactory
+import com.arny.aircraftrefueling.utils.KeyboardHelper.hideKeyboard
 import com.arny.aircraftrefueling.utils.alertDialog
 import com.arny.aircraftrefueling.utils.toastError
 import com.arny.aircraftrefueling.utils.toastSuccess
+import com.google.android.material.textfield.TextInputLayout
 import dagger.android.support.AndroidSupportInjection
 import dagger.assisted.AssistedFactory
 import javax.inject.Inject
@@ -58,26 +60,44 @@ class DeicingFragment : Fragment() {
         launchWhenCreated { viewModel.toastError.collect(::toastError) }
         launchWhenCreated { viewModel.toastSuccess.collect(::toastSuccess) }
         launchWhenCreated { viewModel.btnDelVisible.collect(::setBtnDelVisible) }
+        launchWhenCreated { viewModel.btnSaveVisible.collect(::setBtnSaveVisible) }
         launchWhenCreated { viewModel.edtMassUnit.collect(::setEdtMassUnit) }
         launchWhenCreated { viewModel.edtVolumeUnit.collect(::setEdtVolumeUnit) }
+        launchWhenCreated { viewModel.hideKeyboard.collect { hideKeyboard(requireActivity()) } }
     }
 
     private fun updateState(state: DeicingUIState) = with(binding) {
         when (state) {
+            DeicingUIState.IDLE -> {}
             is DeicingUIState.CheckPVK -> {
                 tilPercent.isVisible = state.checked
                 editPercentPVK.isEnabled = state.checked
                 editPercentPVK.setText(state.percentPvk)
             }
 
-            DeicingUIState.IDLE -> {}
-            is DeicingUIState.InputError -> TODO()
+            is DeicingUIState.InputError -> {
+                setError(state.boardError, tilTotalVolume)
+                setError(state.densityError, tilDensity)
+                setError(state.percentError, tilPercent)
+            }
+
             is DeicingUIState.Result -> {
                 if (state.success) {
                     binding.editTotalMassFuel.setText(state.data)
                 } else {
                     toastError(state.error)
                 }
+            }
+        }
+    }
+
+    private fun setError(errorModel: Pair<Int, Int?>?, inputLayout: TextInputLayout) {
+        errorModel?.let { error ->
+            val (intRes, unit) = error
+            if (unit != null) {
+                inputLayout.error = getString(intRes, getString(unit))
+            } else {
+                inputLayout.error = getString(intRes)
             }
         }
     }
