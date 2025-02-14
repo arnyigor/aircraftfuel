@@ -60,6 +60,7 @@
     <string name="litre_qty">Объем</string>
     <string name="error_sd_card_not_avalable">SD-карта не доступна</string>
     <string name="file_deleted">Файл удален</string>
+    <string name="error_no_type_data">Нет данных о типе</string>
     <string name="error_file_not_deleted">Файл не удален</string>
     <string name="error_file_not_write">Файл не записан</string>
     <string name="success_file_write">Файл успешно записан %s</string>

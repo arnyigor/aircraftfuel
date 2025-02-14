@@ -42,6 +42,7 @@
     <string name="file_fueled">Filled with</string>
     <string name="error_sd_card_not_avalable">SD card not available:</string>
     <string name="file_deleted">File deleted</string>
+    <string name="error_no_type_data">No type data</string>
     <string name="error_file_not_deleted">File not deleted</string>
     <string name="error_file_not_write">File not recorded</string>
     <string name="success_file_write">File successfully recorded %s</string>
@@ -71,4 +72,5 @@
     <string name="other_settings">Other settings</string>
 	<string name="save_last_refuel_data">Save last calculated refuel data</string>
     <string name="error_deicing_volume_with_unit">Enter the correct volume value in %s</string>
+    <string name="aircraft_type">Aircraft Type</string>
 </resources>

@@ -4,19 +4,17 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arny.aircraftrefueling.R
+import com.arny.aircraftrefueling.data.utils.DataResult
 import com.arny.aircraftrefueling.data.utils.strings.IWrappedString
 import com.arny.aircraftrefueling.data.utils.strings.ResourceString
+import com.arny.aircraftrefueling.data.utils.strings.SimpleString
 import com.arny.aircraftrefueling.domain.constants.Consts
-import com.arny.aircraftrefueling.domain.constants.Consts.UNIT_AM_GALL
-import com.arny.aircraftrefueling.domain.constants.Consts.UNIT_KG
-import com.arny.aircraftrefueling.domain.constants.Consts.UNIT_LB
-import com.arny.aircraftrefueling.domain.constants.Consts.UNIT_LITRE
 import com.arny.aircraftrefueling.domain.files.IFilesInteractor
+import com.arny.aircraftrefueling.domain.models.DataThrowable
 import com.arny.aircraftrefueling.domain.models.MeasureType
 import com.arny.aircraftrefueling.domain.models.MeasureUnit
 import com.arny.aircraftrefueling.domain.refuel.IRefuelInteractor
 import com.arny.aircraftrefueling.domain.units.IUnitsInteractor
-import com.arny.aircraftrefueling.utils.fromSingle
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +22,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class RefuelViewModel @AssistedInject constructor(
@@ -38,13 +37,37 @@ class RefuelViewModel @AssistedInject constructor(
     }
 
     private var massUnit: MeasureUnit? = null
+
+    @StringRes
+    private var massUnitName: Int = R.string.unit_mass_kg
+
+    @StringRes
+    private var volumeUnitName: Int = R.string.unit_volume_named
     private var volumeUnit: MeasureUnit? = null
 
+    private val _refuelUIState = MutableStateFlow<RefuelUIState>(RefuelUIState.IDLE)
+    val refuelUIState = _refuelUIState.asStateFlow()
+
     private val _toastError = MutableSharedFlow<IWrappedString?>()
-    val error = _toastError.asSharedFlow()
+    val toastError = _toastError.asSharedFlow()
+
+    private val _hideKeyboard = MutableSharedFlow<Unit>()
+    val hideKeyboard = _hideKeyboard.asSharedFlow()
+
+    private val _toastSuccess = MutableSharedFlow<IWrappedString?>()
+    val toastSuccess = _toastSuccess.asSharedFlow()
 
     private val _btnDelVisible = MutableStateFlow(false)
     val btnDelVisible = _btnDelVisible.asStateFlow()
+
+    private val _btnSaveVisible = MutableStateFlow(false)
+    val btnSaveVisible = _btnSaveVisible.asStateFlow()
+
+    private val _edtMassUnit = MutableStateFlow<Int?>(null)
+    val edtMassUnit = _edtMassUnit.asStateFlow()
+
+    private val _edtVolumeUnit = MutableStateFlow<Int?>(null)
+    val edtVolumeUnit = _edtVolumeUnit.asStateFlow()
 
     private fun loadUnits() {
         viewModelScope.launch {
@@ -71,58 +94,100 @@ class RefuelViewModel @AssistedInject constructor(
         massUnit = massUnits.find { it.selected }
         volumeUnit = volumeUnits.find { it.selected }
         when (massUnit?.name) {
-            UNIT_KG -> {
-                @StringRes val massKg = R.string.unit_mass_kg
-                viewState.setMassUnitName(massKg)
-                viewState.setTotalMassUnit(massKg)
-                viewState.setOstatMassUnit(massKg)
-                viewState.setReqMassUnit(massKg)
+            Consts.UNIT_KG -> {
+                massUnitName = R.string.unit_mass_kg
+                _edtMassUnit.value = R.string.unit_mass_kg
             }
 
-            UNIT_LB -> {
-                viewState.setMassUnitName(R.string.unit_mass_lb_named)
-                @StringRes
-                val unitMassLb = R.string.unit_mass_lb
-                viewState.setTotalMassUnit(unitMassLb)
-                viewState.setOstatMassUnit(unitMassLb)
-                viewState.setReqMassUnit(unitMassLb)
+            Consts.UNIT_LB -> {
+                massUnitName = R.string.unit_mass_lb_named
+                _edtMassUnit.value = R.string.unit_mass_lb
             }
         }
-
         when (volumeUnit?.name) {
-            UNIT_LITRE -> {
-                viewState.setVolumeUnitName(R.string.unit_volume_named)
-                viewState.setOstatVolumeUnit(R.string.unit_litre)
+            Consts.UNIT_LITRE -> {
+                volumeUnitName = R.string.unit_volume_named
+                _edtVolumeUnit.value = R.string.unit_litre
             }
 
-            UNIT_AM_GALL -> {
-                viewState.setVolumeUnitName(R.string.unit_am_gallons_named)
-                viewState.setOstatVolumeUnit(R.string.unit_am_gallons)
+            Consts.UNIT_AM_GALL -> {
+                volumeUnitName = R.string.unit_am_gallons_named
+                _edtVolumeUnit.value = R.string.unit_am_gallons
             }
         }
     }
 
     fun refuel(density: String, onBoard: String, required: String, type: String) {
-        interactor.volumeUnit = volumeUnit
-        interactor.massUnit = massUnit
-        fromSingle {
+        viewModelScope.launch {
+            interactor.volumeUnit = volumeUnit
+            interactor.massUnit = massUnit
             interactor.calculateRefuel(
-                required.toDouble(),
-                density.toDouble(),
-                onBoard.toDouble(),
-                type
+                mReq = required.toDouble(),
+                mRo = density.toDouble(),
+                mBoard = onBoard.toDouble(),
+                type = type
             )
-        }.subscribeFromPresenter({
-            viewState.showResult(Result.Success(it))
-            viewState.setBtnSaveVisible(true)
-            checkFileExists()
-        }, { e ->
-            if (e.message == Consts.ERROR_TOTAL_LESS) {
-                viewState.showResult(Result.ErrorRes(R.string.error_val_on_board))
-            } else {
-                viewState.showResult(Result.Error(e))
+                .catch { onError(it) }
+                .collect { result ->
+                    when (result) {
+                        is DataResult.Error -> onError(result.throwable)
+                        is DataResult.Success -> {
+                            _refuelUIState.update {
+                                RefuelUIState.Result(true, result.result)
+                            }
+                            _btnSaveVisible.value = true
+                            checkFileExists()
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun onError(throwable: Throwable) {
+        when {
+            throwable.message == Consts.ERROR_TOTAL_LESS -> {
+                _refuelUIState.update {
+                    RefuelUIState.Result(false, error = ResourceString(R.string.error_val_on_board))
+                }
             }
-        })
+
+            throwable is DataThrowable -> RefuelUIState.Result(
+                false,
+                error = throwable.wrappedString
+            )
+        }
+    }
+
+    fun calculateFuelCapacity(onBoard: String, required: String, density: String, type: String) {
+        viewModelScope.launch {
+            when {
+                onBoard.isBlank() || onBoard == "0" -> {
+                    _refuelUIState.update {
+                        RefuelUIState.InputError(
+                            boardError = R.string.error_val_on_board_with_unit to massUnitName
+                        )
+                    }
+                }
+
+                required.isBlank() || required == "0" -> {
+                    _refuelUIState.update {
+                        RefuelUIState.InputError(
+                            requiredError = R.string.error_val_req to massUnitName
+                        )
+                    }
+                }
+
+                density.isBlank() || density == "0" -> {
+                    _refuelUIState.update {
+                        RefuelUIState.InputError(
+                            densityError = R.string.error_val_density to null
+                        )
+                    }
+                }
+            }
+            _hideKeyboard.emit(Unit)
+            refuel(density, onBoard, required, type)
+        }
     }
 
     fun saveData(
@@ -132,34 +197,40 @@ class RefuelViewModel @AssistedInject constructor(
         density: String,
         volume: String,
     ) {
-        fromSingle { interactor.saveData(recordData, onBoard, require, density, volume) }
-            .subscribeFromPresenter({ path ->
-                if (path.isNotBlank()) {
-                    viewState.toastSuccess(R.string.success_file_write, path)
-                } else {
-                    viewState.toastError(R.string.error_file_not_write)
+        viewModelScope.launch {
+            flow { emit(interactor.saveData(recordData, onBoard, require, density, volume)) }
+                .catch { _toastError.emit(SimpleString(it.message)) }
+                .collect { path ->
+                    if (path.isNotBlank()) {
+                        _toastSuccess.emit(ResourceString(R.string.success_file_write, path))
+                    } else {
+                        _toastError.emit(ResourceString(R.string.error_file_not_write))
+                    }
                 }
-                checkFileExists()
-            }, { e ->
-                e.message?.let {
-                    viewState.toastError(it)
-                }
-            })
+        }
     }
 
     fun onRemoveFile() {
-        fromSingle { filesInteractor.removeFile() }
-            .subscribeFromPresenter({ exists ->
-                viewState.setBtnDelVisible(exists)
-                if (exists) {
-                    viewState.toastError(R.string.error_file_not_deleted)
-                } else {
-                    viewState.toastSuccess(R.string.file_deleted)
+        viewModelScope.launch {
+            filesInteractor.removeFile()
+                .collect { result ->
+                    when (result) {
+                        is DataResult.Error -> {
+                            _toastError.emit(SimpleString(result.throwable.message))
+                        }
+
+                        is DataResult.Success -> {
+                            val exists = result.result
+                            _btnDelVisible.emit(exists)
+                            if (exists) {
+                                _toastError.emit(ResourceString(R.string.error_file_not_deleted))
+                            } else {
+                                _toastSuccess.emit(ResourceString(R.string.file_deleted))
+                            }
+                        }
+                    }
                 }
-            }, { throwable ->
-                throwable.message?.let {
-                    viewState.toastError(it)
-                }
-            })
+
+        }
     }
 }

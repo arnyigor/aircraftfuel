@@ -3,6 +3,7 @@ agp = "8.8.0"
 drawerlayout = "1.2.0"
 glide = "4.11.0"
 jakewhartonTimber = "5.0.1"
+jodaTime = "2.12.7"
 kotlin = "1.9.24"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -40,6 +41,7 @@ glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 glide-okhttp3-integration = { module = "com.github.bumptech.glide:okhttp3-integration", version.ref = "glide" }
 glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
 jakewharton-timber = { module = "com.jakewharton.timber:timber", version.ref = "jakewhartonTimber" }
+joda-time = { module = "joda-time:joda-time", version.ref = "jodaTime" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

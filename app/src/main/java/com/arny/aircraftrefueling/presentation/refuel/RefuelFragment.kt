@@ -11,34 +11,30 @@ import androidx.core.view.isVisible
 import androidx.core.widget.TextViewCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import com.arny.aircraftrefueling.R
-import com.arny.aircraftrefueling.domain.models.TankRefuelResult
+import com.arny.aircraftrefueling.data.utils.launchWhenCreated
+import com.arny.aircraftrefueling.data.utils.strings.IWrappedString
 import com.arny.aircraftrefueling.databinding.RefuelFragmentBinding
 import com.arny.aircraftrefueling.di.viewModelFactory
-import com.arny.aircraftrefueling.presentation.deicing.DeicingViewModel
+import com.arny.aircraftrefueling.domain.models.TankRefuelResult
 import com.arny.aircraftrefueling.utils.KeyboardHelper.hideKeyboard
-import com.arny.aircraftrefueling.utils.ToastMaker.toastError
-import com.arny.aircraftrefueling.utils.ToastMaker.toastSuccess
 import com.arny.aircraftrefueling.utils.alertDialog
+import com.arny.aircraftrefueling.utils.toastError
+import com.arny.aircraftrefueling.utils.toastSuccess
+import com.google.android.material.textfield.TextInputLayout
 import dagger.assisted.AssistedFactory
 import javax.inject.Inject
-import kotlin.getValue
 import kotlin.properties.Delegates
 
-class RefuelFragment : Fragment(), RefuelView {
+class RefuelFragment : Fragment() {
 
     private lateinit var binding: RefuelFragmentBinding
 
-    private var massUnitName: Int = R.string.unit_mass_kg
-    private var volumeUnitName: Int = R.string.unit_volume_named
-
-    private var selectedType by Delegates.observable("", { _, old, new ->
+    private var selectedType by Delegates.observable("") { _, old, new ->
         if (old != new) {
-            activity?.title = "${getString(R.string.menu_fueling)} ${new}"
+            activity?.title = "${getString(R.string.menu_fueling)} $new"
         }
-    })
-
+    }
 
     @AssistedFactory
     internal interface ViewModelFactory {
@@ -60,8 +56,32 @@ class RefuelFragment : Fragment(), RefuelView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.title = getString(R.string.menu_fueling)
+        setListeners()
+        observeData()
+    }
+
+    private fun observeData() {
+        launchWhenCreated { viewModel.refuelUIState.collect(::updateState) }
+        launchWhenCreated { viewModel.toastError.collect(::toastError) }
+        launchWhenCreated { viewModel.toastSuccess.collect(::toastSuccess) }
+        launchWhenCreated { viewModel.btnDelVisible.collect(::setBtnDelVisible) }
+        launchWhenCreated { viewModel.btnSaveVisible.collect(::setBtnSaveVisible) }
+        launchWhenCreated { viewModel.edtMassUnit.collect(::setEdtMassUnit) }
+        launchWhenCreated { viewModel.edtVolumeUnit.collect(::setEdtVolumeUnit) }
+        launchWhenCreated { viewModel.hideKeyboard.collect { hideKeyboard(requireActivity()) } }
+    }
+
+    private fun setListeners() {
         with(binding) {
-            btnCalculate.setOnClickListener { calculateFuelCapacity() }
+            btnCalculate.setOnClickListener {
+                val onBoard = editTotalMass.text.toString()
+                val type = spinAircraftType.getItemAtPosition(
+                    spinAircraftType.selectedItemPosition
+                ).toString()
+                val required = editRequiredMass.text.toString()
+                val density = editDensityFuel.text.toString()
+                viewModel.calculateFuelCapacity(onBoard, required, density, type)
+            }
             btnSaveToFile.setOnClickListener {
                 viewModel.saveData(
                     tiEdtRecodData.text.toString(),
@@ -92,12 +112,48 @@ class RefuelFragment : Fragment(), RefuelView {
                 }
             }
             spinAircraftType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
                     selectedType = spinAircraftType.getItemAtPosition(position).toString()
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
                 }
+            }
+        }
+    }
+
+    private fun updateState(state: RefuelUIState) = with(binding) {
+        when (state) {
+            RefuelUIState.IDLE -> {}
+
+            is RefuelUIState.InputError -> {
+                setError(state.boardError, tilOnBoard)
+                setError(state.densityError, tilDensity)
+                setError(state.requiredError, tilReq)
+            }
+
+            is RefuelUIState.Result -> {
+                if (state.success) {
+                    state.data?.let { showData(it) }
+                } else {
+                    toastError(state.error)
+                }
+            }
+        }
+    }
+
+    private fun setError(errorModel: Pair<Int, Int?>?, inputLayout: TextInputLayout) {
+        errorModel?.let { error ->
+            val (intRes, unit) = error
+            if (unit != null) {
+                inputLayout.error = getString(intRes, getString(unit))
+            } else {
+                inputLayout.error = getString(intRes)
             }
         }
     }
@@ -126,33 +182,14 @@ class RefuelFragment : Fragment(), RefuelView {
         tvTotalLitre.text = refuelResult.volumeResult
         tvTotalKilo.text = refuelResult.massTotal
         tvLT.text = String.format("%s:\n%s", getString(R.string.left_fuel_tank), refuelResult.left)
-        tvRT.text = String.format("%s:\n%s", getString(R.string.right_fuel_tank), refuelResult.right)
-        tvCT.text = String.format("%s:\n%s", getString(R.string.center_fuel_tank), refuelResult.centre)
+        tvRT.text =
+            String.format("%s:\n%s", getString(R.string.right_fuel_tank), refuelResult.right)
+        tvCT.text =
+            String.format("%s:\n%s", getString(R.string.center_fuel_tank), refuelResult.centre)
         TextViewCompat.setTextAppearance(
             tvCT,
             if (refuelResult.centreOver) R.style.TankInfoError else R.style.TankInfoDefault
         )
-    }
-
-    private fun calculateFuelCapacity() = with(binding) {
-        val onBoard = editTotalMass.text.toString()
-        if (onBoard.isBlank()) {
-            toastError(context, getString(R.string.error_val_on_board_with_unit, getString(massUnitName)))
-            return
-        }
-        val required = editRequiredMass.text.toString()
-        if (required.isBlank() || required == "0") {
-            toastError(context, getString(R.string.error_val_req, getString(massUnitName)))
-            return
-        }
-        val density = editDensityFuel.text.toString()
-        if (density.isBlank() || density == "0") {
-            toastError(context, getString(R.string.error_val_density))
-            return
-        }
-        hideKeyboard(requireActivity())
-        val type = spinAircraftType.getItemAtPosition(spinAircraftType.selectedItemPosition).toString()
-        presenter.refuel(density, onBoard, required, type)
     }
 
     override fun setMassUnitName(nameRes: Int) {
@@ -171,35 +208,51 @@ class RefuelFragment : Fragment(), RefuelView {
         toastError(requireContext(), message)
     }
 
-    override fun setTotalMassUnit(unitRes: Int) {
-        binding.tilOnBoard.hint = getString(R.string.has_on_board, getString(unitRes))
-    }
-
-    override fun setOstatMassUnit(unitRes: Int) {
+      fun setOstatMassUnit(unitRes: Int) {
         binding.tvOstatMass.text = getText(unitRes)
     }
 
-    override fun setReqMassUnit(unitRes: Int) {
+      fun setReqMassUnit(unitRes: Int) {
         binding.tilReq.hint = getString(R.string.required_kilo, getString(unitRes))
     }
 
-    override fun setOstatVolumeUnit(unitRes: Int) {
+      fun setOstatVolumeUnit(unitRes: Int) {
         binding.tvReqHeader.text = getString(unitRes)
     }
 
-    override fun toastSuccess(strRes: Int, path: String?) {
-        if (path.isNullOrBlank()) {
-            toastSuccess(requireContext(), getString(strRes))
-        } else {
-            toastSuccess(requireContext(), getString(strRes, path))
+
+
+
+
+    private fun toastError(wrappedString: IWrappedString?) {
+        wrappedString?.toString(requireContext())?.let {
+            toastError(requireContext(), it)
         }
     }
 
-    override fun setBtnDelVisible(visible: Boolean) {
+    private fun setEdtMassUnit(unitRes: Int?) {
+        if (unitRes != null) {
+            binding.tilOnBoard.hint = getString(R.string.has_on_board, getString(unitRes))
+        }
+    }
+
+    private fun setEdtVolumeUnit(unitRes: Int?) {
+        if (unitRes != null) {
+            binding.tvOstatMass.hint = getString(R.string.total_volume_litre, getString(unitRes))
+        }
+    }
+
+    private fun toastSuccess(wrappedString: IWrappedString?) {
+        wrappedString?.toString(requireContext())?.let {
+            toastSuccess(requireContext(), it)
+        }
+    }
+
+    private fun setBtnDelVisible(visible: Boolean) {
         binding.btnRemoveData.isVisible = visible
     }
 
-    override fun setBtnSaveVisible(visible: Boolean) {
+    private fun setBtnSaveVisible(visible: Boolean) {
         binding.btnSaveToFile.isVisible = visible
     }
 }

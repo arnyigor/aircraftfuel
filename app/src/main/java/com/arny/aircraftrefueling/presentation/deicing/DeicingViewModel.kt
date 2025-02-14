@@ -144,7 +144,7 @@ class DeicingViewModel @AssistedInject constructor(
                     .catch { error ->
                         _deicingUIState.update {
                             if (error is DataThrowable) {
-                                DeicingUIState.Result(false, "", ResourceString(error.errorRes))
+                                DeicingUIState.Result(false, "", error.wrappedString)
                             } else {
                                 DeicingUIState.Result(false, "", SimpleString(error.message))
                             }

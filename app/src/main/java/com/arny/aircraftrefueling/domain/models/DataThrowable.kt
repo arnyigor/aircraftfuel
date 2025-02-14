@@ -1,5 +1,5 @@
 package com.arny.aircraftrefueling.domain.models
 
-import androidx.annotation.StringRes
+import com.arny.aircraftrefueling.data.utils.strings.IWrappedString
 
-class DataThrowable(@StringRes val errorRes: Int) : Throwable()
+class DataThrowable(val wrappedString: IWrappedString) : Throwable()

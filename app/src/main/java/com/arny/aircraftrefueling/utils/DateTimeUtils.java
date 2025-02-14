@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DateTimeUtils {
@@ -38,45 +37,35 @@ public class DateTimeUtils {
         return Pattern.matches(regex, string);
     }
 
-    public static String match(String where, String pattern, int groupnum) {
-        Pattern p = Pattern.compile(pattern);
-        Matcher m = p.matcher(where);
-        while (m.find()) {
-            String group = m.group(groupnum);
-            if (group != null && !group.equals("")) {
-                return group;
-            }
-        }
-        return null;
-    }
-
     private static Locale getLocale(String myTimestamp) {
         boolean isUS = Pattern.matches("(?i).*[A-z]+.*", myTimestamp);
         return isUS ? Locale.US : Locale.getDefault();
     }
 
     public static String dateFormatChooser(String myTimestamp) {
-        HashMap<String, String> pregs = new HashMap<>();
-        pregs.put("^\\d{1,2}\\.\\d{2}\\.\\d{4}$", "dd.MM.yyyy");
-        pregs.put("^\\d{1,2}\\.\\d{2}\\.\\d{2}$", "dd.MM.yy");
-        pregs.put("^\\d{1,2}\\-\\D+\\-\\d{2}$", "dd-MMM-yy");
-        pregs.put("^\\d{1,2}\\-\\D+\\-\\d{4}$", "dd-MMM-yyyy");
-        pregs.put("^\\d{1,2}\\s+\\D+\\s\\d{2}$", "dd MMM yy");
-        pregs.put("^\\d{1,2}\\s+\\D+\\s+\\d{4}$", "dd MMM yyyy");
-        pregs.put("^\\d{1,2}\\s+\\d{2}\\s\\d{2}$", "dd MM yy");
-        pregs.put("^\\d{1,2}\\d{2}\\d{4}$", "ddMMyyyy");
+        HashMap<String, String> map = getStringStringHashMap();
         String format = "dd MMM yyyy";
-        for (HashMap.Entry<String, String> entry : pregs.entrySet()) {
+        for (HashMap.Entry<String, String> entry : map.entrySet()) {
             boolean matches = Pattern.matches(entry.getKey(), myTimestamp);
             if (matches) {
-                //                System.out.println("dateFormatChooser myTimestamp:" + myTimestamp + ": format:" + value);
-//				Log.d(DateTimeUtils.class.getSimpleName(), "dateFormatChooser myTimestamp:" + myTimestamp + ": format:" + value);
                 return entry.getValue();
             }
         }
-//        System.out.println("dateFormatChooser myTimestamp:" + myTimestamp + ": format:" + format);
-//		Log.d(DateTimeUtils.class.getSimpleName(), "dateFormatChooser myTimestamp:" + myTimestamp + ": format:" + format);
         return format;
+    }
+
+    @NonNull
+    private static HashMap<String, String> getStringStringHashMap() {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("^\\d{1,2}\\.\\d{2}\\.\\d{4}$", "dd.MM.yyyy");
+        map.put("^\\d{1,2}\\.\\d{2}\\.\\d{2}$", "dd.MM.yy");
+        map.put("^\\d{1,2}\\-\\D+\\-\\d{2}$", "dd-MMM-yy");
+        map.put("^\\d{1,2}\\-\\D+\\-\\d{4}$", "dd-MMM-yyyy");
+        map.put("^\\d{1,2}\\s+\\D+\\s\\d{2}$", "dd MMM yy");
+        map.put("^\\d{1,2}\\s+\\D+\\s+\\d{4}$", "dd MMM yyyy");
+        map.put("^\\d{1,2}\\s+\\d{2}\\s\\d{2}$", "dd MM yy");
+        map.put("^\\d{1,2}\\d{2}\\d{4}$", "ddMMyyyy");
+        return map;
     }
 
     private static long getEsTime(long startTime, long curTime, int iter, int tot) {

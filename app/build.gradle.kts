@@ -74,6 +74,7 @@ dependencies {
     implementation(libs.navigation.fragment.ktx)
     implementation(libs.navigation.ui.ktx)
     implementation(libs.dagger)
+    implementation(libs.joda.time)
     implementation(libs.dagger.android)
     implementation(libs.dagger.android.support)
     implementation(libs.androidx.legacy.support.v4)

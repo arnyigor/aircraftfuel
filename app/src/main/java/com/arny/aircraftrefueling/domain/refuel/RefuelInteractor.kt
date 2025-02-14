@@ -1,16 +1,23 @@
 package com.arny.aircraftrefueling.domain.refuel
 
+import com.arny.aircraftrefueling.R
+import com.arny.aircraftrefueling.data.repository.files.IFilesRepository
+import com.arny.aircraftrefueling.data.repository.units.IUnitsRepository
+import com.arny.aircraftrefueling.data.utils.DataResult
+import com.arny.aircraftrefueling.data.utils.doAsync
+import com.arny.aircraftrefueling.data.utils.strings.ResourceString
+import com.arny.aircraftrefueling.data.utils.strings.SimpleString
 import com.arny.aircraftrefueling.domain.constants.Consts
 import com.arny.aircraftrefueling.domain.constants.Consts.PREF_REFUEL_LAST_DATA_BOARD
 import com.arny.aircraftrefueling.domain.constants.Consts.PREF_REFUEL_LAST_DATA_REQUIRE
 import com.arny.aircraftrefueling.domain.constants.Consts.PREF_REFUEL_LAST_DATA_RO
 import com.arny.aircraftrefueling.domain.constants.Consts.PREF_SAVE_REFUEL_LAST_DATA
 import com.arny.aircraftrefueling.domain.constants.Consts.fuelsData
+import com.arny.aircraftrefueling.domain.models.DataThrowable
 import com.arny.aircraftrefueling.domain.models.MeasureUnit
 import com.arny.aircraftrefueling.domain.models.TankRefuelResult
-import com.arny.aircraftrefueling.data.repository.files.IFilesRepository
-import com.arny.aircraftrefueling.data.repository.units.IUnitsRepository
 import com.arny.aircraftrefueling.utils.Prefs
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class RefuelInteractor @Inject constructor(
@@ -39,15 +46,15 @@ class RefuelInteractor @Inject constructor(
      * @param mRo     массовая плотность
      * @param onBoard     масса, остаток
      */
-    override fun calculateRefuel(
+    override suspend fun calculateRefuel(
         mReq: Double,
         mRo: Double,
         mBoard: Double,
         type: String
-    ): TankRefuelResult {
+    ): Flow<DataResult<TankRefuelResult>> = doAsync {
         val aircraftType = fuelsData.find { it.aircraftType == type }
-        requireNotNull(aircraftType) {
-            "Нет данных о типе"
+        if (aircraftType == null) {
+            throw DataThrowable(ResourceString(R.string.error_no_type_data))
         }
         val massReq: Double = unitsRepository.getMassCI(mReq, massUnit?.name)
         val onBoard: Double = unitsRepository.getMassCI(mBoard, massUnit?.name)
@@ -80,7 +87,7 @@ class RefuelInteractor @Inject constructor(
             centreOver = c - centreTankMaxVolume >= 0.0
         }
         calcVolume(onBoard, mRo, massReq)
-        return TankRefuelResult(massTotalStr, volumeResultStr, leftStr, rightStr, centreStr, centreOver)
+        TankRefuelResult(massTotalStr, volumeResultStr, leftStr, rightStr, centreStr, centreOver)
     }
 
     private fun getMaxCenter(
@@ -98,9 +105,10 @@ class RefuelInteractor @Inject constructor(
         massTotalStr = formatMassToInt(diff)
         if (total <= 0.0) {
             volumeResultStr = ""
-            throw Exception(Consts.ERROR_TOTAL_LESS)
+            throw DataThrowable(SimpleString(Consts.ERROR_TOTAL_LESS))
         }
-        volumeResultStr = unitsRepository.formatTo(unitsRepository.getVolumeByUnit(total, volumeUnit?.name))
+        volumeResultStr =
+            unitsRepository.formatTo(unitsRepository.getVolumeByUnit(total, volumeUnit?.name))
     }
 
     private fun formatMassToInt(mass: Double): String =

@@ -2,9 +2,9 @@ package com.arny.aircraftrefueling.data.repository.files
 
 import android.content.Context
 import com.arny.aircraftrefueling.R
+import com.arny.aircraftrefueling.data.repository.units.IUnitsRepository
 import com.arny.aircraftrefueling.domain.constants.Consts.DIR_SD
 import com.arny.aircraftrefueling.domain.constants.Consts.FILENAME_SD
-import com.arny.aircraftrefueling.data.repository.units.IUnitsRepository
 import com.arny.aircraftrefueling.utils.DateTimeUtils
 import com.arny.aircraftrefueling.utils.FileUtils
 import kotlinx.coroutines.Dispatchers
@@ -26,14 +26,12 @@ class FilesRepository @Inject constructor(
         require: String,
         mRo: String,
         volume: String
-    ): String {
-        return "\n" + context.getString(R.string.fueling) + "\n" +
-                getCurrentDateTime() + "\n" + getRecordData(recordData) +
-                context.getString(R.string.file_fuel_remain) + ": $onBoard(${getMassUnit()});\n" +
-                context.getString(R.string.file_fueled) + ": $require(${getMassUnit()});\n" +
-                context.getString(R.string.density) + ": $mRo(${context.getString(R.string.unit_density)});\n" +
-                context.getString(R.string.litre_qty) + ": $volume(${getVolumeUnit()})\n"
-    }
+    ): String = "\n" + context.getString(R.string.fueling) + "\n" +
+            getCurrentDateTime() + "\n" + getRecordData(recordData) +
+            context.getString(R.string.file_fuel_remain) + ": $onBoard(${getMassUnit()});\n" +
+            context.getString(R.string.file_fueled) + ": $require(${getMassUnit()});\n" +
+            context.getString(R.string.density) + ": $mRo(${context.getString(R.string.unit_density)});\n" +
+            context.getString(R.string.litre_qty) + ": $volume(${getVolumeUnit()})\n"
 
     private fun getRecordData(recordData: String?) = if (!recordData.isNullOrBlank())
         context.getString(R.string.record_data_title, recordData) + "\n" else ""
@@ -44,14 +42,12 @@ class FilesRepository @Inject constructor(
         mPercPVK: String,
         mRo: String,
         totalMass: String
-    ): String {
-        return "\n" + context.getString(R.string.deicing) + "\n" +
-                getCurrentDateTime() + "\n" + getRecordData(recordData) +
-                context.getString(R.string.litre_qty) + ": $mVolTotal(${getVolumeUnit()});\n" +
-                context.getString(R.string.file_percent_pvk) + ": $mPercPVK(%);\n" +
-                context.getString(R.string.file_density_pvk) + ": $mRo(${context.getString(R.string.unit_density)});\n" +
-                context.getString(R.string.file_total_mass) + ": $totalMass(${getMassUnit()})\n"
-    }
+    ): String = "\n" + context.getString(R.string.deicing) + "\n" +
+            getCurrentDateTime() + "\n" + getRecordData(recordData) +
+            context.getString(R.string.litre_qty) + ": $mVolTotal(${getVolumeUnit()});\n" +
+            context.getString(R.string.file_percent_pvk) + ": $mPercPVK(%);\n" +
+            context.getString(R.string.file_density_pvk) + ": $mRo(${context.getString(R.string.unit_density)});\n" +
+            context.getString(R.string.file_total_mass) + ": $totalMass(${getMassUnit()})\n"
 
     private fun getCurrentDateTime() = DateTimeUtils.getDateTime("dd MMM yyyy HH:mm:ss")
 

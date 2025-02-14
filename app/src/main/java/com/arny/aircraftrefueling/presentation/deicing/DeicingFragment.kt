@@ -51,7 +51,7 @@ class DeicingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.title = getString(R.string.menu_deicing)
-        initUI()
+        initListeners()
         observeData()
     }
 
@@ -102,7 +102,7 @@ class DeicingFragment : Fragment() {
         }
     }
 
-    private fun initUI() {
+    private fun initListeners() {
         with(binding) {
             buttonLitreCnt.setOnClickListener {
                 viewModel.onLitreCountClick(
