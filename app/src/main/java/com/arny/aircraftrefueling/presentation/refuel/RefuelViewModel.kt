@@ -31,11 +31,6 @@ class RefuelViewModel @AssistedInject constructor(
     private val unitsInteractor: IUnitsInteractor,
 ) : ViewModel() {
 
-    init {
-        loadUnits()
-        checkFileExists()
-    }
-
     private var massUnit: MeasureUnit? = null
 
     @StringRes
@@ -63,11 +58,16 @@ class RefuelViewModel @AssistedInject constructor(
     private val _btnSaveVisible = MutableStateFlow(false)
     val btnSaveVisible = _btnSaveVisible.asStateFlow()
 
-    private val _edtMassUnit = MutableStateFlow<Int?>(null)
-    val edtMassUnit = _edtMassUnit.asStateFlow()
+    private val _massUnit = MutableStateFlow<Int?>(null)
+    val edtMassUnit = _massUnit.asStateFlow()
 
-    private val _edtVolumeUnit = MutableStateFlow<Int?>(null)
-    val edtVolumeUnit = _edtVolumeUnit.asStateFlow()
+    private val _volumeUnit = MutableStateFlow<Int?>(null)
+    val edtVolumeUnit = _volumeUnit.asStateFlow()
+
+    fun initVM(){
+        loadUnits()
+        checkFileExists()
+    }
 
     private fun loadUnits() {
         viewModelScope.launch {
@@ -82,6 +82,7 @@ class RefuelViewModel @AssistedInject constructor(
     private fun checkFileExists() {
         viewModelScope.launch {
             flow { emit(filesInteractor.isDataFileExists()) }
+                .catch { it.printStackTrace() }
                 .collect { exists ->
                     _btnDelVisible.value = exists
                 }
@@ -96,23 +97,23 @@ class RefuelViewModel @AssistedInject constructor(
         when (massUnit?.name) {
             Consts.UNIT_KG -> {
                 massUnitName = R.string.unit_mass_kg
-                _edtMassUnit.value = R.string.unit_mass_kg
+                _massUnit.value = R.string.unit_mass_kg
             }
 
             Consts.UNIT_LB -> {
                 massUnitName = R.string.unit_mass_lb_named
-                _edtMassUnit.value = R.string.unit_mass_lb
+                _massUnit.value = R.string.unit_mass_lb
             }
         }
         when (volumeUnit?.name) {
             Consts.UNIT_LITRE -> {
                 volumeUnitName = R.string.unit_volume_named
-                _edtVolumeUnit.value = R.string.unit_litre
+                _volumeUnit.value = R.string.unit_litre
             }
 
             Consts.UNIT_AM_GALL -> {
                 volumeUnitName = R.string.unit_am_gallons_named
-                _edtVolumeUnit.value = R.string.unit_am_gallons
+                _volumeUnit.value = R.string.unit_am_gallons
             }
         }
     }
@@ -213,6 +214,7 @@ class RefuelViewModel @AssistedInject constructor(
     fun onRemoveFile() {
         viewModelScope.launch {
             filesInteractor.removeFile()
+                .catch { _toastError.emit(ResourceString(R.string.error_file_not_deleted)) }
                 .collect { result ->
                     when (result) {
                         is DataResult.Error -> {

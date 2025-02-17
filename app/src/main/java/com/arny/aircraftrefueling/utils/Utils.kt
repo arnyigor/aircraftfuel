@@ -4,7 +4,11 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.TimeInterpolator
 import android.annotation.SuppressLint
-import android.app.*
+import android.app.Activity
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -12,8 +16,12 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.*
+import android.os.Build
 import android.os.Build.VERSION_CODES.Q
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.StrictMode
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -23,7 +31,12 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
-import androidx.annotation.*
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
+import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -36,11 +49,18 @@ import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.*
-import java.util.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.Collections
+import java.util.Locale
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.roundToInt
-
 
 fun <T> Fragment.requestPermission(
     resultLauncher: ActivityResultLauncher<T>,
@@ -55,9 +75,11 @@ fun <T> Fragment.requestPermission(
         ) == PackageManager.PERMISSION_GRANTED -> {
             checkPermissionOk()
         }
+
         shouldShowRequestPermissionRationale(permission) -> {
             resultLauncher.launch(input)
         }
+
         else -> {
             resultLauncher.launch(input)
         }
@@ -74,6 +96,7 @@ fun <T> Activity.requestPermission(
         ContextCompat.checkSelfPermission(this, permission) -> {
             checkPermissionOk()
         }
+
         else -> {
             resultLauncher.launch(input)
         }
@@ -81,11 +104,11 @@ fun <T> Activity.requestPermission(
 }
 
 fun AppCompatActivity.replaceFragment(
-        fragment: Fragment, @IdRes frameId: Int,
-        addToback: Boolean = false,
-        tag: String? = null,
-        onLoadFunc: () -> Unit? = {},
-        animResourses: Pair<Int, Int>? = null
+    fragment: Fragment, @IdRes frameId: Int,
+    addToback: Boolean = false,
+    tag: String? = null,
+    onLoadFunc: () -> Unit? = {},
+    animResourses: Pair<Int, Int>? = null
 ) {
     val tg = tag ?: fragment.javaClass.simpleName
     supportFragmentManager.transact {
@@ -103,11 +126,11 @@ fun AppCompatActivity.replaceFragment(
 }
 
 fun Fragment.replaceFragment(
-        fragment: Fragment, @IdRes frameId: Int,
-        addToback: Boolean = false,
-        tag: String? = null,
-        onLoadFunc: () -> Unit? = {},
-        animResourses: Pair<Int, Int>? = null
+    fragment: Fragment, @IdRes frameId: Int,
+    addToback: Boolean = false,
+    tag: String? = null,
+    onLoadFunc: () -> Unit? = {},
+    animResourses: Pair<Int, Int>? = null
 ) {
     val tg = tag ?: fragment.javaClass.simpleName
     childFragmentManager.transact {
@@ -135,35 +158,39 @@ private inline fun FragmentManager.transact(action: FragmentTransaction.() -> Un
 }
 
 inline fun <reified T : Any> Activity.launchActivity(
-        requestCode: Int = -1,
-        options: Bundle? = null,
-        noinline init: Intent.() -> Unit = {}) {
+    requestCode: Int = -1,
+    options: Bundle? = null,
+    noinline init: Intent.() -> Unit = {}
+) {
     val intent = newIntent<T>(this)
     intent.init()
     startActivityForResult(intent, requestCode, options)
 }
 
 fun Activity.launchIntent(
-        requestCode: Int = -1,
-        options: Bundle? = null,
-        init: Intent.() -> Unit = {}) {
+    requestCode: Int = -1,
+    options: Bundle? = null,
+    init: Intent.() -> Unit = {}
+) {
     val intent = newIntent()
     intent.init()
     startActivityForResult(intent, requestCode, options)
 }
 
 fun Activity.launchIntent(
-        options: Bundle? = null,
-        init: Intent.() -> Unit = {}) {
+    options: Bundle? = null,
+    init: Intent.() -> Unit = {}
+) {
     val intent = newIntent()
     intent.init()
     startActivity(intent, options)
 }
 
 inline fun <reified T : Any> Fragment.launchActivity(
-        requestCode: Int = -1,
-        options: Bundle? = null,
-        noinline init: Intent.() -> Unit = {}) {
+    requestCode: Int = -1,
+    options: Bundle? = null,
+    noinline init: Intent.() -> Unit = {}
+) {
     val context = this.context
     if (context != null) {
         val intent = newIntent<T>(context)
@@ -173,8 +200,9 @@ inline fun <reified T : Any> Fragment.launchActivity(
 }
 
 inline fun <reified T : Any> Fragment.launchActivity(
-        options: Bundle? = null,
-        noinline init: Intent.() -> Unit = {}) {
+    options: Bundle? = null,
+    noinline init: Intent.() -> Unit = {}
+) {
     val context = this.context
     if (context != null) {
         val intent = newIntent<T>(context)
@@ -184,9 +212,10 @@ inline fun <reified T : Any> Fragment.launchActivity(
 }
 
 fun Fragment.launchIntent(
-        requestCode: Int = -1,
-        options: Bundle? = null,
-        init: Intent.() -> Unit = {}) {
+    requestCode: Int = -1,
+    options: Bundle? = null,
+    init: Intent.() -> Unit = {}
+) {
     val context = this.context
     if (context != null) {
         val intent = newIntent()
@@ -196,8 +225,9 @@ fun Fragment.launchIntent(
 }
 
 fun Fragment.launchIntent(
-        options: Bundle? = null,
-        init: Intent.() -> Unit = {}) {
+    options: Bundle? = null,
+    init: Intent.() -> Unit = {}
+) {
     val context = this.context
     if (context != null) {
         val intent = newIntent()
@@ -207,8 +237,9 @@ fun Fragment.launchIntent(
 }
 
 inline fun <reified T : Any> Context.launchActivity(
-        options: Bundle? = null,
-        noinline init: Intent.() -> Unit = {}) {
+    options: Bundle? = null,
+    noinline init: Intent.() -> Unit = {}
+) {
     val intent = newIntent<T>(this)
     intent.init()
     startActivity(intent, options)
@@ -227,7 +258,11 @@ fun Fragment.putExtras(args: Bundle?) {
     this.arguments = args
 }
 
-fun Activity.putExtras(resultCode: Int? = null, clear: Boolean = true, init: Intent.() -> Unit = {}) {
+fun Activity.putExtras(
+    resultCode: Int? = null,
+    clear: Boolean = true,
+    init: Intent.() -> Unit = {}
+) {
     val i = if (clear) {
         Intent()
     } else {
@@ -267,7 +302,12 @@ fun Activity.sendEmail(email: String, subject: String, body: String, shareTitle:
 }*/
 
 fun Activity.shareLocation(lat: Double, long: Double, label: String) {
-    this.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("geo:<$lat>,<$long>?q=<$lat>,<$long>($label)")));
+    this.startActivity(
+        Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("geo:<$lat>,<$long>?q=<$lat>,<$long>($label)")
+        )
+    );
 }
 
 fun Activity.shareImage(uri: Uri) {
@@ -296,7 +336,14 @@ enum class AnimType {
     DEFAULT, TOP_BOTTOM, LEFT_RIGHT
 }
 
-fun animateVisible(v: View, visible: Boolean, duration: Int, onComplete: () -> Unit? = {}, interpolator: TimeInterpolator? = null, type: AnimType = AnimType.DEFAULT) {
+fun animateVisible(
+    v: View,
+    visible: Boolean,
+    duration: Int,
+    onComplete: () -> Unit? = {},
+    interpolator: TimeInterpolator? = null,
+    type: AnimType = AnimType.DEFAULT
+) {
     v.clearAnimation()
     val animate = v.animate()
     if (interpolator != null) {
@@ -314,6 +361,7 @@ fun animateVisible(v: View, visible: Boolean, duration: Int, onComplete: () -> U
                 }
             })
         }
+
         AnimType.TOP_BOTTOM -> {
             v.pivotY = 0f
             if (visible) {
@@ -338,6 +386,7 @@ fun animateVisible(v: View, visible: Boolean, duration: Int, onComplete: () -> U
                 })
             }
         }
+
         AnimType.LEFT_RIGHT -> {
             v.pivotX = 0f
             v.scaleX = if (visible) 0.0f else 1.0f
@@ -383,13 +432,20 @@ inline fun <reified T> Bundle?.getExtra(extraName: String): T? {
 fun runOnUI(func: () -> Unit? = {}) = Handler(Looper.getMainLooper()).post { func.invoke() }
 
 @JvmOverloads
-fun runOnLooper(func: () -> Unit? = {}, looper: Looper = Looper.getMainLooper()) = Handler(looper).post { func.invoke() }
+fun runOnLooper(func: () -> Unit? = {}, looper: Looper = Looper.getMainLooper()) =
+    Handler(looper).post { func.invoke() }
 
 fun View?.setVisible(visible: Boolean) {
     this?.visibility = if (visible) View.VISIBLE else View.GONE
 }
 
-fun View?.setVisible(visible: Boolean, duration: Int, onComplete: () -> Unit?, interpolator: TimeInterpolator? = null, type: AnimType = AnimType.DEFAULT) {
+fun View?.setVisible(
+    visible: Boolean,
+    duration: Int,
+    onComplete: () -> Unit?,
+    interpolator: TimeInterpolator? = null,
+    type: AnimType = AnimType.DEFAULT
+) {
     this?.let { animateVisible(it, visible, duration, onComplete, interpolator, type) }
 }
 
@@ -405,14 +461,14 @@ fun animateVisible(v: View, visible: Boolean, duration: Int) {
     val alpha = if (visible) 1.0f else 0.0f
     v.clearAnimation()
     v.animate()
-            .alpha(alpha)
-            .setDuration(duration.toLong())
-            .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    super.onAnimationEnd(animation)
-                    v.setVisible(visible)
-                }
-            })
+        .alpha(alpha)
+        .setDuration(duration.toLong())
+        .setListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                v.setVisible(visible)
+            }
+        })
 }
 
 fun AppCompatActivity.backStackCnt(): Int {
@@ -420,7 +476,10 @@ fun AppCompatActivity.backStackCnt(): Int {
 }
 
 fun AppCompatActivity.backStackClear() {
-    return supportFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    return supportFragmentManager.popBackStack(
+        null,
+        androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
+    );
 }
 
 fun AppCompatActivity.resetFragmentsInManager() {
@@ -432,7 +491,11 @@ fun AppCompatActivity.resetFragmentsInManager() {
     }
 }
 
-fun AppCompatActivity.replaceFragmentInActivity(fragment: Fragment, @IdRes frameId: Int, tag: String? = null) {
+fun AppCompatActivity.replaceFragmentInActivity(
+    fragment: Fragment,
+    @IdRes frameId: Int,
+    tag: String? = null
+) {
     supportFragmentManager.transact {
         replace(frameId, fragment, tag)
     }
@@ -453,7 +516,10 @@ fun AppCompatActivity.popBackStack(immadiate: Boolean = true) {
 }
 
 fun checkPremission(context: Context, permission: String): Boolean {
-    return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
+    return ContextCompat.checkSelfPermission(
+        context,
+        permission
+    ) == PackageManager.PERMISSION_GRANTED
 }
 
 fun AppCompatActivity.getFragment(position: Int): Fragment? {
@@ -472,7 +538,10 @@ fun AppCompatActivity.fragmentsBackStack(): Fragment {
 }
 
 fun AppCompatActivity.fragmentBackStackClear() {
-    return supportFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    return supportFragmentManager.popBackStack(
+        null,
+        androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
+    );
 }
 
 fun inflate(inflater: LayoutInflater, container: ViewGroup?, @LayoutRes resource: Int): View? {
@@ -487,7 +556,10 @@ fun AppCompatActivity.getFragmentByTag(tag: String?): Fragment? {
     return supportFragmentManager.findFragmentByTag(tag)
 }
 
-fun AppCompatActivity.setupActionBar(@IdRes toolbarId: Int, action: (ActionBar?.() -> Unit)? = null) {
+fun AppCompatActivity.setupActionBar(
+    @IdRes toolbarId: Int,
+    action: (ActionBar?.() -> Unit)? = null
+) {
     setSupportActionBar(findViewById(toolbarId))
     supportActionBar?.run {
         action?.let { it() }
@@ -522,7 +594,13 @@ fun EditText.setDrawableRightClick(onClick: () -> Unit) {
     }
 }
 
-fun View.showSnackBar(message: String, actionText: String, duration: Int? = null, @ColorInt actionColor: Int? = null, action: () -> Unit) {
+fun View.showSnackBar(
+    message: String,
+    actionText: String,
+    duration: Int? = null,
+    @ColorInt actionColor: Int? = null,
+    action: () -> Unit
+) {
     val snackBar = Snackbar.make(this, message, duration ?: Snackbar.LENGTH_INDEFINITE)
     snackBar.setAction(actionText) { action.invoke() }
     if (actionColor != null) {
@@ -541,7 +619,8 @@ inline fun <reified T> getBundleExtra(extras: Bundle?, extraName: String): T? {
 
 fun isKeyboardVisible(context: Context): Boolean {
     val imm by lazy { context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
-    val windowHeightMethod = InputMethodManager::class.java.getMethod("getInputMethodWindowVisibleHeight")
+    val windowHeightMethod =
+        InputMethodManager::class.java.getMethod("getInputMethodWindowVisibleHeight")
     val height = windowHeightMethod.invoke(imm) as Int
     return height > 100
 }
@@ -589,23 +668,24 @@ private fun createNotificationChannel(context: Context): String {
 }
 
 private fun getServiceNotification(
-        context: Context,
-        cls: Class<*>,
-        requestCode: Int,
-        title: String,
-        content: String,
-        icon: Int
+    context: Context,
+    cls: Class<*>,
+    requestCode: Int,
+    title: String,
+    content: String,
+    icon: Int
 )
         : Notification {
     val notification: Notification
     val notificationIntent = Intent(context, cls)
     notificationIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-    val pendingIntent = PendingIntent.getActivity(context, requestCode, notificationIntent, 0)
+    val pendingIntent = PendingIntent.getActivity(context, requestCode, notificationIntent,
+        PendingIntent.FLAG_MUTABLE)
     val notifbuild = getNotifBuilder(context)
     notifbuild.setSmallIcon(icon)// маленькая иконка
-            .setAutoCancel(false)
-            .setContentTitle(title)// Заголовок уведомления
-            .setContentText(content) // Текст уведомления
+        .setAutoCancel(false)
+        .setContentTitle(title)// Заголовок уведомления
+        .setContentText(content) // Текст уведомления
     notifbuild.setContentIntent(pendingIntent)
     notification = notifbuild.build()
     return notification
@@ -617,12 +697,6 @@ private fun getNotifBuilder(context: Context): Notification.Builder {
     } else {
         Notification.Builder(context)
     }
-}
-
-fun createNotification(context: Context, cls: Class<*>, notifyId: Int, title: String, content: String = "", icon: Int, request: Int = 999) {
-    val notification = getServiceNotification(context, cls, request, title, content, icon)
-    val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
-    mNotificationManager?.notify(notifyId, notification)
 }
 
 @SuppressLint("RestrictedApi")
@@ -640,7 +714,7 @@ fun BottomNavigationView?.disableShiftMode() {
 
                 item.setShifting(false)
                 // set once again checked value, so view will be updated
-                item.setChecked(item.itemData?.isChecked==true)
+                item.setChecked(item.itemData?.isChecked == true)
             }
         } catch (e: NoSuchFieldException) {
             e.printStackTrace()
@@ -654,25 +728,6 @@ fun <T> find(list: List<T>, c: T, comp: Comparator<T>): T? {
     return list.firstOrNull { comp.compare(c, it) == 0 }
 }
 
-@JvmOverloads
-fun transliterate(message: String, toUpper: Boolean = false): String {
-    val abcCyr = charArrayOf(' ', 'а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я', 'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ', 'Ы', 'Ь', 'Э', 'Ю', 'Я', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z')
-    val abcLat = arrayOf(" ", "a", "b", "v", "g", "d", "e", "e", "zh", "z", "i", "y", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u", "f", "h", "ts", "ch", "sh", "sch", "", "i", "", "e", "ju", "ja", "A", "B", "V", "G", "D", "E", "E", "Zh", "Z", "I", "Y", "K", "L", "M", "N", "O", "P", "R", "S", "T", "U", "F", "H", "Ts", "Ch", "Sh", "Sch", "", "I", "", "E", "Ju", "Ja", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z")
-    val builder = StringBuilder()
-    for (element in message) {
-        for (x in abcCyr.indices) {
-            if (element == abcCyr[x]) {
-                builder.append(abcLat[x])
-            }
-        }
-    }
-    var res = builder.toString()
-    if (toUpper) {
-        res = res.toUpperCase(Locale.ROOT)
-    }
-    return res.trim()
-}
-
 fun <T> findPosition(list: List<T>, item: T): Int {
     return list.indexOf(item)
 }
@@ -681,7 +736,11 @@ fun <T> findPosition(list: Array<T>, item: T): Int {
     return list.indexOf(item)
 }
 
-fun <T> getExcludeList(list: ArrayList<T>, items: List<T>, comparator: Comparator<T>): ArrayList<T> {
+fun <T> getExcludeList(
+    list: ArrayList<T>,
+    items: List<T>,
+    comparator: Comparator<T>
+): ArrayList<T> {
     val res = ArrayList<T>()
     for (t in list) {
         val pos = Collections.binarySearch(items, t, comparator)
@@ -746,7 +805,12 @@ fun String?.ifEmpty(default: String): String {
  * @param second Collection of  T
  * @param predicate function equals
  */
-fun <T> arraysDiff(first: ArrayList<T>?, second: ArrayList<T>, fillAll: Boolean = false, predicate: (firstItem: T, secondItem: T) -> Boolean): ArrayList<T> {
+fun <T> arraysDiff(
+    first: ArrayList<T>?,
+    second: ArrayList<T>,
+    fillAll: Boolean = false,
+    predicate: (firstItem: T, secondItem: T) -> Boolean
+): ArrayList<T> {
     if (first.isNullOrEmpty()) return second
     if (first.isEmpty() && second.isNotEmpty()) return second
     val result = arrayListOf<T>()
@@ -810,7 +874,13 @@ fun <T : Any> dumpArray(collection: Collection<T>?, predicate: (cls: T) -> Strin
  * @param [one] слово с окончанием значения  [count]=1 (слово)
  * @param [two_four] слово с окончанием значения  [count]=2,3,4 (слова)
  */
-fun getTermination(count: Int, zero_other: String, one: String, two_four: String, concat: Boolean = true): String {
+fun getTermination(
+    count: Int,
+    zero_other: String,
+    one: String,
+    two_four: String,
+    concat: Boolean = true
+): String {
     if (count % 100 in 11..19) {
         return if (concat) "$count $zero_other" else " $zero_other"
     }
@@ -843,7 +913,14 @@ fun <T> Collection<T>.copy(): ArrayList<T> {
     return newList
 }
 
-fun <T> launchAsync(block: suspend () -> T, onComplete: (T) -> Unit = {}, onError: (Throwable) -> Unit = {}, dispatcher: CoroutineDispatcher = Dispatchers.IO, context: CoroutineContext = Dispatchers.Main + SupervisorJob(), onCanceled: () -> Unit = {}): Job {
+fun <T> launchAsync(
+    block: suspend () -> T,
+    onComplete: (T) -> Unit = {},
+    onError: (Throwable) -> Unit = {},
+    dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    context: CoroutineContext = Dispatchers.Main + SupervisorJob(),
+    onCanceled: () -> Unit = {}
+): Job {
     val scope = CoroutineScope(context)
     return scope.launch {
         try {

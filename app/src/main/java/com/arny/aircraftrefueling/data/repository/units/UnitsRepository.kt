@@ -3,6 +3,7 @@ package com.arny.aircraftrefueling.data.repository.units
 import android.content.Context
 import androidx.annotation.StringRes
 import com.arny.aircraftrefueling.R
+import com.arny.aircraftrefueling.data.repository.Prefs
 import com.arny.aircraftrefueling.domain.constants.Consts
 import com.arny.aircraftrefueling.domain.constants.Consts.UNIT_AM_GALL
 import com.arny.aircraftrefueling.domain.constants.Consts.UNIT_KG
@@ -10,7 +11,6 @@ import com.arny.aircraftrefueling.domain.constants.Consts.UNIT_LB
 import com.arny.aircraftrefueling.domain.constants.Consts.UNIT_LITRE
 import com.arny.aircraftrefueling.domain.models.MeasureType
 import com.arny.aircraftrefueling.domain.models.MeasureUnit
-import com.arny.aircraftrefueling.utils.Prefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.math.BigDecimal

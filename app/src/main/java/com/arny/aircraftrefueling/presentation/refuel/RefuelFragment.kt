@@ -1,6 +1,7 @@
 package com.arny.aircraftrefueling.presentation.refuel
 
 
+import android.content.Context
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
@@ -18,10 +19,10 @@ import com.arny.aircraftrefueling.databinding.RefuelFragmentBinding
 import com.arny.aircraftrefueling.di.viewModelFactory
 import com.arny.aircraftrefueling.domain.models.TankRefuelResult
 import com.arny.aircraftrefueling.utils.KeyboardHelper.hideKeyboard
+import com.arny.aircraftrefueling.utils.ToastMaker
 import com.arny.aircraftrefueling.utils.alertDialog
-import com.arny.aircraftrefueling.utils.toastError
-import com.arny.aircraftrefueling.utils.toastSuccess
 import com.google.android.material.textfield.TextInputLayout
+import dagger.android.support.AndroidSupportInjection
 import dagger.assisted.AssistedFactory
 import javax.inject.Inject
 import kotlin.properties.Delegates
@@ -45,6 +46,11 @@ class RefuelFragment : Fragment() {
     internal lateinit var viewModelFactory: ViewModelFactory
     private val viewModel: RefuelViewModel by viewModelFactory { viewModelFactory.create() }
 
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -58,6 +64,7 @@ class RefuelFragment : Fragment() {
         activity?.title = getString(R.string.menu_fueling)
         setListeners()
         observeData()
+        viewModel.initVM()
     }
 
     private fun observeData() {
@@ -158,26 +165,6 @@ class RefuelFragment : Fragment() {
         }
     }
 
-    override fun setEdtRequire(mReq: String?) {
-        binding.editRequiredMass.setText(mReq)
-    }
-
-    override fun setEdtRo(mRo: String?) {
-        binding.editDensityFuel.setText(mRo)
-    }
-
-    override fun setEdtBoard(onBoard: String?) {
-        binding.editTotalMass.setText(onBoard)
-    }
-
-    override fun showResult(result: Result<Any>) {
-        when (result) {
-            is Result.Success -> showData(result.data as TankRefuelResult)
-            is Result.Error -> toastError(requireContext(), result.throwable.message)
-            is Result.ErrorRes -> toastError(requireContext(), getString(result.messageRes))
-        }
-    }
-
     private fun showData(refuelResult: TankRefuelResult) = with(binding) {
         tvTotalLitre.text = refuelResult.volumeResult
         tvTotalKilo.text = refuelResult.massTotal
@@ -192,59 +179,30 @@ class RefuelFragment : Fragment() {
         )
     }
 
-    override fun setMassUnitName(nameRes: Int) {
-        massUnitName = nameRes
-    }
-
-    override fun setVolumeUnitName(nameRes: Int) {
-        volumeUnitName = nameRes
-    }
-
-    override fun toastError(errorRes: Int, message: String?) {
-        toastError(requireContext(), getString(errorRes, message))
-    }
-
-    override fun toastError(message: String) {
-        toastError(requireContext(), message)
-    }
-
-      fun setOstatMassUnit(unitRes: Int) {
-        binding.tvOstatMass.text = getText(unitRes)
-    }
-
-      fun setReqMassUnit(unitRes: Int) {
-        binding.tilReq.hint = getString(R.string.required_kilo, getString(unitRes))
-    }
-
-      fun setOstatVolumeUnit(unitRes: Int) {
-        binding.tvReqHeader.text = getString(unitRes)
-    }
-
-
-
-
-
     private fun toastError(wrappedString: IWrappedString?) {
         wrappedString?.toString(requireContext())?.let {
-            toastError(requireContext(), it)
+            ToastMaker.toastError(requireContext(), it)
         }
     }
 
     private fun setEdtMassUnit(unitRes: Int?) {
         if (unitRes != null) {
             binding.tilOnBoard.hint = getString(R.string.has_on_board, getString(unitRes))
+            binding.tvOstatMass.text = getText(unitRes)
+            binding.tilReq.hint = getString(R.string.required_kilo, getString(unitRes))
         }
     }
 
     private fun setEdtVolumeUnit(unitRes: Int?) {
         if (unitRes != null) {
             binding.tvOstatMass.hint = getString(R.string.total_volume_litre, getString(unitRes))
+            binding.tvReqHeader.text = getString(unitRes)
         }
     }
 
     private fun toastSuccess(wrappedString: IWrappedString?) {
         wrappedString?.toString(requireContext())?.let {
-            toastSuccess(requireContext(), it)
+            ToastMaker.toastSuccess(requireContext(), it)
         }
     }
 

@@ -1,6 +1,7 @@
 package com.arny.aircraftrefueling.domain.refuel
 
 import com.arny.aircraftrefueling.R
+import com.arny.aircraftrefueling.data.repository.Prefs
 import com.arny.aircraftrefueling.data.repository.files.IFilesRepository
 import com.arny.aircraftrefueling.data.repository.units.IUnitsRepository
 import com.arny.aircraftrefueling.data.utils.DataResult
@@ -16,7 +17,6 @@ import com.arny.aircraftrefueling.domain.constants.Consts.fuelsData
 import com.arny.aircraftrefueling.domain.models.DataThrowable
 import com.arny.aircraftrefueling.domain.models.MeasureUnit
 import com.arny.aircraftrefueling.domain.models.TankRefuelResult
-import com.arny.aircraftrefueling.utils.Prefs
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

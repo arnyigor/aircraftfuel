@@ -22,5 +22,4 @@ class AppViewModelFactory(
         } catch (cce: ClassCastException) {
             error("Wrong provider type registered for ViewModel type $modelClass")
         }
-
 }

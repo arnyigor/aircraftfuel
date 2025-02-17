@@ -9,10 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.databinding.FragmentHomeBinding
-import com.arny.aircraftrefueling.di.viewModelFactory
 import dagger.android.support.AndroidSupportInjection
-import dagger.assisted.AssistedFactory
-import javax.inject.Inject
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding

@@ -11,6 +11,9 @@ abstract class ActivitiesModule {
     @ContributesAndroidInjector(
         modules = [
             HomeFragmentModule::class,
+            DeicingFragmentModule::class,
+            RefuelFragmentModule::class,
+            SettingsFragmentModule::class,
         ]
     )
     abstract fun bindMainActivity(): MainActivity

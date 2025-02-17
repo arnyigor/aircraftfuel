@@ -36,11 +36,6 @@ class DeicingViewModel @AssistedInject constructor(
         const val HALF_PERCENT = "50"
     }
 
-    init {
-        loadUnits()
-        checkFileExists()
-    }
-
     private var massUnit: MeasureUnit? = null
 
     @StringRes
@@ -74,6 +69,11 @@ class DeicingViewModel @AssistedInject constructor(
     private val _edtVolumeUnit = MutableStateFlow<Int?>(null)
     val edtVolumeUnit = _edtVolumeUnit.asStateFlow()
 
+    fun initVM() {
+        loadUnits()
+        checkFileExists()
+    }
+
     private fun loadUnits() {
         viewModelScope.launch {
             flow { emit(unitsInteractor.loadUnits()) }
@@ -99,7 +99,10 @@ class DeicingViewModel @AssistedInject constructor(
     private fun checkFileExists() {
         viewModelScope.launch {
             flow { emit(filesInteractor.isDataFileExists()) }
-                .collect { exists -> _btnDelVisible.value = exists }
+                .catch { it.printStackTrace() }
+                .collect { exists ->
+                    _btnDelVisible.value = exists
+                }
         }
     }
 

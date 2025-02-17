@@ -6,10 +6,12 @@ import com.arny.aircraftrefueling.data.repository.units.IUnitsRepository
 import com.arny.aircraftrefueling.domain.constants.Consts.DIR_SD
 import com.arny.aircraftrefueling.domain.constants.Consts.FILENAME_SD
 import com.arny.aircraftrefueling.utils.DateTimeUtils
-import com.arny.aircraftrefueling.utils.FileUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.BufferedWriter
 import java.io.File
+import java.io.FileWriter
+import java.io.IOException
 import javax.inject.Inject
 
 class FilesRepository @Inject constructor(
@@ -51,8 +53,10 @@ class FilesRepository @Inject constructor(
 
     private fun getCurrentDateTime() = DateTimeUtils.getDateTime("dd MMM yyyy HH:mm:ss")
 
-    override suspend fun isDataFileExists() =
-        FileUtils.isFileExist(folderPath() + File.separator + FILENAME_SD)
+    override suspend fun isDataFileExists(): Boolean {
+        val file = File(folderPath() + File.separator + FILENAME_SD)
+        return file.exists() && file.isFile
+    }
 
     override suspend fun saveDeicingData(
         recordData: String?,
@@ -76,14 +80,39 @@ class FilesRepository @Inject constructor(
 
     private fun saveData(data: String): String {
         val folderPath = folderPath()
-        val writeToFile = FileUtils.writeToFile(data, folderPath, FILENAME_SD, true)
+        val writeToFile = writeToFile(data, folderPath, FILENAME_SD, true)
         return if (writeToFile) folderPath + File.separator + FILENAME_SD else ""
     }
 
-    private fun folderPath() = FileUtils.getWorkDir(context) + File.separator + DIR_SD
+    fun writeToFile(content: String, path: String, filename: String, append: Boolean): Boolean {
+        val file = File(path)
+        file.mkdirs()
+        val writeFile = File(file, filename)
+        return try {
+            BufferedWriter(FileWriter(writeFile, append)).use { bufferedWriter ->
+                bufferedWriter.write(content)
+            }
+            true
+        } catch (ex: IOException) {
+            ex.printStackTrace()
+            false
+        }
+    }
+
+    private fun folderPath(): String = context.filesDir.absolutePath + File.separator + DIR_SD
+
+    private fun deleteFile(element: File): Boolean {
+        element.mkdirs()
+        if (element.isDirectory) {
+            for (sub in element.listFiles()!!) {
+                deleteFile(sub)
+            }
+        }
+        return element.delete()
+    }
 
     override suspend fun removeFile(): Boolean = withContext(Dispatchers.IO) {
-        FileUtils.deleteFile(File(folderPath() + File.separator + FILENAME_SD))
+        deleteFile(File(folderPath() + File.separator + FILENAME_SD))
         isDataFileExists()
     }
 }

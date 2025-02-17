@@ -1,5 +1,6 @@
 package com.arny.aircraftrefueling
 
+import com.arny.aircraftrefueling.di.DaggerAppComponent
 import dagger.android.DaggerApplication
 import timber.log.Timber
 

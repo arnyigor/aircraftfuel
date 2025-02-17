@@ -1,8 +1,9 @@
-package com.arny.aircraftrefueling.utils
+package com.arny.aircraftrefueling.data.repository
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
+import com.arny.aircraftrefueling.utils.SingletonHolder
 
 class Prefs private constructor(val context: Context) {
     val settings: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)

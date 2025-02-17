@@ -449,10 +449,6 @@ fun Fragment.launchWhenCreated(block: suspend CoroutineScope.() -> Unit) {
     viewLifecycleOwner.lifecycleScope.launchWhenCreated { block.invoke(this) }
 }
 
-fun Fragment.launchWhenStarted(block: suspend CoroutineScope.() -> Unit) {
-    viewLifecycleOwner.lifecycleScope.launchWhenStarted { block.invoke(this) }
-}
-
 fun Context.sendBroadcast(action: String, extras: Bundle.() -> Unit = {}) {
     val intent = Intent(action).apply {
         this.putExtras(Bundle().apply(extras))

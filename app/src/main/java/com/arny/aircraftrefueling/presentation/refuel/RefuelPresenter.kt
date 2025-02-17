@@ -1,3 +1,4 @@
+/*
 package com.arny.aircraftrefueling.presentation.refuel
 
 import androidx.annotation.StringRes
@@ -43,6 +44,7 @@ class RefuelPresenter : BaseMvpPresenter<RefuelView>() {
                 })
 
         // TODO включить потом
+*/
 /*        fromNullable { filesInteractor.loadSavedRefuelData() }
                 .subscribeFromPresenter({ optionalNull ->
                     optionalNull.value?.let {
@@ -50,7 +52,8 @@ class RefuelPresenter : BaseMvpPresenter<RefuelView>() {
                         viewState.setEdtRo(it.mRo)
                         viewState.setEdtBoard(it.onBoard)
                     }
-                })*/
+                })*//*
+
         checkFileExists()
     }
 
@@ -157,3 +160,4 @@ class RefuelPresenter : BaseMvpPresenter<RefuelView>() {
                 })
     }
 }
+*/

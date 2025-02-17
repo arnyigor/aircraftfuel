@@ -14,9 +14,8 @@ import com.arny.aircraftrefueling.data.utils.strings.IWrappedString
 import com.arny.aircraftrefueling.databinding.FragmentDeicingBinding
 import com.arny.aircraftrefueling.di.viewModelFactory
 import com.arny.aircraftrefueling.utils.KeyboardHelper.hideKeyboard
+import com.arny.aircraftrefueling.utils.ToastMaker
 import com.arny.aircraftrefueling.utils.alertDialog
-import com.arny.aircraftrefueling.utils.toastError
-import com.arny.aircraftrefueling.utils.toastSuccess
 import com.google.android.material.textfield.TextInputLayout
 import dagger.android.support.AndroidSupportInjection
 import dagger.assisted.AssistedFactory
@@ -53,6 +52,7 @@ class DeicingFragment : Fragment() {
         activity?.title = getString(R.string.menu_deicing)
         initListeners()
         observeData()
+        viewModel.initVM()
     }
 
     private fun observeData() {
@@ -141,7 +141,7 @@ class DeicingFragment : Fragment() {
 
     private fun toastError(wrappedString: IWrappedString?) {
         wrappedString?.toString(requireContext())?.let {
-            toastError(requireContext(), it)
+            ToastMaker.toastError(requireContext(), it)
         }
     }
 
@@ -159,7 +159,7 @@ class DeicingFragment : Fragment() {
 
     private fun toastSuccess(wrappedString: IWrappedString?) {
         wrappedString?.toString(requireContext())?.let {
-            toastSuccess(requireContext(), it)
+            ToastMaker.toastSuccess(requireContext(), it)
         }
     }
 

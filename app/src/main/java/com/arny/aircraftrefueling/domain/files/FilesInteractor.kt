@@ -1,12 +1,12 @@
 package com.arny.aircraftrefueling.domain.files
 
+import com.arny.aircraftrefueling.data.repository.Prefs
 import com.arny.aircraftrefueling.data.repository.files.IFilesRepository
 import com.arny.aircraftrefueling.data.repository.units.IUnitsRepository
 import com.arny.aircraftrefueling.data.utils.DataResult
 import com.arny.aircraftrefueling.data.utils.doAsync
 import com.arny.aircraftrefueling.domain.constants.Consts
 import com.arny.aircraftrefueling.domain.models.RefuelSavedData
-import com.arny.aircraftrefueling.utils.Prefs
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

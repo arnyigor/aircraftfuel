@@ -1,8 +1,7 @@
 package com.arny.aircraftrefueling.domain.units
 
-import com.arny.aircraftrefueling.domain.models.MeasureUnit
 import com.arny.aircraftrefueling.data.repository.units.IUnitsRepository
-import com.arny.aircraftrefueling.utils.fromSingle
+import com.arny.aircraftrefueling.domain.models.MeasureUnit
 import javax.inject.Inject
 
 class UnitsInteractor @Inject constructor(

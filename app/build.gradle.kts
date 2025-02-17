@@ -1,8 +1,8 @@
 plugins {
     id("com.android.application")
     kotlin("android")
+    kotlin("plugin.serialization") version "2.1.10"
     kotlin("kapt")
-    kotlin("plugin.serialization") version "2.0.21"
 }
 
 android {
@@ -54,13 +54,13 @@ android {
 
 dependencies {
 
+    implementation(libs.kotlin.stdlib)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material){}
     implementation(libs.glide){
         isTransitive = true
     }
-    kapt(libs.glide.compiler)
     implementation(libs.glide.okhttp3.integration) {
         exclude(group = "glide-parent")
     }
@@ -73,17 +73,24 @@ dependencies {
     implementation(libs.androidx.drawerlayout)
     implementation(libs.navigation.fragment.ktx)
     implementation(libs.navigation.ui.ktx)
-    implementation(libs.dagger)
     implementation(libs.joda.time)
+    implementation(libs.dagger)
     implementation(libs.dagger.android)
     implementation(libs.dagger.android.support)
+    kapt(libs.dagger.android.processor)
+    kapt(libs.dagger.compiler)
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.fragment.ktx)
-    kapt(libs.dagger.compiler)
-    kapt(libs.dagger.android.processor)
     implementation(libs.jakewharton.timber)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.material.dialogs.core)
+    implementation(libs.material.dialogs.input)
+    implementation(libs.material.dialogs.files)
+    implementation(libs.material.dialogs.color)
+    implementation(libs.material.dialogs.datetime)
+    implementation(libs.material.dialogs.bottomsheets)
+    implementation(libs.material.dialogs.lifecycle)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

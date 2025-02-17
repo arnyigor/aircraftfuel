@@ -1,6 +1,7 @@
 package com.arny.aircraftrefueling.utils
 
 import android.R
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
@@ -126,6 +127,7 @@ fun fromHtml(html: String): Spanned {
     return HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
 }
 
+@SuppressLint("CheckResult")
 @JvmOverloads
 fun inputDialog(
         context: Context,
