@@ -55,9 +55,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/tvVolumeUnit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/barrier2"
@@ -69,5 +67,21 @@
         android:layout_height="wrap_content"
         app:barrierDirection="right"
         app:constraint_referenced_ids="tvMassUnit,tvVolumeUnit" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="mchbLoadSavedData" />
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/mchbLoadSavedData"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/save_last_refuel_data"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinVolumeUnit" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

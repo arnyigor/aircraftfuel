@@ -5,6 +5,7 @@ import com.arny.aircraftrefueling.domain.models.RefuelSavedData
 import kotlinx.coroutines.flow.Flow
 
 interface IFilesInteractor {
+    suspend fun getFilePath(): String?
     suspend fun isDataFileExists(): Boolean
     suspend fun removeFile(): Flow<DataResult<Boolean>>
     suspend fun loadSavedRefuelData(massUnitName: String?): RefuelSavedData?

@@ -58,6 +58,10 @@ class FilesRepository @Inject constructor(
         return file.exists() && file.isFile
     }
 
+    override suspend fun getFilePath(): String? = withContext(Dispatchers.IO) {
+        File(folderPath() + File.separator + FILENAME_SD).path
+    }
+
     override suspend fun saveDeicingData(
         recordData: String?,
         mVolTotal: String,

@@ -1,6 +1,5 @@
 package com.arny.aircraftrefueling.presentation.refuel
 
-
 import android.content.Context
 import android.os.Bundle
 import android.text.SpannableStringBuilder
@@ -15,15 +14,18 @@ import androidx.fragment.app.Fragment
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.data.utils.launchWhenCreated
 import com.arny.aircraftrefueling.data.utils.strings.IWrappedString
+import com.arny.aircraftrefueling.data.utils.strings.ResourceString
 import com.arny.aircraftrefueling.databinding.RefuelFragmentBinding
 import com.arny.aircraftrefueling.di.viewModelFactory
 import com.arny.aircraftrefueling.domain.models.TankRefuelResult
 import com.arny.aircraftrefueling.utils.KeyboardHelper.hideKeyboard
 import com.arny.aircraftrefueling.utils.ToastMaker
 import com.arny.aircraftrefueling.utils.alertDialog
+import com.arny.aircraftrefueling.utils.shareFile
 import com.google.android.material.textfield.TextInputLayout
 import dagger.android.support.AndroidSupportInjection
 import dagger.assisted.AssistedFactory
+import java.io.File
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
@@ -76,19 +78,34 @@ class RefuelFragment : Fragment() {
         launchWhenCreated { viewModel.edtMassUnit.collect(::setEdtMassUnit) }
         launchWhenCreated { viewModel.edtVolumeUnit.collect(::setEdtVolumeUnit) }
         launchWhenCreated { viewModel.hideKeyboard.collect { hideKeyboard(requireActivity()) } }
+        launchWhenCreated { viewModel.edtReq.collect(::setRequre) }
+        launchWhenCreated { viewModel.edtRo.collect(::setDensity) }
+        launchWhenCreated { viewModel.edtBoard.collect(::setTotal) }
+        launchWhenCreated { viewModel.shareFilePath.collect(::onShareFile) }
+    }
+
+    private fun setRequre(string: String?) {
+        if (string != null) {
+            binding.editRequiredMass.setText(string)
+        }
+    }
+
+    private fun setDensity(string: String?) {
+        if (string != null) {
+            binding.editDensityFuel.setText(string)
+        }
+    }
+
+    private fun setTotal(string: String?) {
+        if (string != null) {
+            binding.editTotalMass.setText(string)
+        }
     }
 
     private fun setListeners() {
         with(binding) {
-            btnCalculate.setOnClickListener {
-                val onBoard = editTotalMass.text.toString()
-                val type = spinAircraftType.getItemAtPosition(
-                    spinAircraftType.selectedItemPosition
-                ).toString()
-                val required = editRequiredMass.text.toString()
-                val density = editDensityFuel.text.toString()
-                viewModel.calculateFuelCapacity(onBoard, required, density, type)
-            }
+            btnCalculate.setOnClickListener { onCalcClick() }
+            btnShareData.setOnClickListener { viewModel.onShareFileClick() }
             btnSaveToFile.setOnClickListener {
                 viewModel.saveData(
                     tiEdtRecodData.text.toString(),
@@ -126,12 +143,33 @@ class RefuelFragment : Fragment() {
                     id: Long
                 ) {
                     selectedType = spinAircraftType.getItemAtPosition(position).toString()
+                    onCalcClick()
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
                 }
             }
         }
+    }
+
+    private fun onShareFile(filePath: String?) {
+        if (filePath != null) {
+            if (filePath.isNotBlank()) {
+                shareFile(File(filePath))
+            } else {
+                toastError(ResourceString(R.string.error_file_not_found))
+            }
+        }
+    }
+
+    private fun RefuelFragmentBinding.onCalcClick() {
+        val onBoard = editTotalMass.text.toString()
+        val type = spinAircraftType.getItemAtPosition(
+            spinAircraftType.selectedItemPosition
+        ).toString()
+        val required = editRequiredMass.text.toString()
+        val density = editDensityFuel.text.toString()
+        viewModel.calculateFuelCapacity(onBoard, required, density, type)
     }
 
     private fun updateState(state: RefuelUIState) = with(binding) {
@@ -162,6 +200,8 @@ class RefuelFragment : Fragment() {
             } else {
                 inputLayout.error = getString(intRes)
             }
+        } ?: run {
+            inputLayout.error = null
         }
     }
 
@@ -208,6 +248,7 @@ class RefuelFragment : Fragment() {
 
     private fun setBtnDelVisible(visible: Boolean) {
         binding.btnRemoveData.isVisible = visible
+        binding.btnShareData.isVisible = visible
     }
 
     private fun setBtnSaveVisible(visible: Boolean) {

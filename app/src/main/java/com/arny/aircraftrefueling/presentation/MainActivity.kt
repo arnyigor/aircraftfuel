@@ -5,11 +5,9 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.ui.setupWithNavController
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.databinding.ActivityMainBinding
 import com.arny.aircraftrefueling.utils.showSnackBar
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector

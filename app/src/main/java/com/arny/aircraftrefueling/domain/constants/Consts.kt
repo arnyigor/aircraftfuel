@@ -32,7 +32,6 @@ object Consts {
     const val FILENAME_SD = "AirRefuelKilo.txt"
     const val ERROR_TOTAL_LESS = "error_total_less"
 
-    const val PREF_RESP = "pref_responsibility_2020"
     const val PREF_VOLUME_UNIT = "pref_volume_unit"
     const val PREF_MASS_UNIT = "pref_mass_unit"
     const val PREF_SAVE_REFUEL_LAST_DATA = "pref_save_refuel_last_data"

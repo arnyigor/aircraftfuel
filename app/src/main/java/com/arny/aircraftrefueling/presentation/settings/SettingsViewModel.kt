@@ -24,10 +24,6 @@ class SettingsViewModel @AssistedInject constructor(
     private val unitsInteractor: IUnitsInteractor
 ) : ViewModel() {
 
-    init {
-        loadUnits()
-    }
-
     private val _toastError = MutableSharedFlow<IWrappedString?>()
     val toastError = _toastError.asSharedFlow()
 
@@ -39,6 +35,20 @@ class SettingsViewModel @AssistedInject constructor(
 
     private val _volumeUnits = MutableStateFlow<List<MeasureUnit>>(emptyList())
     val volumeUnits = _volumeUnits.asStateFlow()
+
+    private val _savedCheck = MutableStateFlow(false)
+    val savedCheck = _savedCheck.asStateFlow()
+
+    fun initVM() {
+        loadUnits()
+        loadUI()
+    }
+
+    private fun loadUI() {
+        viewModelScope.launch {
+            _savedCheck.value = prefs.get<Boolean>(Consts.PREF_SAVE_REFUEL_LAST_DATA) == true
+        }
+    }
 
     private fun loadUnits() {
         viewModelScope.launch {
@@ -61,18 +71,20 @@ class SettingsViewModel @AssistedInject constructor(
     }
 
     fun onMassUnitChange(item: MeasureUnit) {
-       viewModelScope.launch {
-           item.selected = true
-           unitsInteractor.onMassUnitChanged(item)
-       }
+        viewModelScope.launch {
+            item.selected = true
+            unitsInteractor.onMassUnitChanged(item)
+        }
     }
 
     fun onSaveLastRefuelDataChanged(checked: Boolean) {
-        prefs.put(Consts.PREF_SAVE_REFUEL_LAST_DATA, checked)
-        if (!checked) {
-            prefs.remove(Consts.PREF_REFUEL_LAST_DATA_REQUIRE)
-            prefs.remove(Consts.PREF_REFUEL_LAST_DATA_BOARD)
-            prefs.remove(Consts.PREF_REFUEL_LAST_DATA_RO)
+        viewModelScope.launch {
+            prefs.put(Consts.PREF_SAVE_REFUEL_LAST_DATA, checked)
+            if (!checked) {
+                prefs.remove(Consts.PREF_REFUEL_LAST_DATA_REQUIRE)
+                prefs.remove(Consts.PREF_REFUEL_LAST_DATA_BOARD)
+                prefs.remove(Consts.PREF_REFUEL_LAST_DATA_RO)
+            }
         }
     }
 }

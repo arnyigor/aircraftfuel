@@ -1,6 +1,5 @@
 package com.arny.aircraftrefueling.data.utils
 
-import android.R
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
@@ -14,7 +13,6 @@ import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.database.Cursor
-import android.graphics.Bitmap
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
@@ -54,8 +52,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.arny.aircraftrefueling.data.utils.strings.IWrappedString
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import kotlinx.coroutines.CoroutineScope
 import java.io.File
 import kotlin.math.roundToInt
@@ -350,54 +346,6 @@ fun ImageView.setDrawableCompat(@DrawableRes res: Int) =
     this.setImageDrawable(this.context.getImgCompat(res))
 
 fun Context.getImgCompat(@DrawableRes res: Int): Drawable? = ContextCompat.getDrawable(this, res)
-
-fun ImageView.setImgFromUrl(
-    url: String,
-    @DrawableRes placeholderRes: Int = R.drawable.ic_media_play,
-    @DrawableRes errorRes: Int = R.drawable.ic_media_play
-) {
-    Glide.with(context)
-        .load(url)
-        .diskCacheStrategy(DiskCacheStrategy.ALL)
-        .placeholder(placeholderRes)
-        .error(errorRes)
-        .centerCrop()
-        .override(200, 200)
-        .into(this)
-}
-
-fun Context.downloadBitmap(url: String?): Bitmap? =
-    Glide.with(this).asBitmap().load(url).submit().get()
-
-fun ImageView.setImgFromBitmap(
-    bitmap: Bitmap,
-    @DrawableRes placeholderRes: Int = R.drawable.ic_media_play,
-    @DrawableRes errorRes: Int = R.drawable.ic_media_play
-) {
-    Glide.with(context)
-        .load(bitmap)
-        .diskCacheStrategy(DiskCacheStrategy.ALL)
-        .placeholder(placeholderRes)
-        .error(errorRes)
-        .centerCrop()
-        .override(200, 200)
-        .into(this)
-}
-
-fun ImageView.setImgFromDrawable(
-    @DrawableRes drawableRes: Int,
-    @DrawableRes placeholderRes: Int = R.drawable.ic_media_play,
-    @DrawableRes errorRes: Int = R.drawable.ic_media_play
-) {
-    Glide.with(context)
-        .load(drawableRes)
-        .diskCacheStrategy(DiskCacheStrategy.ALL)
-        .placeholder(placeholderRes)
-        .error(errorRes)
-        .centerCrop()
-        .override(200, 200)
-        .into(this)
-}
 
 fun isOreoPlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
 

@@ -18,4 +18,6 @@ interface IFilesRepository {
         mRo: String,
         totalMass: String
     ): String
+
+    suspend fun getFilePath(): String?
 }

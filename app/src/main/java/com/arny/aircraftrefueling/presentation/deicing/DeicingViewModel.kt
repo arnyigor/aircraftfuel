@@ -69,6 +69,9 @@ class DeicingViewModel @AssistedInject constructor(
     private val _edtVolumeUnit = MutableStateFlow<Int?>(null)
     val edtVolumeUnit = _edtVolumeUnit.asStateFlow()
 
+    private val _shareFilePath = MutableSharedFlow<String>()
+    val shareFilePath = _shareFilePath.asSharedFlow()
+
     fun initVM() {
         loadUnits()
         checkFileExists()
@@ -89,6 +92,7 @@ class DeicingViewModel @AssistedInject constructor(
                 .collect { path ->
                     if (path.isNotBlank()) {
                         _toastSuccess.emit(ResourceString(R.string.success_file_write, path))
+                        checkFileExists()
                     } else {
                         _toastError.emit(ResourceString(R.string.error_file_not_write))
                     }
@@ -203,33 +207,47 @@ class DeicingViewModel @AssistedInject constructor(
 
     fun onLitreCountClick(onBoard: String, density: String, percent: String) {
         viewModelScope.launch {
-            when {
-                onBoard.isBlank() || onBoard == "0" -> {
-                    _deicingUIState.update {
-                        DeicingUIState.InputError(
-                            boardError = R.string.error_deicing_volume_with_unit to volumeUnitName
-                        )
-                    }
-                }
-
-                density.isBlank() || density == "0" -> {
-                    _deicingUIState.update {
-                        DeicingUIState.InputError(
-                            densityError = R.string.error_val_density_pvk to null
-                        )
-                    }
-                }
-
-                percent.isBlank() || percent == "0" -> {
-                    _deicingUIState.update {
-                        DeicingUIState.InputError(
-                            percentError = R.string.error_val_proc_pvk to null
-                        )
-                    }
+            _deicingUIState.update { DeicingUIState.InputError() }
+            val boardError = (R.string.error_deicing_volume_with_unit to volumeUnitName).takeIf {
+                onBoard.isBlank() || onBoard == "0"
+            }
+            val densityError = (R.string.error_val_density_pvk to null).takeIf {
+                density.isBlank() || density == "0"
+            }
+            val percentError = (R.string.error_val_proc_pvk to null).takeIf {
+                percent.isBlank() || percent == "0"
+            }
+            val hasError = boardError != null || percentError != null || densityError != null
+            if (!hasError) {
+                _hideKeyboard.emit(Unit)
+                calculateDeicing(onBoard, density, percent)
+            } else {
+                _deicingUIState.update {
+                    DeicingUIState.InputError(
+                        boardError = boardError,
+                        densityError = densityError,
+                        percentError = percentError
+                    )
                 }
             }
-            _hideKeyboard.emit(Unit)
-            calculateDeicing(onBoard, density, percent)
+        }
+    }
+
+    fun onShareFileClick() {
+        viewModelScope.launch {
+            flow { emit(filesInteractor.getFilePath()) }
+                .catch {
+                    if (it is DataThrowable) {
+                        _toastError.emit(it.wrappedString)
+                    } else {
+                        _toastError.emit(SimpleString(it.message))
+                    }
+                }
+                .collect { filePath ->
+                    if (filePath != null) {
+                        _shareFilePath.emit(filePath)
+                    }
+                }
         }
     }
 }

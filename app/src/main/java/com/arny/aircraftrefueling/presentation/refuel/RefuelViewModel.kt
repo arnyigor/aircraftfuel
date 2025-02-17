@@ -64,9 +64,35 @@ class RefuelViewModel @AssistedInject constructor(
     private val _volumeUnit = MutableStateFlow<Int?>(null)
     val edtVolumeUnit = _volumeUnit.asStateFlow()
 
-    fun initVM(){
+    private val _edtReq = MutableStateFlow<String?>(null)
+    val edtReq = _edtReq.asStateFlow()
+
+    private val _edtRo = MutableStateFlow<String?>(null)
+    val edtRo = _edtRo.asStateFlow()
+
+    private val _edtBoard = MutableStateFlow<String?>(null)
+    val edtBoard = _edtBoard.asStateFlow()
+
+    private val _shareFilePath = MutableSharedFlow<String>()
+    val shareFilePath = _shareFilePath.asSharedFlow()
+
+    fun initVM() {
         loadUnits()
         checkFileExists()
+    }
+
+    private fun loadSaved() {
+        viewModelScope.launch {
+            flow { emit(filesInteractor.loadSavedRefuelData(massUnit?.name)) }
+                .catch { it.printStackTrace() }
+                .collect { savedData ->
+                    if (savedData != null) {
+                        _edtReq.value = savedData.mReq
+                        _edtRo.value = savedData.mRo
+                        _edtBoard.value = savedData.onBoard
+                    }
+                }
+        }
     }
 
     private fun loadUnits() {
@@ -75,6 +101,7 @@ class RefuelViewModel @AssistedInject constructor(
                 .catch { _toastError.emit(ResourceString(R.string.load_units_error, it.message)) }
                 .collect { list ->
                     setUnitNames(list)
+                    loadSaved()
                 }
         }
     }
@@ -161,33 +188,29 @@ class RefuelViewModel @AssistedInject constructor(
 
     fun calculateFuelCapacity(onBoard: String, required: String, density: String, type: String) {
         viewModelScope.launch {
-            when {
-                onBoard.isBlank() || onBoard == "0" -> {
-                    _refuelUIState.update {
-                        RefuelUIState.InputError(
-                            boardError = R.string.error_val_on_board_with_unit to massUnitName
-                        )
-                    }
-                }
-
-                required.isBlank() || required == "0" -> {
-                    _refuelUIState.update {
-                        RefuelUIState.InputError(
-                            requiredError = R.string.error_val_req to massUnitName
-                        )
-                    }
-                }
-
-                density.isBlank() || density == "0" -> {
-                    _refuelUIState.update {
-                        RefuelUIState.InputError(
-                            densityError = R.string.error_val_density to null
-                        )
-                    }
+            _refuelUIState.update { RefuelUIState.InputError() }
+            val boardError = (R.string.error_val_on_board_with_unit to massUnitName).takeIf {
+                onBoard.isBlank() || onBoard == "0"
+            }
+            val requiredError = (R.string.error_val_req to massUnitName).takeIf {
+                required.isBlank() || required == "0"
+            }
+            val densityError = (R.string.error_val_density to null).takeIf {
+                density.isBlank() || density == "0"
+            }
+            val hasError = boardError != null || requiredError != null || densityError != null
+            if (!hasError) {
+                _hideKeyboard.emit(Unit)
+                refuel(density, onBoard, required, type)
+            } else {
+                _refuelUIState.update {
+                    RefuelUIState.InputError(
+                        boardError = boardError,
+                        requiredError = requiredError,
+                        densityError = densityError
+                    )
                 }
             }
-            _hideKeyboard.emit(Unit)
-            refuel(density, onBoard, required, type)
         }
     }
 
@@ -233,6 +256,24 @@ class RefuelViewModel @AssistedInject constructor(
                     }
                 }
 
+        }
+    }
+
+    fun onShareFileClick() {
+        viewModelScope.launch {
+            flow { emit(filesInteractor.getFilePath()) }
+                .catch {
+                    if (it is DataThrowable) {
+                        _toastError.emit(it.wrappedString)
+                    } else {
+                        _toastError.emit(SimpleString(it.message))
+                    }
+                }
+                .collect {
+                    if (it != null) {
+                        _shareFilePath.emit(it)
+                    }
+                }
         }
     }
 }

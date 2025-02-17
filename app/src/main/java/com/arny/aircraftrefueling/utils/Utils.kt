@@ -41,10 +41,12 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.arny.aircraftrefueling.R
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -57,6 +59,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.util.Collections
 import java.util.Locale
 import kotlin.coroutines.CoroutineContext
@@ -84,6 +87,20 @@ fun <T> Fragment.requestPermission(
             resultLauncher.launch(input)
         }
     }
+}
+
+fun Fragment.shareFile(file: File) {
+    val uri = FileProvider.getUriForFile(
+        requireContext(),
+        "${requireContext().packageName}.provider",
+        file
+    )
+    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_STREAM, uri)
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    }
+    startActivity(Intent.createChooser(shareIntent, getString(R.string.share_file_by)))
 }
 
 fun <T> Activity.requestPermission(
@@ -679,8 +696,10 @@ private fun getServiceNotification(
     val notification: Notification
     val notificationIntent = Intent(context, cls)
     notificationIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-    val pendingIntent = PendingIntent.getActivity(context, requestCode, notificationIntent,
-        PendingIntent.FLAG_MUTABLE)
+    val pendingIntent = PendingIntent.getActivity(
+        context, requestCode, notificationIntent,
+        PendingIntent.FLAG_MUTABLE
+    )
     val notifbuild = getNotifBuilder(context)
     notifbuild.setSmallIcon(icon)// маленькая иконка
         .setAutoCancel(false)

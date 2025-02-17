@@ -11,14 +11,17 @@ import androidx.fragment.app.Fragment
 import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.data.utils.launchWhenCreated
 import com.arny.aircraftrefueling.data.utils.strings.IWrappedString
+import com.arny.aircraftrefueling.data.utils.strings.ResourceString
 import com.arny.aircraftrefueling.databinding.FragmentDeicingBinding
 import com.arny.aircraftrefueling.di.viewModelFactory
 import com.arny.aircraftrefueling.utils.KeyboardHelper.hideKeyboard
 import com.arny.aircraftrefueling.utils.ToastMaker
 import com.arny.aircraftrefueling.utils.alertDialog
+import com.arny.aircraftrefueling.utils.shareFile
 import com.google.android.material.textfield.TextInputLayout
 import dagger.android.support.AndroidSupportInjection
 import dagger.assisted.AssistedFactory
+import java.io.File
 import javax.inject.Inject
 
 class DeicingFragment : Fragment() {
@@ -64,6 +67,7 @@ class DeicingFragment : Fragment() {
         launchWhenCreated { viewModel.edtMassUnit.collect(::setEdtMassUnit) }
         launchWhenCreated { viewModel.edtVolumeUnit.collect(::setEdtVolumeUnit) }
         launchWhenCreated { viewModel.hideKeyboard.collect { hideKeyboard(requireActivity()) } }
+        launchWhenCreated { viewModel.shareFilePath.collect(::onShareFile) }
     }
 
     private fun updateState(state: DeicingUIState) = with(binding) {
@@ -136,6 +140,7 @@ class DeicingFragment : Fragment() {
                     }
                 )
             }
+            btnShareData.setOnClickListener { viewModel.onShareFileClick() }
         }
     }
 
@@ -165,9 +170,20 @@ class DeicingFragment : Fragment() {
 
     private fun setBtnDelVisible(visible: Boolean) {
         binding.btnRemoveData.isVisible = visible
+        binding.btnShareData.isVisible = visible
     }
 
     private fun setBtnSaveVisible(visible: Boolean) {
         binding.btnSaveToFile.isVisible = visible
+    }
+
+    private fun onShareFile(filePath: String?) {
+        if (filePath != null) {
+            if (filePath.isNotBlank()) {
+                shareFile(File(filePath))
+            } else {
+                toastError(ResourceString(R.string.error_file_not_found))
+            }
+        }
     }
 }

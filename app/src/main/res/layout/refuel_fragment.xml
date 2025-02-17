@@ -1,313 +1,337 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tvAircraftTitle"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/aircraft_type"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="wrap_content">
 
-    <Spinner
-        android:id="@+id/spinAircraftType"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:entries="@array/aircraftTypes"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvAircraftTitle" />
+        <TextView
+            android:id="@+id/tvAircraftTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/aircraft_type"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilRecodData"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:hint="@string/record_data"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinAircraftType">
+        <Spinner
+            android:id="@+id/spinAircraftType"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:entries="@array/aircraftTypes"
+            app:layout_constraintBaseline_toBaselineOf="@+id/tvAircraftTitle"
+            app:layout_constraintBottom_toBottomOf="@+id/tvAircraftTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvAircraftTitle"
+            app:layout_constraintTop_toTopOf="@+id/tvAircraftTitle" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/tiEdtRecodData"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilRecodData"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:hint="@string/record_data"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/primary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spinAircraftType">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tiEdtRecodData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilOnBoard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:hint="@string/has_on_board"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/primary"
+            app:layout_constraintEnd_toStartOf="@+id/tilDensity"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tilRecodData">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTotalMass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberSigned" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilDensity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/primary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tilOnBoard"
+            app:layout_constraintTop_toBottomOf="@+id/tilRecodData">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editDensityFuel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:digits="0123456789,."
+                android:hint="@string/unit_density_kg_litre"
+                android:inputType="numberDecimal" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="tilOnBoard,tilDensity" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilReq"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:hint="@string/required_kilo"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/primary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/barrier">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editRequiredMass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberSigned" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/tvRemainToFill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/remain_to_fill"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tilReq" />
+
+        <TableLayout
+            android:id="@+id/tablelRemain"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:background="#111"
+            android:shrinkColumns="*"
+            android:stretchColumns="*"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvRemainToFill">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilOnBoard"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="8dp"
-        android:hint="@string/has_on_board"
-        app:layout_constraintEnd_toStartOf="@+id/tilDensity"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tilRecodData">
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="#A0A0A0"
+                android:gravity="center_horizontal">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTotalMass"
-            android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/tvReqHeader"
+                    android:layout_width="match_parent"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1"
+                    android:background="#C2C2C2"
+                    android:gravity="center"
+                    android:text="@string/unit_litre"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tvOstatMass"
+                    android:layout_width="match_parent"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1"
+                    android:background="#C2C2C2"
+                    android:gravity="center"
+                    android:text="@string/unit_mass_kg"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="#A0A0A0"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:id="@+id/tvTotalLitre"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1"
+                    android:background="#fff"
+                    android:gravity="center"
+                    android:hint="@string/vol_empty"
+                    android:textColor="#000000"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/tvTotalKilo"
+                    android:layout_width="match_parent"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1"
+                    android:background="#fff"
+                    android:gravity="center"
+                    android:hint="@string/vol_empty"
+                    android:textColor="#000000"
+                    android:textSize="20sp" />
+            </TableRow>
+        </TableLayout>
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="numberSigned" />
+            android:text="@string/recom_refuel"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tablelRemain" />
 
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilDensity"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tilOnBoard"
-        app:layout_constraintTop_toBottomOf="@+id/tilRecodData">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editDensityFuel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:digits="0123456789,."
-            android:hint="@string/unit_density_kg_litre"
-            android:inputType="numberDecimal" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="tilOnBoard,tilDensity" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilReq"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:hint="@string/required_kilo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/barrier">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editRequiredMass"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="numberSigned" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <TextView
-        android:id="@+id/tvRemainToFill"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/remain_to_fill"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tilReq" />
-
-    <TableLayout
-        android:id="@+id/tablelRemain"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:background="#111"
-        android:shrinkColumns="*"
-        android:stretchColumns="*"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvRemainToFill">
-
-        <TableRow
+        <TableLayout
+            android:id="@+id/tablRecommend"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#A0A0A0"
-            android:gravity="center_horizontal">
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:background="#111"
+            android:shrinkColumns="*"
+            android:stretchColumns="*"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2">
 
-            <TextView
-                android:id="@+id/tvReqHeader"
-                android:layout_width="match_parent"
-                android:layout_margin="1dp"
-                android:layout_weight="1"
-                android:background="#C2C2C2"
-                android:gravity="center"
-                android:text="@string/unit_litre"
-                android:textColor="#000000"
-                android:textSize="18sp" />
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="#A0A0A0"
+                android:gravity="center_horizontal">
 
-            <TextView
-                android:id="@+id/tvOstatMass"
-                android:layout_width="match_parent"
-                android:layout_margin="1dp"
-                android:layout_weight="1"
-                android:background="#C2C2C2"
-                android:gravity="center"
-                android:text="@string/unit_mass_kg"
-                android:textColor="#000000"
-                android:textSize="18sp" />
-        </TableRow>
+                <TextView
+                    android:id="@+id/tvLT"
+                    android:layout_width="match_parent"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1"
+                    android:background="#fff"
+                    android:gravity="center"
+                    android:text="@string/left_fuel_tank"
+                    android:textColor="#000000"
+                    android:textSize="20sp" />
 
-        <TableRow
-            android:layout_width="fill_parent"
+                <TextView
+                    android:id="@+id/tvRT"
+                    android:layout_width="match_parent"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1"
+                    android:background="#fff"
+                    android:gravity="center"
+                    android:text="@string/right_fuel_tank"
+                    android:textColor="#000000"
+                    android:textSize="20sp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="#A0A0A0"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:id="@+id/tvCT"
+                    style="@style/TankInfoStyleDefault"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1"
+                    android:text="@string/center_fuel_tank" />
+            </TableRow>
+        </TableLayout>
+
+        <Button
+            android:id="@+id/btnCalculate"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="#A0A0A0"
-            android:gravity="center_horizontal">
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="@string/calculate"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tablRecommend" />
 
-            <TextView
-                android:id="@+id/tvTotalLitre"
-                android:layout_margin="1dp"
-                android:layout_weight="1"
-                android:background="#fff"
-                android:gravity="center"
-                android:hint="@string/vol_empty"
-                android:textColor="#000000"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/tvTotalKilo"
-                android:layout_width="match_parent"
-                android:layout_margin="1dp"
-                android:layout_weight="1"
-                android:background="#fff"
-                android:gravity="center"
-                android:hint="@string/vol_empty"
-                android:textColor="#000000"
-                android:textSize="20sp" />
-        </TableRow>
-    </TableLayout>
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/recom_refuel"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tablelRemain" />
-
-    <TableLayout
-        android:id="@+id/tablRecommend"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:background="#111"
-        android:shrinkColumns="*"
-        android:stretchColumns="*"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2">
-
-        <TableRow
-            android:layout_width="fill_parent"
+        <Button
+            android:id="@+id/btnSaveToFile"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="#A0A0A0"
-            android:gravity="center_horizontal">
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="@string/file_save_data"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnCalculate"
+            tools:visibility="visible" />
 
-            <TextView
-                android:id="@+id/tvLT"
-                android:layout_width="match_parent"
-                android:layout_margin="1dp"
-                android:layout_weight="1"
-                android:background="#fff"
-                android:gravity="center"
-                android:text="@string/left_fuel_tank"
-                android:textColor="#000000"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/tvRT"
-                android:layout_width="match_parent"
-                android:layout_margin="1dp"
-                android:layout_weight="1"
-                android:background="#fff"
-                android:gravity="center"
-                android:text="@string/right_fuel_tank"
-                android:textColor="#000000"
-                android:textSize="20sp" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
+        <Button
+            android:id="@+id/btnRemoveData"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="#A0A0A0"
-            android:gravity="center_horizontal">
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/file_del"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnSaveToFile"
+            tools:visibility="visible" />
 
-            <TextView
-                android:id="@+id/tvCT"
-                style="@style/TankInfoStyleDefault"
-                android:layout_margin="1dp"
-                android:layout_weight="1"
-                android:text="@string/center_fuel_tank" />
-        </TableRow>
-    </TableLayout>
+        <Button
+            android:id="@+id/btnShareData"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/share_data"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnRemoveData"
+            tools:visibility="visible" />
 
-    <Button
-        android:id="@+id/btnCalculate"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="@string/calculate"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tablRecommend" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <Button
-        android:id="@+id/btnSaveToFile"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="@string/file_save_data"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnCalculate"
-        tools:visibility="visible" />
-
-    <Button
-        android:id="@+id/btnRemoveData"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="@string/file_del"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSaveToFile"
-        tools:visibility="visible" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

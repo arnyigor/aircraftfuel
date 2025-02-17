@@ -1,105 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="8dp">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilTotalVolume"
-        style="@style/error"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/total_volume_litre">
+        android:orientation="vertical"
+        android:padding="8dp">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/tiedtTotalVolume"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilTotalVolume"
+            style="@style/error"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="numberSigned" />
+            android:hint="@string/total_volume_litre"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/primary">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tiedtTotalVolume"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberSigned" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilDensity"
-        style="@style/error"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="@string/file_density_pvk">
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editDensityPVK"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilDensity"
+            style="@style/error"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal" />
+            android:layout_marginTop="8dp"
+            android:hint="@string/file_density_pvk"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/primary">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editDensityPVK"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal" />
 
-    <CheckBox
-        android:id="@+id/checkPVK"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/file_percent_pvk" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilPercent"
-        style="@style/error"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="@string/file_percent_pvk"
-        android:visibility="gone"
-        tools:visibility="visible">
+        <CheckBox
+            android:id="@+id/checkPVK"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/file_percent_pvk" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editPercentPVK"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilPercent"
+            style="@style/error"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:enabled="false"
-            android:inputType="numberSigned"
-            android:text="@string/full_percent" />
+            android:layout_marginTop="8dp"
+            android:hint="@string/file_percent_pvk"
+            android:visibility="gone"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/primary"
+            tools:visibility="visible">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editPercentPVK"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:enabled="false"
+                android:inputType="numberSigned"
+                android:text="@string/full_percent" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilTotalMass"
-        style="@style/error"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="@string/total_mass_kilo">
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTotalMassFuel"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilTotalMass"
+            style="@style/error"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:focusable="false"
-            android:inputType="number" />
+            android:layout_marginTop="8dp"
+            android:hint="@string/total_mass_kilo">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTotalMassFuel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:focusable="false"
+                android:inputType="number" />
 
-    <Button
-        android:id="@+id/buttonLitreCnt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/calculate" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/btnSaveToFile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/file_save_data"
-        android:visibility="gone" />
+        <Button
+            android:id="@+id/buttonLitreCnt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/calculate" />
 
-    <Button
-        android:id="@+id/btnRemoveData"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/file_del" />
+        <Button
+            android:id="@+id/btnSaveToFile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/file_save_data"
+            android:visibility="gone" />
 
-</LinearLayout>
+        <Button
+            android:id="@+id/btnRemoveData"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/file_del" />
+
+        <Button
+            android:id="@+id/btnShareData"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/share_data"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnRemoveData"
+            tools:visibility="visible" />
+
+    </LinearLayout>
+
+</ScrollView>

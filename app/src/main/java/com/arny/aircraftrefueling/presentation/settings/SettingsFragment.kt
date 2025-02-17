@@ -52,12 +52,14 @@ class SettingsFragment : Fragment() {
         activity?.title = getString(R.string.menu_settings)
         initUI()
         observeData()
+        viewModel.initVM()
     }
 
     private fun observeData() {
         launchWhenCreated { viewModel.toastError.collect(::toastError) }
         launchWhenCreated { viewModel.massUnits.collect(::setMassUnits) }
         launchWhenCreated { viewModel.volumeUnits.collect(::setVolumeUnits) }
+        launchWhenCreated { viewModel.savedCheck.collect(::setSavedCheck) }
         launchWhenCreated { viewModel.hideKeyboard.collect { hideKeyboard(requireActivity()) } }
     }
 
@@ -95,6 +97,9 @@ class SettingsFragment : Fragment() {
                 override fun onNothingSelected(parent: AdapterView<*>?) {
                 }
             }
+            mchbLoadSavedData.setOnCheckedChangeListener { _, isChecked ->
+                viewModel.onSaveLastRefuelDataChanged(isChecked)
+            }
         }
     }
 
@@ -112,5 +117,9 @@ class SettingsFragment : Fragment() {
     private fun setVolumeUnits(volumeUnits: List<MeasureUnit>) {
         measureVolumeAdapter.addAll(volumeUnits)
         binding.spinVolumeUnit.setSelection(volumeUnits.indexOfFirst { it.selected })
+    }
+
+    private fun setSavedCheck(isChecked: Boolean) {
+        binding.mchbLoadSavedData.isChecked = isChecked
     }
 }

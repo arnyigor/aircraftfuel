@@ -67,11 +67,9 @@ class UnitsRepository @Inject constructor(
         }
     }
 
-    override fun getMassByUnit(mass: Double, unitName: String?): Double {
-        return when (unitName) {
-            UNIT_LB -> convertMassToLb(mass)
-            else -> mass
-        }
+    override fun getMassByUnit(mass: Double, unitName: String?): Double = when (unitName) {
+        UNIT_LB -> convertMassToLb(mass)
+        else -> mass
     }
 
 

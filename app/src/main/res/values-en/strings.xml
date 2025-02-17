@@ -45,6 +45,7 @@
     <string name="error_no_type_data">No type data</string>
     <string name="error_file_not_deleted">File not deleted</string>
     <string name="error_file_not_write">File not recorded</string>
+    <string name="error_file_not_found">File not found</string>
     <string name="success_file_write">File successfully recorded %s</string>
     <string name="error_val_density_pvk">Enter the correct antifreeze liquid density</string>
     <string name="file_percent_pvk">" Percent of antifreeze"</string>
@@ -57,8 +58,7 @@
     <string name="litre_qty">Volume</string>
     <string name="responsibility_title">abdication of responsibility</string>
     <string name="storage_permission_denied">SD write permission denied</string>
-    <string name="response_text">Вы подтверждаете,что разработчик приложения не несёт ответственность за появление
-        неточной или ложной информации, а также за использование вами данных расчета и обработки информации.
+    <string name="response_text">You confirm that the application developer is not responsible for the appearance of inaccurate or false information, as well as for your use of the data for calculation and information processing.
     </string>
     <string name="confirm">Confirm</string>
     <string name="need_confirm_resp">Need confirm abdication of responsibility</string>
@@ -73,4 +73,5 @@
 	<string name="save_last_refuel_data">Save last calculated refuel data</string>
     <string name="error_deicing_volume_with_unit">Enter the correct volume value in %s</string>
     <string name="aircraft_type">Aircraft Type</string>
+    <string name="share_data">Share file</string>
 </resources>

@@ -8,8 +8,8 @@ plugins {
 android {
     namespace = "com.arny.aircraftrefueling"
     compileSdk = 35
-    val vMajor = 1
-    val vMinor = 2
+    val vMajor = 2
+    val vMinor = 0
     val vBuild = 0
     defaultConfig {
         applicationId = "com.arny.aircraftrefueling"
@@ -38,7 +38,7 @@ android {
         variant.outputs
             .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
             .forEach { output ->
-                val outputFileName = "Android-${variant.baseName}-${variant.versionName}-${variant.versionCode}" +
+                val outputFileName = "Refuel-${variant.baseName}-${variant.versionName}-${variant.versionCode}" +
                         ".apk"
                 output.outputFileName = outputFileName
             }
@@ -58,19 +58,11 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material){}
-    implementation(libs.glide){
-        isTransitive = true
-    }
-    implementation(libs.glide.okhttp3.integration) {
-        exclude(group = "glide-parent")
-    }
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.preference.ktx)
     implementation(libs.toasty)
-    implementation(libs.androidx.drawerlayout)
     implementation(libs.navigation.fragment.ktx)
     implementation(libs.navigation.ui.ktx)
     implementation(libs.joda.time)
@@ -82,15 +74,9 @@ dependencies {
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.fragment.ktx)
-    implementation(libs.jakewharton.timber)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.material.dialogs.core)
     implementation(libs.material.dialogs.input)
-    implementation(libs.material.dialogs.files)
-    implementation(libs.material.dialogs.color)
-    implementation(libs.material.dialogs.datetime)
-    implementation(libs.material.dialogs.bottomsheets)
-    implementation(libs.material.dialogs.lifecycle)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

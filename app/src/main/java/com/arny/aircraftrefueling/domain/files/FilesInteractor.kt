@@ -1,11 +1,14 @@
 package com.arny.aircraftrefueling.domain.files
 
+import com.arny.aircraftrefueling.R
 import com.arny.aircraftrefueling.data.repository.Prefs
 import com.arny.aircraftrefueling.data.repository.files.IFilesRepository
 import com.arny.aircraftrefueling.data.repository.units.IUnitsRepository
 import com.arny.aircraftrefueling.data.utils.DataResult
 import com.arny.aircraftrefueling.data.utils.doAsync
+import com.arny.aircraftrefueling.data.utils.strings.ResourceString
 import com.arny.aircraftrefueling.domain.constants.Consts
+import com.arny.aircraftrefueling.domain.models.DataThrowable
 import com.arny.aircraftrefueling.domain.models.RefuelSavedData
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -15,6 +18,14 @@ class FilesInteractor @Inject constructor(
     private val unitsRepository: IUnitsRepository,
     private val prefs: Prefs
 ) : IFilesInteractor {
+
+    override suspend fun getFilePath(): String? {
+        val filePath = filesRepository.getFilePath()
+        if (filePath.isNullOrBlank() || !filesRepository.isDataFileExists()) {
+            throw DataThrowable(ResourceString(R.string.error_file_not_found))
+        }
+        return filePath
+    }
 
     override suspend fun removeFile(): Flow<DataResult<Boolean>> = doAsync {
         filesRepository.removeFile()

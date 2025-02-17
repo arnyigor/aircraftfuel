@@ -25,12 +25,12 @@
     <string name="deicing">ПОО</string>
     <!--Errors-->
     <string name="error_wrong_data">Неверные данные</string>
-    <string name="error_deicing_volume_with_unit">Введите корректное значение объема в %s</string>
-    <string name="error_val_on_board_with_unit">Введите корректное значение на борту в %s</string>
-    <string name="error_val_on_board">Введите корректное значение на борту</string>
-    <string name="error_val_proc_pvk">Введите корректное значение процента ПВК</string>
-    <string name="error_val_req">Введите корректное значение требуемого в %s</string>
-    <string name="error_val_density">Введите корректное значение плотности в кг/л</string>
+    <string name="error_deicing_volume_with_unit">Ошибка значения объема в %s</string>
+    <string name="error_val_on_board_with_unit">Ошибка значения на борту в %s</string>
+    <string name="error_val_on_board">Ошибка значения на борту</string>
+    <string name="error_val_proc_pvk">Ошибка значения процента ПВК</string>
+    <string name="error_val_req">Ошибка значения требуемого в %s</string>
+    <string name="error_val_density">Ошибка значения плотности в кг/л</string>
     <string name="error_calulate_requied">Необходим расчет</string>
     <!--Unit info-->
     <string name="density">Плотность</string>
@@ -63,6 +63,7 @@
     <string name="error_no_type_data">Нет данных о типе</string>
     <string name="error_file_not_deleted">Файл не удален</string>
     <string name="error_file_not_write">Файл не записан</string>
+    <string name="error_file_not_found">Файл не найден</string>
     <string name="success_file_write">Файл успешно записан %s</string>
     <string name="error_val_density_pvk">Введите корректное значение плотности ПВК</string>
     <string name="file_percent_pvk">Процент ПВК</string>
@@ -98,4 +99,6 @@
     <string name="other_settings">Остальные настройки</string>
     <string name="save_last_refuel_data">Сохранять последние рассчитанные данные заправки</string>
     <string name="aircraft_type">Тип ВС</string>
+    <string name="share_data">Поделиться файлом</string>
+    <string name="share_file_by">Отправить файл через</string>
 </resources>
